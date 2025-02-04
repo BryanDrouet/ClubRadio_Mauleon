@@ -68,10 +68,11 @@
             opacity: 1;
         }
 
-        .menu-toggle {
+        .menu-toggle, .full-screen-button {
             position: fixed;
-            left: 10px;
             top: 10px;
+            width: 50px;
+            height: 50px;
             background: none;
             border: none;
             color: white;
@@ -83,12 +84,16 @@
             align-items: center;
         }
 
+        .menu-toggle::after {
+            content: '☰';
+        }
+
         .menu-open .menu-toggle::after {
             content: 'X';
         }
 
-        .menu-toggle::after {
-            content: '☰';
+        .full-screen-button {
+            right: 10px;
         }
 
         #settingsMenu h3 {
@@ -106,6 +111,8 @@
             gap: 10px;
             font-size: 1.2em;
             cursor: pointer;
+            text-align: center;
+            width: 100%;
         }
 
         input[type="checkbox"] {
@@ -149,24 +156,6 @@
             width: 100%;
         }
 
-        .full-screen-button {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            width: 50px;
-            height: 50px;
-            background: #ff4081;
-            border: none;
-            border-radius: 50%;
-            color: white;
-            font-size: 1.5em;
-            cursor: pointer;
-            z-index: 1100;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
         button {
             padding: 10px;
             border: none;
@@ -198,7 +187,7 @@
         <div id="timer">00:00:00:000</div>
         <div class="buttons" id="buttonsContainer">
             <button id="recButton" onclick="toggleTimer()">REC</button>
-            <button id="resetButton" onclick="resetTimer()" disabled>Reset</button>
+            <button id="resetButton" onclick="resetTimer()">Reset</button>
         </div>
     </div>
     <script>
@@ -232,7 +221,7 @@
                 recButton.textContent = "STOP";
             }
             running = !running;
-            resetButton.disabled = !running;
+            resetButton.disabled = false; // Le bouton Reset est activé lorsque le timer est lancé ou arrêté
         }
 
         function resetTimer() {
@@ -241,7 +230,7 @@
             document.getElementById("timer").textContent = "00:00:00:000";
             document.getElementById("recButton").textContent = "REC";
             running = false;
-            document.getElementById("resetButton").disabled = true;
+            document.getElementById("resetButton").disabled = true; // Le bouton Reset est désactivé quand le timer est à zéro
         }
 
         function updateTimer() {
