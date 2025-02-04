@@ -17,28 +17,43 @@
             font-family: 'Roboto', sans-serif;
             text-align: center;
             color: white;
-            background: linear-gradient(135deg, #6a1b9a, #ff4081);
-            background-size: 400% 400%;
-            animation: gradientAnimation 15s ease infinite;
+            background: #2c003e;
             position: relative;
             overflow: hidden;
         }
 
-        .grain {
-            position: absolute;
+        #settingsMenu {
+            position: fixed;
             top: 0;
-            left: 0;
-            width: 100%;
+            left: -250px;
             height: 100%;
-            background: url('https://cdn.pixabay.com/photo/2020/06/11/09/40/subtle-grain-texture-5284091_960_720.jpg') repeat;
-            z-index: -1;
-            opacity: 0.2;
+            width: 250px;
+            background: rgba(20, 20, 20, 0.95);
+            padding: 20px;
+            transition: left 0.3s ease-in-out;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.5);
         }
 
-        @keyframes gradientAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .menu-open #settingsMenu {
+            left: 0;
+        }
+
+        .menu-toggle {
+            position: fixed;
+            left: 10px;
+            top: 10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            z-index: 1100;
         }
 
         .container {
@@ -46,9 +61,6 @@
             flex-direction: column;
             align-items: center;
             padding: 30px;
-            backdrop-filter: blur(5px);
-            width: 300px;
-            transition: all 0.3s ease;
         }
 
         #timer {
@@ -56,7 +68,6 @@
             font-size: 6em;
             font-weight: normal;
             color: #ffffff;
-            transition: font-size 0.1s ease-in-out;
         }
 
         .buttons {
@@ -84,187 +95,24 @@
             background-color: #e6006f;
             transform: scale(1.05);
         }
-
-        button:disabled {
-            background-color: #999;
-            cursor: not-allowed;
-        }
-
-        #fullscreenButton {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.2em;
-            cursor: pointer;
-            z-index: 1100;
-        }
-
-        .slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 8px;
-            border-radius: 5px;
-            background: #ddd;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        .slider:hover {
-            background: #bbb;
-        }
-
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #ff4081;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        #onlyTimerToggle {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        body.fullscreen {
-            overflow: hidden;
-        }
-
-        #settingsMenu {
-            position: fixed;
-            top: 0;
-            left: -250px;
-            height: 100%;
-            width: 250px;
-            background: rgba(0, 0, 0, 0.9);
-            padding: 20px;
-            transition: left 0.3s ease;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .menu-open #settingsMenu {
-            left: 0;
-        }
-
-        .menu-options {
-            margin-top: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
     </style>
 </head>
 <body>
-    <div class="grain"></div>
-
-    <button id="fullscreenButton" onclick="toggleFullScreen()">⛶</button>
-
+    <button class="menu-toggle" onclick="toggleSettings()">☰</button>
     <div id="settingsMenu">
         <h3>Réglages</h3>
-        <div class="menu-options">
-            <label for="zoomRange">Zoom :</label>
-            <input type="range" id="zoomRange" class="slider" min="1" max="10" value="6" step="0.1" onchange="changeZoom(this)">
-            <div id="onlyTimerToggle">
-                <input type="checkbox" id="toggleOnlyTimer" onchange="toggleOnlyTimer()">
-                <label for="toggleOnlyTimer">Afficher uniquement le timer</label>
-            </div>
-        </div>
     </div>
-
-    <div class="container" id="mainContainer">
+    
+    <div class="container">
         <div id="timer">00:00:00:000</div>
-        <div class="buttons" id="buttonContainer">
+        <div class="buttons">
             <button id="recButton" onclick="toggleTimer()">REC</button>
             <button id="resetButton" onclick="resetTimer()" disabled>Reset</button>
         </div>
     </div>
 
     <script>
-        let timerInterval;
-        let isTimerRunning = false;
-        let seconds = 0;
-        let milliseconds = 0;
-        let isOnlyTimerVisible = false;
-
-        function toggleTimer() {
-            if (isTimerRunning) {
-                pauseTimer();
-            } else {
-                startTimer();
-            }
-        }
-
-        function startTimer() {
-            isTimerRunning = true;
-            document.getElementById('recButton').textContent = 'Pause';
-            document.getElementById('resetButton').disabled = false;
-            timerInterval = setInterval(updateTimer, 10);  // Update every 10ms
-        }
-
-        function pauseTimer() {
-            isTimerRunning = false;
-            document.getElementById('recButton').textContent = 'REC';
-            clearInterval(timerInterval);
-        }
-
-        function resetTimer() {
-            clearInterval(timerInterval);
-            isTimerRunning = false;
-            seconds = 0;
-            milliseconds = 0;
-            document.getElementById('timer').textContent = formatTime(seconds, milliseconds);
-            document.getElementById('recButton').textContent = 'REC';
-            document.getElementById('resetButton').disabled = true;
-        }
-
-        function updateTimer() {
-            milliseconds++;
-            if (milliseconds >= 100) {
-                milliseconds = 0;
-                seconds++;
-            }
-            document.getElementById('timer').textContent = formatTime(seconds, milliseconds);
-        }
-
-        function formatTime(sec, ms) {
-            const hours = Math.floor(sec / 3600);
-            const minutes = Math.floor((sec % 3600) / 60);
-            const remainingSeconds = sec % 60;
-            return `${hours}:${minutes}:${remainingSeconds}:${ms}`;
-        }
-
-        function changeZoom(slider) {
-            const zoomValue = slider.value;
-            document.getElementById('timer').style.transform = `scale(${zoomValue / 10})`;
-        }
-
-        function toggleOnlyTimer() {
-            isOnlyTimerVisible = !isOnlyTimerVisible;
-            document.getElementById('buttonContainer').style.display = isOnlyTimerVisible ? 'none' : 'flex';
-        }
-
-        function toggleFullScreen() {
-            const body = document.body;
-            if (!document.fullscreenElement) {
-                body.requestFullscreen().catch(err => console.log(err));
-            } else {
-                document.exitFullscreen();
-            }
-        }
-
-        function toggleSettings(event) {
-            event.stopPropagation();
+        function toggleSettings() {
             document.body.classList.toggle("menu-open");
         }
     </script>
