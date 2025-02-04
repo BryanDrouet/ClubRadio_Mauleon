@@ -42,16 +42,13 @@
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(5px);
-            width: 300px;
-            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding: 30px;
+            backdrop-filter: blur(5px);
+            width: 300px;
+            transition: all 0.3s ease;
         }
 
         h1 { margin-bottom: 20px; }
@@ -68,50 +65,40 @@
             display: flex;
             gap: 10px;
             justify-content: center;
+            width: 100%;
         }
 
         button {
-            padding: 10px 15px;
+            padding: 10px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             flex: 1;
             font-weight: bold;
-            transition: background-color 0.3s;
-        }
-
-        #menuButton {
-            display: none;
-        }
-
-        #settingsMenu {
-            position: fixed;
-            top: 0;
-            left: -250px;
-            height: 100%;
-            width: 250px;
-            background: rgba(0, 0, 0, 0.9);
-            padding: 20px;
-            transition: left 0.3s ease;
+            background: #ff4081;
             color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+            transition: background-color 0.3s, transform 0.2s ease-in-out;
+            font-size: 1em;
         }
 
-        .menu-open #settingsMenu {
-            left: 0;
+        button:hover {
+            background-color: #e6006f;
+            transform: scale(1.05);
         }
 
-        #closeMenuButton {
+        button:disabled {
+            background-color: #999;
+            cursor: not-allowed;
+        }
+
+        #fullscreenButton {
             background: none;
             border: none;
             color: white;
-            font-size: 1.5em;
+            font-size: 1.2em;
             cursor: pointer;
-            align-self: flex-end;
+            width: 100%;
+            margin-top: 10px;
         }
 
         .slider {
@@ -148,17 +135,12 @@
             overflow: hidden;
         }
 
-        .container.expanded {
-            width: 400px;
-        }
-
     </style>
 </head>
 <body>
     <div class="grain"></div>
-    <button id="menuButton" onclick="toggleSettings(event)">☰</button>
+
     <div id="settingsMenu">
-        <button id="closeMenuButton" onclick="toggleSettings(event)">✖</button>
         <h3>Réglages</h3>
         <label for="zoomRange">Zoom :</label>
         <input type="range" id="zoomRange" class="slider" min="1" max="10" value="6" step="0.1" onchange="changeZoom(this)">
@@ -249,11 +231,6 @@
             } else {
                 document.exitFullscreen();
             }
-        }
-
-        function toggleSettings(event) {
-            event.stopPropagation();
-            document.body.classList.toggle("menu-open");
         }
 
         document.getElementById('mainContainer').classList.add('expanded');
