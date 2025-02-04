@@ -77,6 +77,7 @@
             position: absolute;
             top: 20px;
             left: 20px;
+            z-index: 1100;
         }
 
         #settingsMenu {
@@ -140,7 +141,7 @@
         }
     </style>
 </head>
-<body onclick="closeSettings(event)">
+<body>
     <button id="menuButton" onclick="toggleSettings(event)">☰</button>
     <div id="settingsMenu">
         <button id="closeMenuButton" onclick="toggleSettings(event)">✖</button>
@@ -168,24 +169,6 @@
         function toggleSettings(event) {
             event.stopPropagation();
             document.body.classList.toggle("menu-open");
-        }
-
-        function closeSettings(event) {
-            if (!document.getElementById("settingsMenu").contains(event.target) && !document.getElementById("menuButton").contains(event.target)) {
-                document.body.classList.remove("menu-open");
-            }
-        }
-
-        function changeZoom(slider) {
-            let zoomValue = slider.value;
-            document.getElementById("timer").style.fontSize = `${zoomValue}em`;
-            document.getElementById("zoomValue").textContent = zoomValue;
-        }
-
-        function toggleOnlyTimer() {
-            let onlyTimer = document.getElementById("toggleOnlyTimer").checked;
-            document.getElementById("title").style.display = onlyTimer ? "none" : "block";
-            document.getElementById("buttonContainer").style.display = onlyTimer ? "none" : "flex";
         }
     </script>
 </body>
