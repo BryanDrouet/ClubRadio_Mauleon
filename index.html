@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compteur de Temps Écoulé</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            color: white;
+            background: linear-gradient(135deg, #6a1b9a, #ff4081);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            width: 300px;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #timer {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ffffff;
+            cursor: pointer;
+            transition: font-size 0.3s ease;
+        }
+
+        .buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            flex: 1;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        #recButton {
+            background-color: #8e24aa;
+            color: white;
+        }
+
+        #recButton:hover {
+            background-color: #6a1b9a;
+        }
+
+        #pauseButton {
+            background-color: #9575cd;
+            color: white;
+        }
+
+        #pauseButton:hover {
+            background-color: #7e57c2;
+        }
+
+        #resetButton {
+            background-color: #7e57c2;
+            color: white;
+        }
+
+        #resetButton:hover {
+            background-color: #6a1b9a;
+        }
+
+        #zoomButton {
+            background-color: #ff4081;
+            color: white;
+        }
+
+        #zoomButton:hover {
+            background-color: #e91e63;
+        }
+
+        #onAir {
+            display: none;
+            color: white;
+            background: #e91e63;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            animation: blinkAnimation 1s infinite alternate;
+        }
+
+        @keyframes blinkAnimation {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        #settingsMenu {
+            display: none;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 8px;
+            color: white;
+            width: 200px;
+            text-align: left;
+        }
+
+        #settingsMenu input[type="range"] {
+            width: 100%;
+        }
+
+        #settingsButton {
+            background-color: #9e9e9e;
+            color: white;
+            font-size: 1.2em;
+            padding: 10px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <button id="settingsButton" onclick="toggleSettings()">⚙️</button>
+
+    <div class="container">
+        <h1>Temps écoulé :</h1>
+        <div id="timer" onclick="zoomTimer()">00:00:00</div>
+        <div class="buttons">
+            <button id="recButton">REC</button>
+            <button id="pauseButton" disabled>Pause</button>
+            <button id="resetButton" disabled>Reset</button>
+        </div>
+        <div id="onAir">ON AIR</div>
+    </div>
+
+    <div id="settingsMenu">
+        <h3>Réglages</h3>
+        <label for="zoomRange">Zoom :</label>
+        <input type="range" id="zoomRange" min="1" max="5" value="2" step="0.1" onchange="changeZoom(this)">
+        <p>Zoom actuel: <span id="zoomValue">2</span></p>
+        <button id="fullscreenButton" onclick="toggleFullscreen()">Plein écran</button>
+    </div>
+
+    <script>
+        let startTime;
+        let elapsedTime = 0;
+        let timerInterval;
+        let isRunning = false;
+        let isZoomed = false;
+
+        function updateTimer() {
+            let now = Date.now();
+            let timeDiff = elapsedTime + (now - startTime);
+            let hours = Math.floor(timeDiff / 3600000).toString().padStart(2, '0');
+            let minutes = Math.floor((timeDiff % 3600000) / 60000).toString().padStart(2, '0');
+            let seconds = Math.floor((timeDiff % 60000) / 1000).toString().padStart(2, '0');
+            document.getElementById("timer").textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        function zoomTimer() {
+            let timer = document.getElementById("timer");
+            if (isZoomed) {
+                timer.style.fontSize = "2em";
+            } else {
+                timer.style.fontSize = "4em";
+            }
+            isZoomed = !isZoomed;
+        }
+
+        function changeZoom(slider) {
+            let zoomValue = slider.value;
+            document.getElementById("timer").style.fontSize = `${zoomValue}em`;
+            document.getElementById("zoomValue").textContent = zoomValue;
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        function toggleSettings() {
+            let settingsMenu = document.getElementById("settingsMenu");
+            settingsMenu.style.display = settingsMenu.style.display === "block" ? "none" : "block";
+        }
+
+        document.getElementById("recButton").addEventListener("click", function() {
+            if (!isRunning) {
+                startTime = Date.now();
+                elapsedTime = 0;
+                timerInterval = setInterval(updateTimer, 1000);
+                document.getElementById("onAir").style.display = "block";
+                document.getElementById("pauseButton").disabled = false;
+                document.getElementById("resetButton").disabled = false;
+                document.getElementById("recButton").disabled = true;
+                isRunning = true;
+            }
+        });
+
+        document.getElementById("pauseButton").addEventListener("click", function() {
+            if (isRunning) {
+                clearInterval(timerInterval);
+                elapsedTime += Date.now() - startTime;
+                isRunning = false;
+                document.getElementById("pauseButton").textContent = "Reprendre";
+                document.getElementById("onAir").style.display = "none";
+            } else {
+                startTime = Date.now();
+                timerInterval = setInterval(updateTimer, 1000);
+                isRunning = true;
+                document.getElementById("pauseButton").textContent = "Pause";
+                document.getElementById("onAir").style.display = "block";
+            }
+        });
+
+        document.getElementById("resetButton").addEventListener("click", function() {
+            clearInterval(timerInterval);
+            elapsedTime = 0;
+            document.getElementById("timer").textContent = "00:00:00";
+            document.getElementById("onAir").style.display = "none";
+            document.getElementById("pauseButton").textContent = "Pause";
+            document.getElementById("pauseButton").disabled = true;
+            document.getElementById("resetButton").disabled = true;
+            document.getElementById("recButton").disabled = false;
+            isRunning = false;
+        });
+    </script>
+</body>
+</html>
