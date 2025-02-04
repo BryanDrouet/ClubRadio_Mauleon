@@ -92,7 +92,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: transform 0.3s ease-in-out;
+            transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
         .menu-toggle {
@@ -106,12 +106,22 @@
         }
 
         .menu-open .menu-toggle::after {
-            content: 'X';
+            content: '✘';
             transform: rotate(180deg);
+        }
+
+        .menu-toggle:hover {
+            opacity: 0.7;
         }
 
         .full-screen-button {
             right: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .full-screen-button:hover {
+            transform: scale(1.2);
+            opacity: 0.7;
         }
 
         #settingsMenu h3 {
@@ -122,50 +132,6 @@
             top: 10px;
             left: 50%;
             transform: translateX(-50%);
-        }
-
-        label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 1.2em;
-            cursor: pointer;
-            text-align: center;
-            width: 100%;
-        }
-
-        input[type="checkbox"] {
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            background: white;
-            border-radius: 5px;
-            position: relative;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        input[type="checkbox"]:checked::after {
-            content: '\2713';
-            font-size: 16px;
-            color: black;
-            position: absolute;
-            left: 4px;
-            top: 1px;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 30px;
-            animation: slideIn 1s ease-out; /* Animation de slide pour l'apparition du timer */
-        }
-
-        @keyframes slideIn {
-            0% { transform: translateY(-50px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
         }
 
         #timer {
@@ -197,13 +163,29 @@
             font-weight: bold;
             background: #ff4081;
             color: white;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s ease-in-out;
             font-size: 1em;
         }
 
         button:hover {
             background-color: #e6006f;
         }
+
+        #soloTimerButton {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: #4a0072;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s;
+        }
+
+        #soloTimerButton:hover {
+            background-color: #ff4081;
+            transform: scale(1.05);
+        }
+
     </style>
 </head>
 <body>
@@ -211,6 +193,7 @@
     <button class="full-screen-button" onclick="toggleFullScreen()" id="fullscreenButton">⛶</button>
     <div id="settingsMenu">
         <h3>Réglages</h3>
+        <button id="soloTimerButton" onclick="toggleTimerVisibility()">Affichage seul du timer</button>
         <label><input type="checkbox" id="toggleButtons" onchange="toggleButtonsVisibility()"> Cacher boutons</label>
     </div>
     
@@ -225,6 +208,7 @@
         let timerInterval;
         let running = false;
         let startTime, elapsedTime = 0;
+        let timerOnlyVisible = false;
 
         function toggleSettings() {
             document.body.classList.toggle("menu-open");
@@ -236,9 +220,11 @@
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
                 fullscreenButton.textContent = '✘'; // Change the icon to ✘ when fullscreen is active
+                fullscreenButton.style.transform = "rotate(180deg)"; // Add rotation animation
             } else {
                 document.exitFullscreen();
                 fullscreenButton.textContent = '⛶'; // Change the icon back to ⛶ when exiting fullscreen
+                fullscreenButton.style.transform = "rotate(0deg)";
             }
         }
 
@@ -251,12 +237,12 @@
                 clearInterval(timerInterval);
                 elapsedTime += Date.now() - startTime;
                 recButton.textContent = "REC";
-                timer.classList.remove("timer-running"); // Retirer la couleur rouge pâle
+                timer.classList.remove("timer-running");
             } else {
                 startTime = Date.now();
                 timerInterval = setInterval(updateTimer, 10);
                 recButton.textContent = "STOP";
-                timer.classList.add("timer-running"); // Ajouter la couleur rouge pâle
+                timer.classList.add("timer-running");
             }
             running = !running;
             resetButton.disabled = false;
@@ -283,6 +269,15 @@
 
         function toggleButtonsVisibility() {
             document.getElementById("buttonsContainer").style.display = document.getElementById("toggleButtons").checked ? "none" : "flex";
+        }
+
+        function toggleTimerVisibility() {
+            timerOnlyVisible = !timerOnlyVisible;
+            if (timerOnlyVisible) {
+                document.getElementById("buttonsContainer").style.display = "none";
+            } else {
+                document.getElementById("buttonsContainer").style.display = "flex";
+            }
         }
     </script>
 </body>
