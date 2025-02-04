@@ -32,7 +32,7 @@
             height: 100%;
             background: url('https://cdn.pixabay.com/photo/2020/06/11/09/40/subtle-grain-texture-5284091_960_720.jpg') repeat;
             z-index: -1;
-            opacity: 0.2; /* ajuster l'opacité pour un grain subtil */
+            opacity: 0.2;
         }
 
         @keyframes gradientAnimation {
@@ -144,15 +144,14 @@
             gap: 10px;
         }
 
-        /* Style for full-screen mode */
         body.fullscreen {
             overflow: hidden;
         }
 
-        /* Adjust the container size based on the content (buttons + timer) */
         .container.expanded {
             width: 400px;
         }
+
     </style>
 </head>
 <body>
@@ -168,6 +167,7 @@
             <input type="checkbox" id="toggleOnlyTimer" onchange="toggleOnlyTimer()">
             <label for="toggleOnlyTimer">Afficher uniquement le timer</label>
         </div>
+        <button id="fullscreenButton" onclick="toggleFullScreen()">Plein Écran</button>
     </div>
 
     <div class="container" id="mainContainer">
@@ -177,7 +177,6 @@
             <button id="recButton" onclick="startTimer()">REC</button>
             <button id="pauseButton" onclick="pauseTimer()" disabled>Pause</button>
             <button id="resetButton" onclick="resetTimer()" disabled>Reset</button>
-            <button id="fullscreenButton" onclick="toggleFullScreen()">Plein Écran</button>
         </div>
     </div>
 
@@ -234,7 +233,7 @@
         function changeZoom(slider) {
             const zoomValue = slider.value;
             document.getElementById('zoomValue').textContent = zoomValue;
-            document.getElementById('mainContainer').style.transform = `scale(${zoomValue})`;
+            document.getElementById('timer').style.transform = `scale(${zoomValue / 10})`;
         }
 
         function toggleOnlyTimer() {
@@ -257,7 +256,6 @@
             document.body.classList.toggle("menu-open");
         }
 
-        // Adjust container based on buttons and timer
         document.getElementById('mainContainer').classList.add('expanded');
     </script>
 </body>
