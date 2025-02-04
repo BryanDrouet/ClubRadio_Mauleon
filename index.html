@@ -208,7 +208,7 @@
 </head>
 <body>
     <button class="menu-toggle" onclick="toggleSettings()"></button>
-    <button class="full-screen-button" onclick="toggleFullScreen()">⛶</button>
+    <button class="full-screen-button" onclick="toggleFullScreen()" id="fullscreenButton">⛶</button>
     <div id="settingsMenu">
         <h3>Réglages</h3>
         <label><input type="checkbox" id="toggleButtons" onchange="toggleButtonsVisibility()"> Cacher boutons</label>
@@ -231,10 +231,14 @@
         }
 
         function toggleFullScreen() {
+            const fullscreenButton = document.getElementById("fullscreenButton");
+
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
+                fullscreenButton.textContent = '✘'; // Change the icon to ✘ when fullscreen is active
             } else {
                 document.exitFullscreen();
+                fullscreenButton.textContent = '⛶'; // Change the icon back to ⛶ when exiting fullscreen
             }
         }
 
