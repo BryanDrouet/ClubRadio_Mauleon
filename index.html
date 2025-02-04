@@ -135,12 +135,43 @@
             overflow: hidden;
         }
 
+        #settingsMenu {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            height: 100%;
+            width: 250px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            transition: left 0.3s ease;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .menu-open #settingsMenu {
+            left: 0;
+        }
+
+        #closeMenuButton {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            align-self: flex-end;
+        }
+
     </style>
 </head>
 <body>
     <div class="grain"></div>
 
     <div id="settingsMenu">
+        <button id="closeMenuButton" onclick="toggleSettings(event)">✖</button>
         <h3>Réglages</h3>
         <label for="zoomRange">Zoom :</label>
         <input type="range" id="zoomRange" class="slider" min="1" max="10" value="6" step="0.1" onchange="changeZoom(this)">
@@ -156,8 +187,7 @@
         <h1 id="title">Temps écoulé :</h1>
         <div id="timer">00:00:00</div>
         <div class="buttons" id="buttonContainer">
-            <button id="recButton" onclick="startTimer()">REC</button>
-            <button id="pauseButton" onclick="pauseTimer()" disabled>Pause</button>
+            <button id="recButton" onclick="toggleTimer()">REC</button>
             <button id="resetButton" onclick="resetTimer()" disabled>Reset</button>
         </div>
     </div>
@@ -168,22 +198,25 @@
         let seconds = 0;
         let isOnlyTimerVisible = false;
 
-        function startTimer() {
-            if (!isTimerRunning) {
-                isTimerRunning = true;
-                document.getElementById('pauseButton').disabled = false;
-                document.getElementById('resetButton').disabled = false;
-                document.getElementById('recButton').textContent = 'En cours...';
-                timerInterval = setInterval(updateTimer, 1000);
+        function toggleTimer() {
+            if (isTimerRunning) {
+                pauseTimer();
+            } else {
+                startTimer();
             }
         }
 
+        function startTimer() {
+            isTimerRunning = true;
+            document.getElementById('recButton').textContent = 'Pause';
+            document.getElementById('resetButton').disabled = false;
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
         function pauseTimer() {
-            if (isTimerRunning) {
-                clearInterval(timerInterval);
-                isTimerRunning = false;
-                document.getElementById('recButton').textContent = 'Reprendre';
-            }
+            isTimerRunning = false;
+            document.getElementById('recButton').textContent = 'REC';
+            clearInterval(timerInterval);
         }
 
         function resetTimer() {
@@ -192,7 +225,6 @@
             seconds = 0;
             document.getElementById('timer').textContent = formatTime(seconds);
             document.getElementById('recButton').textContent = 'REC';
-            document.getElementById('pauseButton').disabled = true;
             document.getElementById('resetButton').disabled = true;
         }
 
@@ -224,6 +256,11 @@
             document.getElementById('buttonContainer').style.display = isOnlyTimerVisible ? 'none' : 'flex';
         }
 
+        function toggleSettings(event) {
+            event.stopPropagation();
+            document.body.classList.toggle("menu-open");
+        }
+
         function toggleFullScreen() {
             const body = document.body;
             if (!document.fullscreenElement) {
@@ -232,8 +269,6 @@
                 document.exitFullscreen();
             }
         }
-
-        document.getElementById('mainContainer').classList.add('expanded');
     </script>
 </body>
 </html>
