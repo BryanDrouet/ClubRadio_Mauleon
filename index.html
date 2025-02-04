@@ -51,8 +51,6 @@
             transition: all 0.3s ease;
         }
 
-        h1 { margin-bottom: 20px; }
-
         #timer {
             font-size: 6em;
             font-weight: bold;
@@ -165,6 +163,12 @@
             align-self: flex-end;
         }
 
+        #zoomPreview {
+            font-size: 1.5em;
+            color: white;
+            margin-top: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -176,6 +180,7 @@
         <label for="zoomRange">Zoom :</label>
         <input type="range" id="zoomRange" class="slider" min="1" max="10" value="6" step="0.1" onchange="changeZoom(this)">
         <p>Zoom actuel: <span id="zoomValue">6</span></p>
+        <div id="zoomPreview">Aperçu Zoom: 6</div>
         <div id="onlyTimerToggle">
             <input type="checkbox" id="toggleOnlyTimer" onchange="toggleOnlyTimer()">
             <label for="toggleOnlyTimer">Afficher uniquement le timer</label>
@@ -184,7 +189,6 @@
     </div>
 
     <div class="container" id="mainContainer">
-        <h1 id="title">Temps écoulé :</h1>
         <div id="timer">00:00:00</div>
         <div class="buttons" id="buttonContainer">
             <button id="recButton" onclick="toggleTimer()">REC</button>
@@ -247,12 +251,12 @@
         function changeZoom(slider) {
             const zoomValue = slider.value;
             document.getElementById('zoomValue').textContent = zoomValue;
+            document.getElementById('zoomPreview').textContent = `Aperçu Zoom: ${zoomValue}`;
             document.getElementById('timer').style.transform = `scale(${zoomValue / 10})`;
         }
 
         function toggleOnlyTimer() {
             isOnlyTimerVisible = !isOnlyTimerVisible;
-            document.getElementById('title').style.display = isOnlyTimerVisible ? 'none' : 'block';
             document.getElementById('buttonContainer').style.display = isOnlyTimerVisible ? 'none' : 'flex';
         }
 
