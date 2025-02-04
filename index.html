@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compteur de Temps Écoulé</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap');
 
         body {
             display: flex;
@@ -14,7 +14,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Inter', sans-serif;
             text-align: center;
             color: white;
             background: linear-gradient(135deg, #6a1b9a, #ff4081);
@@ -37,8 +37,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('https://www.transparenttextures.com/patterns/asfalt-light.png');
-            opacity: 0.5;
+            background: url('https://www.transparenttextures.com/patterns/noisy-grid.png');
+            opacity: 0.7;
             pointer-events: none;
         }
 
@@ -55,9 +55,10 @@
         h1 { margin-bottom: 20px; }
 
         #timer {
-            font-size: 3em;
+            font-size: 5em;
             font-weight: bold;
             color: #ffffff;
+            transition: font-size 0.2s ease-in-out;
         }
 
         .buttons {
@@ -91,7 +92,7 @@
         }
 
         #settingsMenu {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: -250px;
             height: 100%;
@@ -102,10 +103,44 @@
             color: white;
             display: flex;
             flex-direction: column;
+            z-index: 1000;
         }
 
         .menu-open #settingsMenu {
             left: 0;
+        }
+
+        #closeMenuButton {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            align-self: flex-end;
+            cursor: pointer;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .slider:hover {
+            background: #bbb;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #ff4081;
+            border-radius: 50%;
+            cursor: pointer;
         }
 
         #onlyTimerToggle {
@@ -115,13 +150,14 @@
         }
     </style>
 </head>
-<body>
-    <button id="menuButton" onclick="toggleSettings()">☰</button>
+<body onclick="closeSettings(event)">
+    <button id="menuButton" onclick="toggleSettings(event)">☰</button>
     <div id="settingsMenu">
+        <button id="closeMenuButton" onclick="toggleSettings(event)">✖</button>
         <h3>Réglages</h3>
         <label for="zoomRange">Zoom :</label>
-        <input type="range" id="zoomRange" min="1" max="5" value="3" step="0.1" onchange="changeZoom(this)">
-        <p>Zoom actuel: <span id="zoomValue">3</span></p>
+        <input type="range" id="zoomRange" class="slider" min="1" max="10" value="5" step="0.1" onchange="changeZoom(this)">
+        <p>Zoom actuel: <span id="zoomValue">5</span></p>
         <div id="onlyTimerToggle">
             <input type="checkbox" id="toggleOnlyTimer" onchange="toggleOnlyTimer()">
             <label for="toggleOnlyTimer">Afficher uniquement le timer</label>
@@ -139,8 +175,15 @@
     </div>
 
     <script>
-        function toggleSettings() {
+        function toggleSettings(event) {
+            event.stopPropagation();
             document.body.classList.toggle("menu-open");
+        }
+
+        function closeSettings(event) {
+            if (!document.getElementById("settingsMenu").contains(event.target) && !document.getElementById("menuButton").contains(event.target)) {
+                document.body.classList.remove("menu-open");
+            }
         }
 
         function changeZoom(slider) {
