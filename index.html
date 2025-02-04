@@ -6,6 +6,7 @@
     <title>Compteur de Temps Écoulé</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
 
         body {
             display: flex;
@@ -52,6 +53,7 @@
         }
 
         #timer {
+            font-family: 'Fira Code', monospace;
             font-size: 6em;
             font-weight: bold;
             color: #ffffff;
@@ -90,13 +92,15 @@
         }
 
         #fullscreenButton {
+            position: absolute;
+            top: 20px;
+            right: 20px;
             background: none;
             border: none;
             color: white;
             font-size: 1.2em;
             cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
+            z-index: 1100;
         }
 
         .slider {
@@ -145,7 +149,7 @@
             color: white;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             z-index: 1000;
         }
@@ -154,30 +158,36 @@
             left: 0;
         }
 
-        #closeMenuButton {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5em;
-            cursor: pointer;
-            align-self: flex-end;
+        #fullscreenButton {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
         }
 
+        .menu-options {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="grain"></div>
 
+    <button id="fullscreenButton" onclick="toggleFullScreen()">⛶</button>
+
     <div id="settingsMenu">
-        <button id="closeMenuButton" onclick="toggleSettings(event)">✖</button>
         <h3>Réglages</h3>
-        <label for="zoomRange">Zoom :</label>
-        <input type="range" id="zoomRange" class="slider" min="1" max="10" value="6" step="0.1" onchange="changeZoom(this)">
-        <div id="onlyTimerToggle">
-            <input type="checkbox" id="toggleOnlyTimer" onchange="toggleOnlyTimer()">
-            <label for="toggleOnlyTimer">Afficher uniquement le timer</label>
+        <div class="menu-options">
+            <label for="zoomRange">Zoom :</label>
+            <input type="range" id="zoomRange" class="slider" min="1" max="10" value="6" step="0.1" onchange="changeZoom(this)">
+            <div id="onlyTimerToggle">
+                <input type="checkbox" id="toggleOnlyTimer" onchange="toggleOnlyTimer()">
+                <label for="toggleOnlyTimer">Afficher uniquement le timer</label>
+            </div>
         </div>
-        <button id="fullscreenButton" onclick="toggleFullScreen()">Plein Écran</button>
     </div>
 
     <div class="container" id="mainContainer">
@@ -260,11 +270,6 @@
             document.getElementById('buttonContainer').style.display = isOnlyTimerVisible ? 'none' : 'flex';
         }
 
-        function toggleSettings(event) {
-            event.stopPropagation();
-            document.body.classList.toggle("menu-open");
-        }
-
         function toggleFullScreen() {
             const body = document.body;
             if (!document.fullscreenElement) {
@@ -272,6 +277,11 @@
             } else {
                 document.exitFullscreen();
             }
+        }
+
+        function toggleSettings(event) {
+            event.stopPropagation();
+            document.body.classList.toggle("menu-open");
         }
     </script>
 </body>
