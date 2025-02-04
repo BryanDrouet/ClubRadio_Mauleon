@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compteur de Temps Écoulé</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500&display=swap');
 
         body {
             display: flex;
@@ -53,9 +52,9 @@
         }
 
         #timer {
-            font-family: 'Fira Code', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 6em;
-            font-weight: bold;
+            font-weight: normal;
             color: #ffffff;
             transition: font-size 0.1s ease-in-out;
         }
@@ -242,15 +241,7 @@
             const hours = Math.floor(sec / 3600);
             const minutes = Math.floor((sec % 3600) / 60);
             const remainingSeconds = sec % 60;
-            return `${pad(hours)}:${pad(minutes)}:${pad(remainingSeconds)}:${padMilliseconds(ms)}`;
-        }
-
-        function pad(num) {
-            return num < 10 ? '0' + num : num;
-        }
-
-        function padMilliseconds(ms) {
-            return ms < 10 ? '00' + ms : ms < 100 ? '0' + ms : ms;
+            return `${hours}:${minutes}:${remainingSeconds}:${ms}`;
         }
 
         function changeZoom(slider) {
