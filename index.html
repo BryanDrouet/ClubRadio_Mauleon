@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape">
-    <link rel="icon" href="assets/icon.ico" type="image/x-icon">
     <title>Compteur de Temps Écoulé</title>
+    
+    <!-- Ajouter l'icône du site -->
+    <link rel="icon" href="assets/icon.ico" type="image/x-icon">
+
     <style>
         @font-face {
             font-family: 'Monofonto';
@@ -106,6 +109,10 @@
             margin: 0;
             padding-top: 40px; /* Espacement depuis le haut */
             text-align: center; /* Centrer le texte */
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         label {
@@ -115,7 +122,7 @@
             gap: 10px;
             font-size: 1.2em;
             cursor: pointer;
-            text-align: center; /* Centrer le label */
+            text-align: center;
             width: 100%; /* S'assurer que le label occupe toute la largeur */
         }
 
