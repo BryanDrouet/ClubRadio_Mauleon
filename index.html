@@ -110,8 +110,9 @@
             transform: rotate(180deg);
         }
 
-        .menu-toggle:hover {
+        .menu-toggle:hover, .full-screen-button:hover {
             opacity: 0.7;
+            transform: scale(1.1);
         }
 
         .full-screen-button {
@@ -120,8 +121,7 @@
         }
 
         .full-screen-button:hover {
-            transform: scale(1.2);
-            opacity: 0.7;
+            transform: scale(1.1);
         }
 
         #settingsMenu h3 {
@@ -193,6 +193,11 @@
         .buttons button:hover {
             background-color: #ff4081;
             transform: scale(1.05);
+        }
+
+        /* Animation de changement de couleur du texte du bouton */
+        .menu-toggle:hover::after, .full-screen-button:hover {
+            color: white;
         }
 
     </style>
