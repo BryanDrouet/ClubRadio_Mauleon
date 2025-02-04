@@ -195,7 +195,7 @@
     </div>
     
     <div class="container">
-        <div id="timer">00:00:00:000</div>
+        <div id="timer">00:00:00:0</div>
         <div class="buttons" id="buttonsContainer">
             <button id="recButton" onclick="toggleTimer()">REC</button>
             <button id="resetButton" onclick="resetTimer()">Reset</button>
@@ -249,7 +249,9 @@
             const hours = String(Math.floor(currentTime / 3600000)).padStart(2, '0');
             const minutes = String(Math.floor((currentTime % 3600000) / 60000)).padStart(2, '0');
             const seconds = String(Math.floor((currentTime % 60000) / 1000)).padStart(2, '0');
-            const milliseconds = String(currentTime % 1000).padStart(3, '0');
+            // Modifier cette ligne pour afficher un seul chiffre pour les millisecondes
+            const milliseconds = String(Math.floor((currentTime % 1000) / 100)); // Division par 100 pour obtenir un seul chiffre
+
             document.getElementById("timer").textContent = `${hours}:${minutes}:${seconds}:${milliseconds}`;
         }
 
