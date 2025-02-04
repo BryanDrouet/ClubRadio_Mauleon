@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compteur de Temps Écoulé</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
         body {
             display: flex;
             flex-direction: column;
@@ -12,7 +14,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            font-family: 'Courier New', monospace;
+            font-family: 'Roboto', sans-serif;
             text-align: center;
             color: white;
             background: linear-gradient(135deg, #6a1b9a, #ff4081);
@@ -35,8 +37,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('https://www.transparenttextures.com/patterns/noisy.png');
-            opacity: 0.2;
+            background: url('https://www.transparenttextures.com/patterns/asfalt-light.png');
+            opacity: 0.5;
             pointer-events: none;
         }
 
@@ -56,8 +58,6 @@
             font-size: 3em;
             font-weight: bold;
             color: #ffffff;
-            cursor: pointer;
-            transition: font-size 0.3s ease;
         }
 
         .buttons {
@@ -91,16 +91,21 @@
         }
 
         #settingsMenu {
-            display: none;
             position: absolute;
             top: 0;
             left: -250px;
             height: 100%;
             width: 250px;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.9);
             padding: 20px;
             transition: left 0.3s ease;
             color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-open #settingsMenu {
+            left: 0;
         }
 
         #onlyTimerToggle {
@@ -125,7 +130,7 @@
 
     <div class="container" id="mainContainer">
         <h1 id="title">Temps écoulé :</h1>
-        <div id="timer" onclick="zoomTimer()">00:00:00</div>
+        <div id="timer">00:00:00</div>
         <div class="buttons" id="buttonContainer">
             <button id="recButton">REC</button>
             <button id="pauseButton" disabled>Pause</button>
@@ -134,17 +139,8 @@
     </div>
 
     <script>
-        let isZoomed = false;
-        
         function toggleSettings() {
-            let settingsMenu = document.getElementById("settingsMenu");
-            settingsMenu.style.left = settingsMenu.style.left === "0px" ? "-250px" : "0px";
-        }
-
-        function zoomTimer() {
-            let timer = document.getElementById("timer");
-            timer.style.fontSize = isZoomed ? "3em" : "5em";
-            isZoomed = !isZoomed;
+            document.body.classList.toggle("menu-open");
         }
 
         function changeZoom(slider) {
