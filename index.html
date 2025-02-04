@@ -106,7 +106,7 @@
         }
 
         .menu-open .menu-toggle::after {
-            content: '✘';
+            content: 'X';
             transform: rotate(180deg);
         }
 
@@ -139,7 +139,7 @@
             font-size: 6em;
             font-weight: normal;
             color: #ffffff;
-            transition: color 0.5s ease-out; /* Transition de couleur */
+            transition: color 0.5s ease-out;
         }
 
         .timer-running {
@@ -173,15 +173,24 @@
 
         #soloTimerButton {
             margin-top: 10px;
-            padding: 10px 20px;
+            padding: 6px 20px;
+            height: 40px; /* Hauteur réduite */
             background: #4a0072;
             color: white;
             border-radius: 5px;
             cursor: pointer;
             transition: transform 0.3s ease, background-color 0.3s;
+            width: 100%; /* Largeur maximale */
+            font-size: 1.2em;
         }
 
         #soloTimerButton:hover {
+            background-color: #ff4081;
+            transform: scale(1.05);
+        }
+
+        /* Hover effect for REC and Reset buttons */
+        .buttons button:hover {
             background-color: #ff4081;
             transform: scale(1.05);
         }
@@ -194,7 +203,6 @@
     <div id="settingsMenu">
         <h3>Réglages</h3>
         <button id="soloTimerButton" onclick="toggleTimerVisibility()">Affichage seul du timer</button>
-        <label><input type="checkbox" id="toggleButtons" onchange="toggleButtonsVisibility()"> Cacher boutons</label>
     </div>
     
     <div class="container">
@@ -220,7 +228,7 @@
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
                 fullscreenButton.textContent = '✘'; // Change the icon to ✘ when fullscreen is active
-                fullscreenButton.style.transform = "rotate(180deg)"; // Add rotation animation
+                fullscreenButton.style.transform = "rotate(180deg)"; // Add rotation animation on text
             } else {
                 document.exitFullscreen();
                 fullscreenButton.textContent = '⛶'; // Change the icon back to ⛶ when exiting fullscreen
@@ -267,16 +275,16 @@
             document.getElementById("timer").textContent = `${hours}:${minutes}:${seconds}:${milliseconds}`;
         }
 
-        function toggleButtonsVisibility() {
-            document.getElementById("buttonsContainer").style.display = document.getElementById("toggleButtons").checked ? "none" : "flex";
-        }
-
         function toggleTimerVisibility() {
-            timerOnlyVisible = !timerOnlyVisible;
+            const buttonsContainer = document.getElementById("buttonsContainer");
+            const timer = document.getElementById("timer");
+
             if (timerOnlyVisible) {
-                document.getElementById("buttonsContainer").style.display = "none";
+                buttonsContainer.style.display = "flex";
+                timerOnlyVisible = false;
             } else {
-                document.getElementById("buttonsContainer").style.display = "flex";
+                buttonsContainer.style.display = "none";
+                timerOnlyVisible = true;
             }
         }
     </script>
