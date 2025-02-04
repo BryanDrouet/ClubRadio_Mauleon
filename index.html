@@ -18,12 +18,26 @@
             background: linear-gradient(135deg, #6a1b9a, #ff4081);
             background-size: 400% 400%;
             animation: gradientAnimation 15s ease infinite;
+            position: relative;
+            overflow: hidden;
         }
 
         @keyframes gradientAnimation {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
+        }
+
+        body::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/noisy.png');
+            opacity: 0.2;
+            pointer-events: none;
         }
 
         .container {
@@ -36,12 +50,10 @@
             transition: all 0.3s ease;
         }
 
-        h1 {
-            margin-bottom: 20px;
-        }
+        h1 { margin-bottom: 20px; }
 
         #timer {
-            font-size: 2em;
+            font-size: 3em;
             font-weight: bold;
             color: #ffffff;
             cursor: pointer;
@@ -49,14 +61,14 @@
         }
 
         .buttons {
-            margin-top: 30px;
+            margin-top: 20px;
             display: flex;
-            gap: 15px;
+            gap: 10px;
             justify-content: center;
         }
 
         button {
-            padding: 10px 20px;
+            padding: 10px 15px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -65,135 +77,73 @@
             transition: background-color 0.3s;
         }
 
-        #recButton {
-            background-color: #8e24aa;
-            color: white;
-        }
-
-        #recButton:hover {
-            background-color: #6a1b9a;
-        }
-
-        #pauseButton {
-            background-color: #9575cd;
-            color: white;
-        }
-
-        #pauseButton:hover {
-            background-color: #7e57c2;
-        }
-
-        #resetButton {
-            background-color: #7e57c2;
-            color: white;
-        }
-
-        #resetButton:hover {
-            background-color: #6a1b9a;
-        }
-
-        #zoomButton {
-            background-color: #ff4081;
-            color: white;
-        }
-
-        #zoomButton:hover {
-            background-color: #e91e63;
-        }
-
-        #onAir {
-            display: none;
-            color: white;
-            background: #e91e63;
-            padding: 5px 10px;
-            border-radius: 5px;
-            margin-top: 15px;
-            animation: blinkAnimation 1s infinite alternate;
-        }
-
-        @keyframes blinkAnimation {
-            0% { opacity: 0.7; }
-            100% { opacity: 1; }
-        }
-
-        #settingsMenu {
-            display: none;
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 20px;
-            border-radius: 8px;
-            color: white;
-            width: 200px;
-            text-align: left;
-        }
-
-        #settingsMenu input[type="range"] {
-            width: 100%;
-        }
-
-        #settingsButton {
+        #menuButton {
             background-color: #9e9e9e;
             color: white;
             font-size: 1.2em;
             padding: 10px;
             border: none;
-            border-radius: 50%;
+            border-radius: 5px;
             cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
             position: absolute;
             top: 20px;
             left: 20px;
         }
 
+        #settingsMenu {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: -250px;
+            height: 100%;
+            width: 250px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            transition: left 0.3s ease;
+            color: white;
+        }
+
+        #onlyTimerToggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
-    <button id="settingsButton" onclick="toggleSettings()">⚙️</button>
+    <button id="menuButton" onclick="toggleSettings()">☰</button>
+    <div id="settingsMenu">
+        <h3>Réglages</h3>
+        <label for="zoomRange">Zoom :</label>
+        <input type="range" id="zoomRange" min="1" max="5" value="3" step="0.1" onchange="changeZoom(this)">
+        <p>Zoom actuel: <span id="zoomValue">3</span></p>
+        <div id="onlyTimerToggle">
+            <input type="checkbox" id="toggleOnlyTimer" onchange="toggleOnlyTimer()">
+            <label for="toggleOnlyTimer">Afficher uniquement le timer</label>
+        </div>
+    </div>
 
-    <div class="container">
-        <h1>Temps écoulé :</h1>
+    <div class="container" id="mainContainer">
+        <h1 id="title">Temps écoulé :</h1>
         <div id="timer" onclick="zoomTimer()">00:00:00</div>
-        <div class="buttons">
+        <div class="buttons" id="buttonContainer">
             <button id="recButton">REC</button>
             <button id="pauseButton" disabled>Pause</button>
             <button id="resetButton" disabled>Reset</button>
         </div>
-        <div id="onAir">ON AIR</div>
-    </div>
-
-    <div id="settingsMenu">
-        <h3>Réglages</h3>
-        <label for="zoomRange">Zoom :</label>
-        <input type="range" id="zoomRange" min="1" max="5" value="2" step="0.1" onchange="changeZoom(this)">
-        <p>Zoom actuel: <span id="zoomValue">2</span></p>
-        <button id="fullscreenButton" onclick="toggleFullscreen()">Plein écran</button>
     </div>
 
     <script>
-        let startTime;
-        let elapsedTime = 0;
-        let timerInterval;
-        let isRunning = false;
         let isZoomed = false;
-
-        function updateTimer() {
-            let now = Date.now();
-            let timeDiff = elapsedTime + (now - startTime);
-            let hours = Math.floor(timeDiff / 3600000).toString().padStart(2, '0');
-            let minutes = Math.floor((timeDiff % 3600000) / 60000).toString().padStart(2, '0');
-            let seconds = Math.floor((timeDiff % 60000) / 1000).toString().padStart(2, '0');
-            document.getElementById("timer").textContent = `${hours}:${minutes}:${seconds}`;
+        
+        function toggleSettings() {
+            let settingsMenu = document.getElementById("settingsMenu");
+            settingsMenu.style.left = settingsMenu.style.left === "0px" ? "-250px" : "0px";
         }
 
         function zoomTimer() {
             let timer = document.getElementById("timer");
-            if (isZoomed) {
-                timer.style.fontSize = "2em";
-            } else {
-                timer.style.fontSize = "4em";
-            }
+            timer.style.fontSize = isZoomed ? "3em" : "5em";
             isZoomed = !isZoomed;
         }
 
@@ -203,61 +153,11 @@
             document.getElementById("zoomValue").textContent = zoomValue;
         }
 
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
-            }
+        function toggleOnlyTimer() {
+            let onlyTimer = document.getElementById("toggleOnlyTimer").checked;
+            document.getElementById("title").style.display = onlyTimer ? "none" : "block";
+            document.getElementById("buttonContainer").style.display = onlyTimer ? "none" : "flex";
         }
-
-        function toggleSettings() {
-            let settingsMenu = document.getElementById("settingsMenu");
-            settingsMenu.style.display = settingsMenu.style.display === "block" ? "none" : "block";
-        }
-
-        document.getElementById("recButton").addEventListener("click", function() {
-            if (!isRunning) {
-                startTime = Date.now();
-                elapsedTime = 0;
-                timerInterval = setInterval(updateTimer, 1000);
-                document.getElementById("onAir").style.display = "block";
-                document.getElementById("pauseButton").disabled = false;
-                document.getElementById("resetButton").disabled = false;
-                document.getElementById("recButton").disabled = true;
-                isRunning = true;
-            }
-        });
-
-        document.getElementById("pauseButton").addEventListener("click", function() {
-            if (isRunning) {
-                clearInterval(timerInterval);
-                elapsedTime += Date.now() - startTime;
-                isRunning = false;
-                document.getElementById("pauseButton").textContent = "Reprendre";
-                document.getElementById("onAir").style.display = "none";
-            } else {
-                startTime = Date.now();
-                timerInterval = setInterval(updateTimer, 1000);
-                isRunning = true;
-                document.getElementById("pauseButton").textContent = "Pause";
-                document.getElementById("onAir").style.display = "block";
-            }
-        });
-
-        document.getElementById("resetButton").addEventListener("click", function() {
-            clearInterval(timerInterval);
-            elapsedTime = 0;
-            document.getElementById("timer").textContent = "00:00:00";
-            document.getElementById("onAir").style.display = "none";
-            document.getElementById("pauseButton").textContent = "Pause";
-            document.getElementById("pauseButton").disabled = true;
-            document.getElementById("resetButton").disabled = true;
-            document.getElementById("recButton").disabled = false;
-            isRunning = false;
-        });
     </script>
 </body>
 </html>
