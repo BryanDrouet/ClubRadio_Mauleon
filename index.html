@@ -84,6 +84,11 @@
             align-items: center;
         }
 
+        /* Positionner le menu burger à gauche */
+        .menu-toggle {
+            left: 10px;
+        }
+
         .menu-toggle::after {
             content: '☰';
         }
@@ -98,10 +103,8 @@
 
         #settingsMenu h3 {
             margin: 0;
-            padding-top: 10px;
-            position: absolute;
-            top: 10px;
-            left: 50px;
+            padding-top: 40px; /* Espacement depuis le haut */
+            text-align: center; /* Centrer le texte */
         }
 
         label {
@@ -111,8 +114,8 @@
             gap: 10px;
             font-size: 1.2em;
             cursor: pointer;
-            text-align: center;
-            width: 100%;
+            text-align: center; /* Centrer le label */
+            width: 100%; /* S'assurer que le label occupe toute la largeur */
         }
 
         input[type="checkbox"] {
