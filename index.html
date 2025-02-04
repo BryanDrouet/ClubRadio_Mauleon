@@ -28,7 +28,8 @@
             width: 250px;
             background: rgba(20, 20, 20, 0.95);
             padding: 20px;
-            transition: left 0.3s ease-in-out;
+            transition: left 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0;
             color: white;
             display: flex;
             flex-direction: column;
@@ -40,6 +41,7 @@
 
         .menu-open #settingsMenu {
             left: 0;
+            opacity: 1;
         }
 
         .menu-toggle {
@@ -52,6 +54,22 @@
             font-size: 1.5em;
             cursor: pointer;
             z-index: 1100;
+        }
+
+        .menu-open .menu-toggle::after {
+            content: 'X';
+        }
+
+        .menu-toggle::after {
+            content: '☰';
+        }
+
+        #settingsMenu h3 {
+            margin: 0;
+            padding-top: 10px;
+            position: absolute;
+            top: 10px;
+            left: 50px;
         }
 
         .container {
@@ -74,6 +92,21 @@
             gap: 10px;
             justify-content: center;
             width: 100%;
+        }
+
+        .full-screen-button {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            width: 50px;
+            height: 50px;
+            background: #ff4081;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            z-index: 1100;
         }
 
         button {
@@ -110,14 +143,16 @@
     </style>
 </head>
 <body>
-    <button class="menu-toggle" onclick="toggleSettings()">☰</button>
+    <button class="menu-toggle" onclick="toggleSettings()"></button>
+    <button class="full-screen-button">⛶</button>
     <div id="settingsMenu">
         <h3>Réglages</h3>
+        <label><input type="checkbox" id="toggleButtons" onchange="toggleButtonsVisibility()"> Cacher boutons</label>
     </div>
     
     <div class="container">
         <div id="timer">00:00:00:000</div>
-        <div class="buttons">
+        <div class="buttons" id="buttonsContainer">
             <button id="recButton" onclick="toggleTimer()">REC</button>
             <button id="resetButton" onclick="resetTimer()" disabled>Reset</button>
         </div>
@@ -126,6 +161,11 @@
     <script>
         function toggleSettings() {
             document.body.classList.toggle("menu-open");
+        }
+
+        function toggleButtonsVisibility() {
+            const buttons = document.getElementById("buttonsContainer");
+            buttons.style.display = buttons.style.display === "none" ? "flex" : "none";
         }
     </script>
 </body>
