@@ -173,12 +173,11 @@
             font-size: 6em;
             font-weight: normal;
             color: #ffffff;
-            animation: timerPulse 1.5s infinite alternate; /* Animation du timer */
+            transition: color 0.5s ease-out; /* Transition de couleur */
         }
 
-        @keyframes timerPulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.1); }
+        .timer-running {
+            color: #ffccd5; /* Rouge pâle lorsque le timer est en cours */
         }
 
         .buttons {
@@ -198,19 +197,12 @@
             font-weight: bold;
             background: #ff4081;
             color: white;
-            transition: background-color 0.3s, transform 0.2s ease-in-out;
+            transition: background-color 0.3s;
             font-size: 1em;
         }
 
         button:hover {
             background-color: #e6006f;
-            transform: scale(1.05);
-            animation: buttonHover 0.3s ease-out;
-        }
-
-        @keyframes buttonHover {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.1); }
         }
     </style>
 </head>
@@ -249,15 +241,18 @@
         function toggleTimer() {
             const recButton = document.getElementById("recButton");
             const resetButton = document.getElementById("resetButton");
-            
+            const timer = document.getElementById("timer");
+
             if (running) {
                 clearInterval(timerInterval);
                 elapsedTime += Date.now() - startTime;
                 recButton.textContent = "REC";
+                timer.classList.remove("timer-running"); // Retirer la couleur rouge pâle
             } else {
                 startTime = Date.now();
                 timerInterval = setInterval(updateTimer, 10);
                 recButton.textContent = "STOP";
+                timer.classList.add("timer-running"); // Ajouter la couleur rouge pâle
             }
             running = !running;
             resetButton.disabled = false;
