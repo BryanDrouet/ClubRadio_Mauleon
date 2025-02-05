@@ -30,6 +30,28 @@
             animation: fadeIn 1s ease-out; /* Animation d'apparition */
         }
 
+        body::after {
+	        content: "";
+        	position: absolute;
+	        top: 0;
+	        left: 0;
+	        width: 300%;
+	        height: 300%;
+	        background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 20%, transparent 80%);
+	        animation: waveAnimation 8s infinite linear;
+	        opacity: 0.2;
+	        z-index: -1;
+        }
+
+        @keyframes waveAnimation {
+	        0% {
+		        transform: translateX(-50%) translateY(-50%) rotate(0deg);
+	        }
+	        100% {
+		        transform: translateX(-50%) translateY(-50%) rotate(360deg);
+	        }
+        }
+
         @keyframes fadeIn {
             0% { opacity: 0; }
             100% { opacity: 1; }
