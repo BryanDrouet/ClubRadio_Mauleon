@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape">
+    <title>Compteur de Temps Écoulé</title>
+    <link rel="icon" href="assets/off.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div class="waves-container">
+		<div class="gradient"></div>
+		<div class="gradient"></div>
+		<div class="gradient"></div>
+	</div>
+    <button class="menu-toggle" onclick="toggleSettings()"></button>
+    <button class="full-screen-button" onclick="toggleFullScreen()" id="fullscreenButton">⛶</button>
+    <div id="settingsMenu">
+        <h3>Réglages</h3>
+        <button id="removeButtons" style="height:10px" onclick="removeButtons()">Enlever les boutons</button>
+        <button id="removeBookmarks" style="height:10px" onclick="removeBookmarks()">Enlever les signets</button>
+    </div>
+    
+    <div class="container">
+        <div id="timer">00:00:00:0</div>
+        <div class="buttons" id="buttonsContainer">
+            <button id="recButton" onclick="toggleTimer()">REC</button>
+            <button id="resetButton" onclick="resetTimer()" disabled>Reset</button>
+            <button id="bookmarkButton" onclick="addSignet()" disabled>Signet</button>
+        </div>
+        <div id="bookmarksContainer" class="signet-list"></div>
+    </div>
+
+    <script src="scripts.js"></script>
+
+</body>
+</html>
