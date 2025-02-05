@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape">
     <title>Compteur de Temps Écoulé</title>
-    
-    <!-- Ajouter l'icône du site -->
     <link rel="icon" href="assets/icon.ico" type="image/x-icon">
 
     <style>
@@ -32,6 +30,7 @@
 
         /* Dégradé animé avec vagues fluides */
         .waves-container {
+	        z-index: -1000;
             position: absolute;
             inset: 0;
             display: flex;
@@ -288,12 +287,12 @@
         }
     </style>
 </head>
-<div class="waves-container">
-	<div class="gradient"></div>
-	<div class="gradient"></div>
-	<div class="gradient"></div>
-</div>
 <body>
+	<div class="waves-container">
+		<div class="gradient"></div>
+		<div class="gradient"></div>
+		<div class="gradient"></div>
+	</div>
     <button class="menu-toggle" onclick="toggleSettings()"></button>
     <button class="full-screen-button" onclick="toggleFullScreen()" id="fullscreenButton">⛶</button>
     <div id="settingsMenu">
