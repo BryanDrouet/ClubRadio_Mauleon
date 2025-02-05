@@ -47,12 +47,17 @@
             position: absolute;
             width: var(--size);
             height: var(--size);
-            filter: blur(calc(var(--size) / 5));
+            filter: blur(calc(var(--size) / 10)); /* Réduction du blur */
+            will-change: transform, opacity; /* Optimisation GPU */
+            backface-visibility: hidden;
+            transform-origin: center;
             background-image: linear-gradient(45deg, hsl(270, 80%, 50%), hsl(290, 70%, 60%), hsl(250, 90%, 40%));
             animation: rotate var(--speed) var(--easing) infinite, morph 10s ease-in-out infinite alternate;
             border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            opacity: 0.7;
+            opacity: 0.6;
+            transform: translate3d(0, 0, 0);
         }
+
 
         .gradient:nth-child(2) {
             --size: 600px;
@@ -104,12 +109,15 @@
         @keyframes backgroundAnimation {
             0% {
                 background-color: #2c003e;
+                opacity: 1;
             }
             50% {
                 background-color: #4a0072;
+                opacity: 0.9;
             }
             100% {
                 background-color: #2c003e;
+                opacity: 1;
             }
         }
 
