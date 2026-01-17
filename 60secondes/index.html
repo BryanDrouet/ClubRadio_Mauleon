@@ -544,12 +544,22 @@
 
         .config-input[type=number] {
             -moz-appearance: textfield;
-            appearance: textfield;
         }
 
         .config-input:focus {
             background: rgba(255, 255, 255, 0.15);
             border-color: #00ff00;
+        }
+
+        .config-input.error {
+            border-color: #ff0000 !important;
+            animation: shake 0.3s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
         }
 
         .config-textarea {
@@ -871,28 +881,33 @@
             }, 3000);
         }
         
+        let updateURLTimeout = null;
         function updateURL() {
-            const params = new URLSearchParams();
-            // Toujours inclure countdownDuration et numberOfGradients dans l'URL
-            params.set('countdownDuration', CONFIG.countdownDuration);
-            if (CONFIG.numberOfGradients !== undefined) {
-                params.set('numberOfGradients', CONFIG.numberOfGradients);
-            }
-            if (CONFIG.warningThreshold !== undefined) {
-                params.set('warningThreshold', CONFIG.warningThreshold);
-            }
-            if (CONFIG.dangerThreshold !== undefined) {
-                params.set('dangerThreshold', CONFIG.dangerThreshold);
-            }
-            if (CONFIG.debugMode === false) {
-                params.set('debugMode', 'false');
-            } else if (CONFIG.debugMode === true) {
-                params.set('debugMode', 'true');
-            }
-            
-            const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
-            window.history.pushState({}, '', newUrl);
-            debugLog('URL updated', 'info', { url: newUrl });
+            // Debounce de 500ms pour éviter trop d'appels
+            clearTimeout(updateURLTimeout);
+            updateURLTimeout = setTimeout(() => {
+                const params = new URLSearchParams();
+                // Toujours inclure countdownDuration et numberOfGradients dans l'URL
+                params.set('countdownDuration', CONFIG.countdownDuration);
+                if (CONFIG.numberOfGradients !== undefined) {
+                    params.set('numberOfGradients', CONFIG.numberOfGradients);
+                }
+                if (CONFIG.warningThreshold !== undefined) {
+                    params.set('warningThreshold', CONFIG.warningThreshold);
+                }
+                if (CONFIG.dangerThreshold !== undefined) {
+                    params.set('dangerThreshold', CONFIG.dangerThreshold);
+                }
+                if (CONFIG.debugMode === false) {
+                    params.set('debugMode', 'false');
+                } else if (CONFIG.debugMode === true) {
+                    params.set('debugMode', 'true');
+                }
+                
+                const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
+                window.history.replaceState({}, '', newUrl);
+                debugLog('URL updated', 'info', { url: newUrl });
+            }, 500);
         }
         
         function initConfigPanel() {
@@ -916,11 +931,33 @@
                     e.preventDefault();
                     const currentValue = parseInt(durationInput.value) || 60;
                     const step = e.deltaY > 0 ? -1 : 1; // Scroll down = diminue, Scroll up = augmente
-                    const newValue = Math.max(1, Math.min(999, currentValue + step));
+                    const newValue = Math.max(3, Math.min(999, currentValue + step));
+                    
+                    // Si la valeur n'a pas changé (bloquée par contraintes), afficher l'erreur
+                    if (newValue === currentValue) {
+                        durationInput.classList.add('error');
+                        setTimeout(() => durationInput.classList.remove('error'), 300);
+                    }
+                    
                     durationInput.value = newValue;
                     applyConfigFromPanel();
                 }
             }, { passive: false });
+            
+            // Validation pour les flèches de la durée
+            durationInput.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                    const currentValue = parseInt(this.value) || 60;
+                    const step = e.key === 'ArrowUp' ? 1 : -1;
+                    const newValue = Math.max(3, Math.min(999, currentValue + step));
+                    
+                    if (newValue === currentValue) {
+                        e.preventDefault();
+                        this.classList.add('error');
+                        setTimeout(() => this.classList.remove('error'), 300);
+                    }
+                }
+            });
             
             // Ajouter le support du scroll pour changer le nombre de gradients
             gradientsInput.addEventListener('wheel', (e) => {
@@ -933,6 +970,168 @@
                     applyConfigFromPanel();
                 }
             }, { passive: false });
+            
+            // Ajouter le support du scroll pour changer le warning
+            warningInput.addEventListener('wheel', (e) => {
+                if (document.activeElement === warningInput) {
+                    e.preventDefault();
+                    const currentValue = parseInt(warningInput.value) || 10;
+                    const dangerValue = parseInt(dangerInput.value) || 5;
+                    const durationValue = parseInt(durationInput.value) || 60;
+                    const step = e.deltaY > 0 ? -1 : 1;
+                    const requestedValue = currentValue + step;
+                    let newValue = Math.max(1, Math.min(durationValue - 1, requestedValue));
+                    // Warning doit être supérieur au danger
+                    if (newValue <= dangerValue) {
+                        newValue = dangerValue + 1;
+                    }
+                    // Warning ne peut pas être égal ou dépasser la durée
+                    newValue = Math.min(newValue, durationValue - 1);
+                    
+                    // Si la valeur n'a pas changé (bloquée par validation), afficher l'erreur
+                    if (newValue === currentValue) {
+                        warningInput.classList.add('error');
+                        setTimeout(() => warningInput.classList.remove('error'), 300);
+                    }
+                    
+                    warningInput.value = newValue;
+                    applyConfigFromPanel();
+                }
+            }, { passive: false });
+            
+            // Ajouter le support du scroll pour changer le danger
+            dangerInput.addEventListener('wheel', (e) => {
+                if (document.activeElement === dangerInput) {
+                    e.preventDefault();
+                    const currentValue = parseInt(dangerInput.value) || 5;
+                    const warningValue = parseInt(warningInput.value) || 10;
+                    const durationValue = parseInt(durationInput.value) || 60;
+                    const step = e.deltaY > 0 ? -1 : 1;
+                    const requestedValue = currentValue + step;
+                    let newValue = Math.max(1, Math.min(durationValue, requestedValue));
+                    // Danger doit être inférieur au warning
+                    if (newValue >= warningValue) {
+                        newValue = warningValue - 1;
+                    }
+                    // Danger ne peut pas dépasser la durée
+                    newValue = Math.min(newValue, durationValue);
+                    
+                    // Si la valeur n'a pas changé (bloquée par validation), afficher l'erreur
+                    if (newValue === currentValue) {
+                        dangerInput.classList.add('error');
+                        setTimeout(() => dangerInput.classList.remove('error'), 300);
+                    }
+                    
+                    dangerInput.value = newValue;
+                    applyConfigFromPanel();
+                }
+            }, { passive: false });
+            
+            // Fonction pour valider et afficher l'erreur si bloqué
+            function validateAndShowError(input, oldValue, newValue) {
+                if (newValue !== oldValue && newValue === parseInt(input.value)) {
+                    input.classList.add('error');
+                    setTimeout(() => input.classList.remove('error'), 300);
+                }
+            }
+            
+            // Validation pour la saisie manuelle du warning
+            warningInput.addEventListener('change', function() {
+                const oldValue = parseInt(this.dataset.oldValue) || parseInt(this.value);
+                const dangerValue = parseInt(dangerInput.value) || 5;
+                const durationValue = parseInt(durationInput.value) || 60;
+                let newValue = parseInt(this.value) || 10;
+                
+                newValue = Math.max(1, Math.min(durationValue - 1, newValue));
+                if (newValue <= dangerValue) {
+                    newValue = dangerValue + 1;
+                }
+                newValue = Math.min(newValue, durationValue - 1);
+                
+                if (newValue !== parseInt(this.value)) {
+                    this.classList.add('error');
+                    setTimeout(() => this.classList.remove('error'), 300);
+                }
+                
+                this.value = newValue;
+                this.dataset.oldValue = newValue;
+                applyConfigFromPanel();
+            });
+            
+            warningInput.addEventListener('focus', function() {
+                this.dataset.oldValue = this.value;
+            });
+            
+            // Validation pour les flèches du warning
+            warningInput.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                    const currentValue = parseInt(this.value) || 10;
+                    const dangerValue = parseInt(dangerInput.value) || 5;
+                    const durationValue = parseInt(durationInput.value) || 60;
+                    const step = e.key === 'ArrowUp' ? 1 : -1;
+                    let newValue = Math.max(1, Math.min(durationValue - 1, currentValue + step));
+                    
+                    if (newValue <= dangerValue) {
+                        newValue = dangerValue + 1;
+                    }
+                    newValue = Math.min(newValue, durationValue - 1);
+                    
+                    if (newValue === currentValue) {
+                        e.preventDefault();
+                        this.classList.add('error');
+                        setTimeout(() => this.classList.remove('error'), 300);
+                    }
+                }
+            });
+            
+            // Validation pour la saisie manuelle du danger
+            dangerInput.addEventListener('change', function() {
+                const oldValue = parseInt(this.dataset.oldValue) || parseInt(this.value);
+                const warningValue = parseInt(warningInput.value) || 10;
+                const durationValue = parseInt(durationInput.value) || 60;
+                let newValue = parseInt(this.value) || 5;
+                
+                newValue = Math.max(1, Math.min(durationValue, newValue));
+                if (newValue >= warningValue) {
+                    newValue = warningValue - 1;
+                }
+                newValue = Math.min(newValue, durationValue);
+                
+                if (newValue !== parseInt(this.value)) {
+                    this.classList.add('error');
+                    setTimeout(() => this.classList.remove('error'), 300);
+                }
+                
+                this.value = newValue;
+                this.dataset.oldValue = newValue;
+                applyConfigFromPanel();
+            });
+            
+            dangerInput.addEventListener('focus', function() {
+                this.dataset.oldValue = this.value;
+            });
+            
+            // Validation pour les flèches du danger
+            dangerInput.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                    const currentValue = parseInt(this.value) || 5;
+                    const warningValue = parseInt(warningInput.value) || 10;
+                    const durationValue = parseInt(durationInput.value) || 60;
+                    const step = e.key === 'ArrowUp' ? 1 : -1;
+                    let newValue = Math.max(1, Math.min(durationValue, currentValue + step));
+                    
+                    if (newValue >= warningValue) {
+                        newValue = warningValue - 1;
+                    }
+                    newValue = Math.min(newValue, durationValue);
+                    
+                    if (newValue === currentValue) {
+                        e.preventDefault();
+                        this.classList.add('error');
+                        setTimeout(() => this.classList.remove('error'), 300);
+                    }
+                }
+            });
         }
         
         function applyConfigFromPanel() {
@@ -945,15 +1144,44 @@
             const dangerInput = document.getElementById('dangerInput');
             
             const oldGradientsCount = CONFIG.numberOfGradients || 3;
+            const oldDebugMode = CONFIG.debugMode;
+            const oldDuration = CONFIG.countdownDuration;
+            const oldWarning = CONFIG.warningThreshold;
+            const oldDanger = CONFIG.dangerThreshold;
             
             CONFIG.debugMode = debugCheckbox.checked;
-            CONFIG.countdownDuration = parseInt(durationInput.value) || 60;
+            const durationValue = Math.max(3, parseInt(durationInput.value) || 60);
+            durationInput.value = durationValue;
+            CONFIG.countdownDuration = durationValue;
             const inputValue = parseInt(gradientsInput.value);
             CONFIG.numberOfGradients = isNaN(inputValue) ? 3 : inputValue;
-            CONFIG.warningThreshold = parseInt(warningInput.value) || 10;
-            CONFIG.dangerThreshold = parseInt(dangerInput.value) || 5;
             
-            // Régénérer les gradients si le nombre a changé
+            // Validation: warning doit être supérieur au danger et strictement inférieur à la durée
+            let warningValue = parseInt(warningInput.value) || 10;
+            let dangerValue = parseInt(dangerInput.value) || 5;
+            
+            // Warning ne peut pas être égal ou dépasser la durée, danger ne peut pas dépasser la durée
+            const maxThreshold = CONFIG.countdownDuration;
+            warningValue = Math.min(warningValue, maxThreshold - 1);
+            dangerValue = Math.min(dangerValue, maxThreshold);
+            
+            // Ajuster automatiquement si nécessaire
+            if (warningValue <= dangerValue) {
+                warningValue = Math.min(dangerValue + 1, maxThreshold - 1);
+            }
+            
+            // Si warning atteint maxThreshold - 1, ajuster danger si nécessaire
+            if (warningValue >= maxThreshold - 1 && dangerValue >= warningValue) {
+                dangerValue = Math.max(1, warningValue - 1);
+            }
+            
+            warningInput.value = warningValue;
+            dangerInput.value = dangerValue;
+            
+            CONFIG.warningThreshold = warningValue;
+            CONFIG.dangerThreshold = dangerValue;
+            
+            // Régénérer les gradients seulement si le nombre a vraiment changé
             if (oldGradientsCount !== CONFIG.numberOfGradients) {
                 const wavesContainer = document.getElementById('wavesContainer');
                 wavesContainer.innerHTML = ''; // Nettoyer les anciens gradients
@@ -961,16 +1189,25 @@
                 debugLog('Gradients regenerated', 'success', { count: CONFIG.numberOfGradients });
             }
             
-            // Mettre à jour l'URL
+            // Mettre à jour l'URL (avec debounce)
             updateURL();
             
-            debugLog('Config updated from panel', 'success', { 
-                debugMode: CONFIG.debugMode, 
-                countdownDuration: CONFIG.countdownDuration,
-                numberOfGradients: CONFIG.numberOfGradients,
-                warningThreshold: CONFIG.warningThreshold,
-                dangerThreshold: CONFIG.dangerThreshold
-            });
+            // Logger seulement si quelque chose a changé
+            const hasChanges = oldDebugMode !== CONFIG.debugMode || 
+                              oldDuration !== CONFIG.countdownDuration || 
+                              oldGradientsCount !== CONFIG.numberOfGradients ||
+                              oldWarning !== CONFIG.warningThreshold ||
+                              oldDanger !== CONFIG.dangerThreshold;
+            
+            if (hasChanges) {
+                debugLog('Config updated from panel', 'success', { 
+                    debugMode: CONFIG.debugMode, 
+                    countdownDuration: CONFIG.countdownDuration,
+                    numberOfGradients: CONFIG.numberOfGradients,
+                    warningThreshold: CONFIG.warningThreshold,
+                    dangerThreshold: CONFIG.dangerThreshold
+                });
+            }
             
             // Réinitialiser le jeu si nécessaire
             if (gameStarted) {
@@ -1020,10 +1257,10 @@
             const params = new URLSearchParams(window.location.search);
             const urlConfig = {};
             
-            // countdownDuration
+            // countdownDuration (minimum 3)
             if (params.has('countdownDuration')) {
                 const duration = parseInt(params.get('countdownDuration'));
-                if (!isNaN(duration) && duration > 0) {
+                if (!isNaN(duration) && duration >= 3) {
                     urlConfig.countdownDuration = duration;
                 }
             }
@@ -1042,18 +1279,22 @@
                 }
             }
             
-            // warningThreshold
+            // Récupérer la durée pour valider les seuils
+            const durationForValidation = urlConfig.countdownDuration || CONFIG.countdownDuration || 60;
+            
+            // warningThreshold (doit être strictement inférieur à la durée)
             if (params.has('warningThreshold')) {
                 const warning = parseInt(params.get('warningThreshold'));
-                if (!isNaN(warning) && warning > 0) {
+                if (!isNaN(warning) && warning > 0 && warning < durationForValidation) {
                     urlConfig.warningThreshold = warning;
                 }
             }
             
-            // dangerThreshold
+            // dangerThreshold (ne peut pas dépasser la durée et doit être inférieur à warning)
             if (params.has('dangerThreshold')) {
                 const danger = parseInt(params.get('dangerThreshold'));
-                if (!isNaN(danger) && danger > 0) {
+                const warningForValidation = urlConfig.warningThreshold || CONFIG.warningThreshold || 10;
+                if (!isNaN(danger) && danger > 0 && danger < warningForValidation && danger <= durationForValidation) {
                     urlConfig.dangerThreshold = danger;
                 }
             }
