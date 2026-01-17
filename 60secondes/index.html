@@ -89,6 +89,32 @@
                 opacity: 0.05;
             }
         }
+        
+        @keyframes blinkAll {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.2;
+            }
+        }
+        
+        .blink-mode {
+            animation: blinkAll 0.8s ease-in-out infinite !important;
+        }
+        
+        @keyframes blinkAll {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.2;
+            }
+        }
+        
+        .blink-mode {
+            animation: blinkAll 0.8s ease-in-out infinite !important;
+        }
 
         /* Zone 16:9 pour le contenu principal */
         .main-content {
@@ -236,9 +262,13 @@
                 0 2px 8px rgba(0, 0, 0, 0.8),
                 0 4px 16px rgba(0, 0, 0, 0.6);
             animation: pulse 1s ease-in-out infinite;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease, opacity 0.5s ease;
             position: relative;
             display: inline-block;
+        }
+        
+        .countdown.fade-transition {
+            opacity: 0;
         }
 
         .milliseconds {
@@ -445,7 +475,7 @@
         
         .panel-toggle {
             font-size: 12px;
-            transition: transform 0.3s;
+            transition: transform 0.6s;
         }
         
         .panel-toggle.collapsed {
@@ -455,7 +485,7 @@
         .panel-content {
             max-height: 1000px;
             overflow: hidden;
-            transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.4s ease;
+            transition: max-height 0.6s ease, opacity 0.5s ease, padding 0.6s ease;
             opacity: 1;
             display: flex;
             flex-wrap: wrap;
@@ -527,10 +557,6 @@
             justify-content: center;
             gap: 10px;
             margin: 8px;
-        }
-
-        .config-row:has(#debugModeCheckbox) {
-            margin-bottom: 16px;
         }
 
         .config-label {
@@ -991,9 +1017,23 @@
                 <button id="pauseButton" class="pause-button" onclick="handlePauseClick()">⏸</button>
             </div>
             <div class="config-separator"></div>
-            <div class="config-row">
-                <input type="checkbox" id="debugModeCheckbox" class="config-checkbox" onchange="applyConfigFromPanel()">
-                <label class="config-label" for="debugModeCheckbox">Mode Debug</label>
+            
+            <!-- Section Modes -->
+            <div class="panel-section">
+                <div class="panel-header" onclick="togglePanel('modesPanel')">
+                    <span class="panel-title">Modes</span>
+                    <span class="panel-toggle" id="modesPanelToggle">▼</span>
+                </div>
+                <div class="panel-content" id="modesPanel">
+                    <div class="config-row">
+                        <input type="checkbox" id="debugModeCheckbox" class="config-checkbox" onchange="applyConfigFromPanel()">
+                        <label class="config-label" for="debugModeCheckbox">Mode Debug</label>
+                    </div>
+                    <div class="config-row">
+                        <input type="checkbox" id="waitingScreenCheckbox" class="config-checkbox" onchange="applyConfigFromPanel()">
+                        <label class="config-label" for="waitingScreenCheckbox">Mode Waiting Screen</label>
+                    </div>
+                </div>
             </div>
             
             <!-- Section Timer -->
@@ -1287,10 +1327,15 @@
             params.set('warningThreshold', CONFIG.warningThreshold !== undefined ? CONFIG.warningThreshold : 10);
             params.set('dangerThreshold', CONFIG.dangerThreshold !== undefined ? CONFIG.dangerThreshold : 5);
             params.set('debugMode', CONFIG.debugMode ? 'true' : 'false');
+            params.set('waitingScreenMode', CONFIG.waitingScreenMode ? 'true' : 'false');
             
             // Ajouter l'état des panels
+            const modesPanel = document.getElementById('modesPanel');
             const timerPanel = document.getElementById('timerPanel');
             const gradientsPanel = document.getElementById('gradientsPanel');
+            if (modesPanel && modesPanel.classList.contains('collapsed')) {
+                params.set('modesPanelCollapsed', 'true');
+            }
             if (timerPanel && timerPanel.classList.contains('collapsed')) {
                 params.set('timerPanelCollapsed', 'true');
             }
@@ -1465,6 +1510,10 @@
             
             if (typeof CONFIG !== 'undefined') {
                 debugCheckbox.checked = CONFIG.debugMode;
+                const waitingScreenCheckbox = document.getElementById('waitingScreenCheckbox');
+                if (waitingScreenCheckbox) {
+                    waitingScreenCheckbox.checked = CONFIG.waitingScreenMode || false;
+                }
                 durationInput.value = CONFIG.countdownDuration;
                 gradientsInput.value = CONFIG.numberOfGradients !== undefined ? CONFIG.numberOfGradients : 5;
                 // Convertir de secondes (5-120s) vers pourcentage (0-100%)
@@ -1720,6 +1769,7 @@
             if (typeof CONFIG === 'undefined') return;
             
             const debugCheckbox = document.getElementById('debugModeCheckbox');
+            const waitingScreenCheckbox = document.getElementById('waitingScreenCheckbox');
             const durationInput = document.getElementById('durationInput');
             const gradientsInput = document.getElementById('gradientsInput');
             const gradientSpeedInput = document.getElementById('gradientSpeedInput');
@@ -1738,6 +1788,7 @@
             const oldDanger = CONFIG.dangerThreshold;
             
             CONFIG.debugMode = debugCheckbox.checked;
+            CONFIG.waitingScreenMode = waitingScreenCheckbox.checked;
             const durationValue = Math.max(3, parseInt(durationInput.value) || 60);
             durationInput.value = durationValue;
             CONFIG.countdownDuration = durationValue;
@@ -1876,6 +1927,12 @@
                 urlConfig.debugMode = (debug === 'true' || debug === '1');
             }
             
+            // waitingScreenMode
+            if (params.has('waitingScreenMode')) {
+                const waitingScreen = params.get('waitingScreenMode');
+                urlConfig.waitingScreenMode = (waitingScreen === 'true' || waitingScreen === '1');
+            }
+            
             // numberOfGradients
             if (params.has('numberOfGradients')) {
                 const gradients = parseInt(params.get('numberOfGradients'));
@@ -1961,6 +2018,9 @@
             
             // Restaurer l'état des panels depuis l'URL
             const params = new URLSearchParams(window.location.search);
+            if (params.get('modesPanelCollapsed') === 'true') {
+                togglePanel('modesPanel');
+            }
             if (params.get('timerPanelCollapsed') === 'true') {
                 togglePanel('timerPanel');
             }
@@ -2124,6 +2184,27 @@
 
         function startLaunchCountdown() {
             debugLog('Starting launch countdown', 'state');
+            
+            // En mode waiting screen, pas de décompte 3-2-1 mais garder l'animation
+            const isWaitingScreenMode = typeof CONFIG !== 'undefined' && CONFIG.waitingScreenMode;
+            if (isWaitingScreenMode) {
+                stopButton.disabled = true;
+                stopButton.style.opacity = '0.2';
+                stopButton.style.cursor = 'not-allowed';
+                
+                // Animation d'apparition
+                countdownElement.style.fontSize = '120px';
+                countdownElement.style.opacity = '0';
+                
+                setTimeout(() => {
+                    countdownElement.style.opacity = '1';
+                    setTimeout(() => {
+                        startGame();
+                    }, 300);
+                }, 100);
+                return;
+            }
+            
             stopButton.disabled = true;
             stopButton.style.opacity = '0.2';
             stopButton.style.cursor = 'not-allowed';
@@ -2170,37 +2251,60 @@
 
         function restartGame() {
             debugLog('Game restarted', 'state');
-            // Réinitialiser toutes les variables
-            isRunning = false;
-            isStopped = false;
-            gameStarted = false;
-            isPaused = false;
-            pausedTime = 0;
-            lastSecond = CONFIG.countdownDuration;
             
-            // Réinitialiser l'affichage
-            document.body.classList.remove('game-over');
-            borderSvg.classList.remove('hidden', 'fade-out');
-            countdownElement.classList.remove('hidden', 'warning', 'danger');
-            overtimeElement.classList.add('hidden');
-            totalTimeElement.classList.add('hidden');
-            millisecondsElement.classList.add('hidden');
-            countdownElement.textContent = '';
+            // Transition en fondue
+            countdownElement.classList.add('fade-transition');
+            overtimeElement.classList.add('fade-transition');
+            totalTimeElement.classList.add('fade-transition');
             
-            // Réinitialiser les boutons
-            stopButton.textContent = 'LANCER';
-            stopButton.style.opacity = '';
-            stopButton.style.cursor = 'pointer';
+            // Retirer le mode blink si actif
+            document.body.classList.remove('blink-mode');
+            countdownElement.classList.remove('blink-mode');
+            const borderRect = document.getElementById('borderRect');
+            if (borderRect) {
+                borderRect.classList.remove('blink-mode');
+            }
+            const wavesContainer = document.getElementById('wavesContainer');
+            if (wavesContainer) {
+                const gradients = wavesContainer.querySelectorAll('.gradient');
+                gradients.forEach(g => g.classList.remove('blink-mode'));
+            }
             
-            const pauseButton = document.getElementById('pauseButton');
-            pauseButton.classList.remove('visible');
-            pauseButton.disabled = true;
+            setTimeout(() => {
+                // Réinitialiser toutes les variables
+                isRunning = false;
+                isStopped = false;
+                gameStarted = false;
+                isPaused = false;
+                pausedTime = 0;
+                lastSecond = CONFIG.countdownDuration;
+                
+                // Réinitialiser l'affichage
+                document.body.classList.remove('game-over');
+                borderSvg.classList.remove('hidden', 'fade-out');
+                countdownElement.classList.remove('hidden', 'warning', 'danger', 'fade-transition');
+                overtimeElement.classList.add('hidden');
+                overtimeElement.classList.remove('fade-transition');
+                totalTimeElement.classList.add('hidden');
+                totalTimeElement.classList.remove('fade-transition');
+                millisecondsElement.classList.add('hidden');
+                countdownElement.textContent = '';
+                
+                // Réinitialiser les boutons
+                stopButton.textContent = 'LANCER';
+                stopButton.style.opacity = '';
+                stopButton.style.cursor = 'pointer';
             
-            // Réinitialiser la bordure
-            borderRect.setAttribute('stroke', 'url(#gradientNormal)');
-            borderBackground.setAttribute('stroke', 'url(#gradientNormal)');
-            borderRect.classList.remove('overtime');
-            updateBorders(100, '');
+                const pauseButton = document.getElementById('pauseButton');
+                pauseButton.classList.remove('visible');
+                pauseButton.disabled = true;
+                
+                // Réinitialiser la bordure
+                borderRect.setAttribute('stroke', 'url(#gradientNormal)');
+                borderBackground.setAttribute('stroke', 'url(#gradientNormal)');
+                borderRect.classList.remove('overtime');
+                updateBorders(100, '');
+            }, 500);
         }
 
         function playBeep(frequency = 600, duration = 150) {
@@ -2435,23 +2539,86 @@
             const elapsed = Date.now() - startTime;
             const totalSeconds = elapsed / 1000;
             const countdownDuration = typeof CONFIG !== 'undefined' ? CONFIG.countdownDuration : 60;
+            const isWaitingScreenMode = typeof CONFIG !== 'undefined' && CONFIG.waitingScreenMode;
 
             if (totalSeconds < countdownDuration) {
                 const remaining = countdownDuration - totalSeconds;
-                // Afficher au minimum 1 tant qu'on n'est pas en overtime
-                const displayValue = Math.max(1, Math.ceil(remaining));
+                // Afficher au minimum 1 tant qu'on n'est pas en overtime (ou 0 en mode waiting screen)
+                const displayValue = isWaitingScreenMode ? Math.max(0, Math.ceil(remaining)) : Math.max(1, Math.ceil(remaining));
                 const percentage = (remaining / countdownDuration) * 100;
                 
-                // Afficher les millisecondes
-                const milliseconds = Math.floor((remaining - Math.floor(remaining)) * 1000);
-                millisecondsElement.textContent = `.${String(milliseconds).padStart(3, '0')}`;
-                
-                // Formatter l'affichage : si > 60 secondes, afficher en "Xmin Xsec"
-                if (displayValue > 60) {
-                    const minutes = Math.floor(displayValue / 60);
-                    const seconds = displayValue % 60;
-                    countdownElement.textContent = `${minutes}min ${seconds}sec`;
+                if (isWaitingScreenMode) {
+                    // Mode waiting screen: affichage minutes:secondes sans millisecondes
+                    const totalSecondsRemaining = Math.floor(remaining);
+                    const minutes = Math.floor(totalSecondsRemaining / 60);
+                    const seconds = totalSecondsRemaining % 60;
+                    countdownElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+                    millisecondsElement.classList.add('hidden');
+                    
+                    // Gestion du warning et danger
+                    const dangerThreshold = CONFIG.dangerThreshold || 5;
+                    const warningThreshold = CONFIG.warningThreshold || 10;
+                    
+                    if (totalSecondsRemaining !== lastSecond) {
+                        if (totalSecondsRemaining === warningThreshold) {
+                            playTenSecondBeep();
+                        } else if (totalSecondsRemaining === dangerThreshold) {
+                            playFiveSecondBeep();
+                        } else if (totalSecondsRemaining > 0) {
+                            playBeep(550, 120);
+                        }
+                        lastSecond = totalSecondsRemaining;
+                    }
+                    
+                    // Mettre à jour les bordures et couleurs
+                    if (totalSecondsRemaining <= dangerThreshold && totalSecondsRemaining > 0) {
+                        countdownElement.className = 'countdown danger';
+                        updateBorders(percentage, 'danger');
+                    } else if (totalSecondsRemaining <= warningThreshold && totalSecondsRemaining > 0) {
+                        countdownElement.className = 'countdown warning';
+                        updateBorders(percentage, 'warning');
+                    } else if (totalSecondsRemaining > 0) {
+                        countdownElement.className = 'countdown';
+                        updateBorders(percentage, '');
+                    }
+                    
+                    // À 0, activer le clignotement
+                    if (totalSecondsRemaining === 0 && lastSecond !== 0) {
+                        debugLog('Waiting screen reached 0 - activating blink mode', 'warning');
+                        playFinalBeep();
+                        countdownElement.classList.add('blink-mode');
+                        
+                        // Faire clignoter la bordure
+                        const borderRect = document.getElementById('borderRect');
+                        if (borderRect) {
+                            borderRect.classList.add('blink-mode');
+                        }
+                        
+                        // Faire clignoter les gradients
+                        const wavesContainer = document.getElementById('wavesContainer');
+                        if (wavesContainer) {
+                            const gradients = wavesContainer.querySelectorAll('.gradient');
+                            gradients.forEach(g => g.classList.add('blink-mode'));
+                        }
+                        lastSecond = 0;
+                    }
+                    
+                    // Pas d'overtime en mode waiting screen
+                    overtimeElement.classList.add('hidden');
+                    totalTimeElement.classList.add('hidden');
                 } else {
+                    // Mode normal
+                    // Afficher les millisecondes
+                    const milliseconds = Math.floor((remaining - Math.floor(remaining)) * 1000);
+                    millisecondsElement.textContent = `.${String(milliseconds).padStart(3, '0')}`;
+                    millisecondsElement.classList.remove('hidden');
+                    
+                    // Formatter l'affichage : si > 60 secondes, afficher en "Xmin Xsec"
+                    if (displayValue > 60) {
+                        const minutes = Math.floor(displayValue / 60);
+                        const seconds = displayValue % 60;
+                        countdownElement.textContent = `${minutes}min ${seconds}sec`;
+                    } else {
                     countdownElement.textContent = displayValue;
                 }
                 
@@ -2489,8 +2656,9 @@
 
                 overtimeElement.classList.add('hidden');
                 totalTimeElement.classList.add('hidden');
-                millisecondsElement.classList.remove('hidden');
-            } else {
+                }
+            } else if (!isWaitingScreenMode) {
+                // Overtime uniquement en mode normal
                 const overtimeSeconds = totalSeconds - CONFIG.countdownDuration;
                 
                 if (Math.floor(overtimeSeconds) === 0 && lastSecond !== -999) {
@@ -2542,6 +2710,8 @@
             
             debugLog('Stop time', 'info', { totalSeconds: totalSeconds.toFixed(2), countdownDuration: CONFIG.countdownDuration });
             
+            const isWaitingScreenMode = typeof CONFIG !== 'undefined' && CONFIG.waitingScreenMode;
+            
             document.body.classList.add('game-over');
             
             // Diminuer l'opacité de la bordure progressivement
@@ -2550,20 +2720,40 @@
             const countdownDuration = typeof CONFIG !== 'undefined' ? CONFIG.countdownDuration : 60;
             if (totalSeconds < countdownDuration) {
                 const remaining = countdownDuration - totalSeconds;
-                countdownElement.textContent = Math.ceil(remaining);
+                
+                if (isWaitingScreenMode) {
+                    // En mode waiting screen, afficher en format minutes:secondes
+                    const totalSecondsRemaining = Math.ceil(remaining);
+                    const minutes = Math.floor(totalSecondsRemaining / 60);
+                    const seconds = totalSecondsRemaining % 60;
+                    countdownElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+                } else {
+                    countdownElement.textContent = Math.ceil(remaining);
+                }
+                
                 countdownElement.classList.remove('warning', 'danger', 'hidden');
                 countdownElement.classList.add('countdown');
                 overtimeElement.classList.add('hidden');
                 totalTimeElement.classList.add('hidden');
                 debugLog('Stopped before end', 'info', { remaining: remaining.toFixed(2) });
             } else {
-                const overtimeSeconds = totalSeconds - countdownDuration;
-                countdownElement.classList.add('hidden');
-                overtimeElement.classList.remove('hidden');
-                overtimeElement.textContent = `+${Math.floor(overtimeSeconds)}sec`;
-                totalTimeElement.classList.remove('hidden');
-                totalTimeElement.textContent = formatTotalTime(totalSeconds);
-                debugLog('Stopped in overtime', 'warning', { overtime: overtimeSeconds.toFixed(2) });
+                if (isWaitingScreenMode) {
+                    // En mode waiting screen, ne pas afficher overtime ni total, juste 0:00 clignotant
+                    countdownElement.textContent = '0:00';
+                    countdownElement.classList.remove('hidden');
+                    countdownElement.classList.add('blink-mode');
+                    overtimeElement.classList.add('hidden');
+                    totalTimeElement.classList.add('hidden');
+                    debugLog('Stopped at 0 in waiting screen mode', 'warning');
+                } else {
+                    const overtimeSeconds = totalSeconds - countdownDuration;
+                    countdownElement.classList.add('hidden');
+                    overtimeElement.classList.remove('hidden');
+                    overtimeElement.textContent = `+${Math.floor(overtimeSeconds)}sec`;
+                    totalTimeElement.classList.remove('hidden');
+                    totalTimeElement.textContent = formatTotalTime(totalSeconds);
+                    debugLog('Stopped in overtime', 'warning', { overtime: overtimeSeconds.toFixed(2) });
+                }
             }
             
             stopButton.textContent = 'RELANCER';
