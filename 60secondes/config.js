@@ -1,7 +1,7 @@
 // Configuration du jeu 60 secondes
 const CONFIG = {
     // Durée du décompte en secondes
-    countdownDuration: 30,
+    countdownDuration: 60,
     
     // Seuils d'alerte en secondes
     warningThreshold: 10,  // Passage en warning à X secondes
@@ -35,6 +35,9 @@ const CONFIG = {
     
     // Couleurs de fond (gradient animé) - Tons violets
     numberOfGradients: 5, // Nombre de lueurs à afficher
+    gradientSpeed: 30,     // Vitesse de déplacement (en secondes, plus élevé = plus lent)
+    gradientSize: 300,     // Taille des lueurs en pixels
+    gradientOpacity: 0.12, // Opacité des lueurs (0.0 à 1.0)
     
     gradient1Color1: 'hsl(270, 80%, 50%)',
     gradient1Color2: 'hsl(290, 70%, 60%)',
