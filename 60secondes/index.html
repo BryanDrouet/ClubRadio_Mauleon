@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>60 Secondes Challenge - ClubRadio Mauléon</title>
     <link rel="icon" href="../assets/off.ico" type="image/x-icon">
-    <script src="config.js"></script>
+    <script src="./config.js"></script>
     <style>
         @font-face {
             font-family: 'Monofonto';
@@ -1012,7 +1012,7 @@
             updateBorders(100, '');
         }
 
-        function playBeep(frequency = 800, duration = 100) {
+        function playBeep(frequency = 600, duration = 150) {
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
 
@@ -1022,28 +1022,54 @@
             oscillator.frequency.value = frequency;
             oscillator.type = 'sine';
 
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
+            // Son plus doux et discret
+            gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration / 1000);
 
             oscillator.start(audioContext.currentTime);
             oscillator.stop(audioContext.currentTime + duration / 1000);
         }
 
         function playFinalBeep() {
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-
-            oscillator.frequency.value = 400;
-            oscillator.type = 'sine';
-
-            gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.5);
+            // Gong effet avec plusieurs harmoniques
+            const fundamentalFreq = 150; // Fréquence fondamentale basse
+            
+            // Oscillateur principal (fondamentale)
+            const osc1 = audioContext.createOscillator();
+            const gain1 = audioContext.createGain();
+            osc1.connect(gain1);
+            gain1.connect(audioContext.destination);
+            osc1.frequency.value = fundamentalFreq;
+            osc1.type = 'sine';
+            gain1.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gain1.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1.5);
+            
+            // Harmonique 2 (octave)
+            const osc2 = audioContext.createOscillator();
+            const gain2 = audioContext.createGain();
+            osc2.connect(gain2);
+            gain2.connect(audioContext.destination);
+            osc2.frequency.value = fundamentalFreq * 2;
+            osc2.type = 'sine';
+            gain2.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gain2.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1.2);
+            
+            // Harmonique 3 (quinte)
+            const osc3 = audioContext.createOscillator();
+            const gain3 = audioContext.createGain();
+            osc3.connect(gain3);
+            gain3.connect(audioContext.destination);
+            osc3.frequency.value = fundamentalFreq * 3;
+            osc3.type = 'sine';
+            gain3.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gain3.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1.0);
+            
+            osc1.start(audioContext.currentTime);
+            osc1.stop(audioContext.currentTime + 1.5);
+            osc2.start(audioContext.currentTime);
+            osc2.stop(audioContext.currentTime + 1.2);
+            osc3.start(audioContext.currentTime);
+            osc3.stop(audioContext.currentTime + 1.0);
         }
 
         // Calculer le périmètre du rectangle pour stroke-dasharray
@@ -1096,9 +1122,11 @@
                 countdownElement.textContent = displayValue;
                 
                 if (displayValue !== lastSecond) {
-                    if (displayValue <= 10 && displayValue > 0) {
-                        playBeep(800 + (10 - displayValue) * 100, 80);
+                    if (displayValue > 0) {
+                        // Bip discret pour toutes les secondes
+                        playBeep(550, 120);
                     } else if (displayValue === 0) {
+                        // Gong pour la fin
                         playFinalBeep();
                     }
                     lastSecond = displayValue;
