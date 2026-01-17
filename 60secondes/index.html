@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/60secondes/">
     <title>60 Secondes Challenge - ClubRadio Mauléon</title>
     <link rel="icon" href="../assets/off.ico" type="image/x-icon">
     <script src="./config.js"></script>
@@ -997,7 +998,7 @@
         </svg>
         
         <div class="main-content">
-            <img src="assets/Fond.png" alt="Fond" style="position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: -1;">
+            <img id="backgroundImage" src="assets/Fond.png" alt="Fond" style="position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: -1;">
             <div class="waves-container" id="wavesContainer">
                 <!-- Les gradients seront générés dynamiquement -->
             </div>
@@ -1033,6 +1034,10 @@
                     <div class="config-row">
                         <input type="checkbox" id="waitingScreenCheckbox" class="config-checkbox" onchange="applyConfigFromPanel()">
                         <label class="config-label" for="waitingScreenCheckbox">Mode Waiting Screen</label>
+                    </div>
+                    <div class="config-row">
+                        <input type="checkbox" id="backgroundImageCheckbox" class="config-checkbox" checked onchange="applyConfigFromPanel()">
+                        <label class="config-label" for="backgroundImageCheckbox">Afficher image de fond</label>
                     </div>
                 </div>
             </div>
@@ -1771,6 +1776,7 @@
             
             const debugCheckbox = document.getElementById('debugModeCheckbox');
             const waitingScreenCheckbox = document.getElementById('waitingScreenCheckbox');
+            const backgroundImageCheckbox = document.getElementById('backgroundImageCheckbox');
             const durationInput = document.getElementById('durationInput');
             const gradientsInput = document.getElementById('gradientsInput');
             const gradientSpeedInput = document.getElementById('gradientSpeedInput');
@@ -1790,6 +1796,13 @@
             
             CONFIG.debugMode = debugCheckbox.checked;
             CONFIG.waitingScreenMode = waitingScreenCheckbox.checked;
+            
+            // Gérer l'affichage de l'image de fond
+            const backgroundImage = document.getElementById('backgroundImage');
+            if (backgroundImage) {
+                backgroundImage.style.display = backgroundImageCheckbox.checked ? 'block' : 'none';
+            }
+            
             const durationValue = Math.max(3, parseInt(durationInput.value) || 60);
             durationInput.value = durationValue;
             CONFIG.countdownDuration = durationValue;
