@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>60 Secondes Challenge - ClubRadio Mauléon</title>
+    <link rel="icon" href="../assets/off.ico" type="image/x-icon">
+    <script src="60secondes/config.js"></script>
+    <style>
+        @font-face {
+            font-family: 'Monofonto';
+            src: url('../assets/monofonto%20rg.otf') format('opentype');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Monofonto', 'Roboto', sans-serif;
+            text-align: center;
+            color: white;
+            overflow-y: auto;
+            position: relative;
+            background: transparent;
+            -ms-overflow-style: none; /* IE/Edge */
+        }
+
+        body::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
+        /* Wrapper 16:9 avec bordure animée */
+        .ratio-wrapper {
+            width: 100%;
+            position: relative;
+            padding-top: 56.25%; /* Ratio 16:9 */
+            box-sizing: border-box;
+        }
+
+        /* Bordure SVG progressive */
+        .progress-border-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .progress-border-svg rect {
+            fill: none;
+            stroke-width: 4;
+            transition: stroke 0.3s ease, opacity 0.3s ease;
+        }
+
+        .progress-border-svg rect.overtime {
+            animation: borderFade 0.6s ease-in-out infinite !important;
+        }
+
+        .progress-border-svg.hidden {
+            opacity: 0;
+        }
+
+        @keyframes borderFade {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.2;
+            }
+        }
+
+        /* Zone 16:9 pour le contenu principal */
+        .main-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Dégradé animé avec vagues fluides */
+        .waves-container {
+            z-index: 0;
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .gradient {
+            --size: 500px;
+            --speed: 15s;
+            --easing: cubic-bezier(0.8, 0.2, 0.2, 0.8);
+            position: absolute;
+            width: var(--size);
+            height: var(--size);
+            filter: blur(50px);
+            will-change: transform;
+            background-image: linear-gradient(45deg, hsl(270, 80%, 50%), hsl(290, 70%, 60%), hsl(250, 90%, 40%));
+            animation: rotate var(--speed) var(--easing) infinite, morph 8s ease-in-out infinite alternate;
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        .gradient:nth-child(2) {
+            animation-delay: calc(var(--speed) / -3);
+            background-image: linear-gradient(135deg, hsl(200, 70%, 50%), hsl(220, 80%, 60%));
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: translate(-100%, -100%) rotate(0deg);
+            }
+            25% {
+                transform: translate(100%, -50%) rotate(90deg);
+            }
+            50% {
+                transform: translate(50%, 100%) rotate(180deg);
+            }
+            75% {
+                transform: translate(-50%, 50%) rotate(270deg);
+            }
+            100% {
+                transform: translate(-100%, -100%) rotate(360deg);
+            }
+        }
+
+        @keyframes morph {
+            0%, 100% {
+                border-radius: 50%;
+            }
+            50% {
+                border-radius: 30% 70% 70% 30% / 30% 70% 70% 30%;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .countdown {
+            font-size: 80px;
+            font-weight: bold;
+            text-shadow: 
+                0 0 15px rgba(255, 255, 255, 0.8),
+                0 0 30px rgba(200, 100, 255, 0.6);
+            animation: pulse 1s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+
+        .countdown.warning {
+            color: #ff9500;
+            animation: pulse 0.5s ease-in-out infinite, shake 0.5s ease-in-out infinite;
+        }
+
+        .countdown.danger {
+            color: #ff3b30;
+            animation: pulse 0.3s ease-in-out infinite, shake 0.3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) scale(1); }
+            25% { transform: translateX(-10px) scale(1.05); }
+            75% { transform: translateX(10px) scale(1.05); }
+        }
+
+        .overtime {
+            font-size: 60px;
+            font-weight: bold;
+            color: #ff3b30;
+            text-shadow: 
+                0 0 15px rgba(255, 59, 48, 0.8),
+                0 0 30px rgba(255, 59, 48, 0.6);
+            animation: blink 0.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .total-time {
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+            margin-top: -8px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .stop-button {
+            flex: 1;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: 'Monofonto', 'Roboto', sans-serif;
+            background: rgba(0, 255, 0, 0.2);
+            color: #00ff00;
+            border: 2px solid rgba(0, 255, 0, 0.4);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stop-button:hover {
+            background: rgba(0, 255, 0, 0.3);
+            border-color: #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        .stop-button:active {
+            background: rgba(0, 255, 0, 0.4);
+            transform: scale(0.98);
+        }
+
+        .stop-button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .pause-button {
+            width: 50px;
+            padding: 10px;
+            font-size: 18px;
+            font-family: 'Monofonto', 'Roboto', sans-serif;
+            background: rgba(255, 165, 0, 0.2);
+            color: #ffa500;
+            border: 2px solid rgba(255, 165, 0, 0.4);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: none;
+        }
+
+        .pause-button.visible {
+            display: block;
+        }
+
+        .pause-button:hover {
+            background: rgba(255, 165, 0, 0.3);
+            border-color: #ffa500;
+            box-shadow: 0 0 10px rgba(255, 165, 0, 0.3);
+        }
+
+        .pause-button:active {
+            background: rgba(255, 165, 0, 0.4);
+            transform: scale(0.98);
+        }
+
+        .pause-button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .config-separator {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            margin: 4px 0;
+        }
+
+        /* Panneau de configuration */
+        .config-panel {
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            padding: 12px 16px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-family: 'Monofonto', 'Roboto', sans-serif;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 300px;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+        }
+
+        .config-panel::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
+        .config-message {
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 100px;
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .config-message.fadeOut {
+            opacity: 0;
+            transform: translateY(-10px);
+            max-height: 0;
+            padding: 0 10px;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .config-message.success {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid rgba(0, 255, 0, 0.4);
+            color: #00ff00;
+        }
+
+        .config-message.error {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid rgba(255, 0, 0, 0.4);
+            color: #ff6666;
+        }
+
+        @keyframes slideDown {
+            from { 
+                opacity: 0; 
+                transform: translateY(-15px) scale(0.95);
+                max-height: 0;
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+                max-height: 100px;
+            }
+        }
+
+        .config-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .config-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .config-checkbox {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            outline: none;
+            transition: background 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .config-checkbox::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            background: rgba(150, 150, 150, 1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .config-checkbox:checked {
+            background: rgba(0, 255, 0, 0.3);
+            border-color: rgba(0, 255, 0, 0.5);
+        }
+
+        .config-checkbox:checked::before {
+            left: 26px;
+            background: #00ff00;
+            box-shadow: 0 2px 6px rgba(0, 255, 0, 0.5);
+        }
+
+        .config-checkbox:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .config-checkbox:checked:hover {
+            background: rgba(0, 255, 0, 0.4);
+        }
+
+        .config-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 4px 8px;
+            color: #ffffff;
+            font-family: 'Monofonto', 'Roboto', monospace;
+            font-size: 11px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        /* Supprimer les flèches natives du input number */
+        .config-input::-webkit-outer-spin-button,
+        .config-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .config-input[type=number] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+
+        .config-input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #00ff00;
+        }
+
+        .config-textarea {
+            width: 100%;
+            min-height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 6px 8px;
+            color: #ffffff;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            outline: none;
+            resize: vertical;
+            transition: all 0.2s ease;
+        }
+
+        .config-textarea:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #00ff00;
+        }
+
+        .config-button {
+            padding: 4px 12px;
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid rgba(0, 255, 0, 0.4);
+            border-radius: 4px;
+            color: #00ff00;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Monofonto', 'Roboto', sans-serif;
+        }
+
+        .config-button:hover {
+            background: rgba(0, 255, 0, 0.3);
+            border-color: #00ff00;
+        }
+    </style>
+</head>
+<body>
+    <div class="ratio-wrapper">
+        <svg class="progress-border-svg" id="borderSvg" viewBox="0 0 1000 562.5" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="gradientNormal" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" id="normalStop1" />
+                    <stop offset="100%" id="normalStop2" />
+                </linearGradient>
+                <linearGradient id="gradientWarning" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" id="warningStop1" />
+                    <stop offset="100%" id="warningStop2" />
+                </linearGradient>
+                <linearGradient id="gradientDanger" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" id="dangerStop1" />
+                    <stop offset="100%" id="dangerStop2" />
+                </linearGradient>
+                <linearGradient id="gradientOvertime" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" id="overtimeStop1" />
+                    <stop offset="100%" id="overtimeStop2" />
+                </linearGradient>
+            </defs>
+            <rect id="borderRect" x="2" y="2" width="996" height="558.5" stroke="url(#gradientNormal)" />
+        </svg>
+        
+        <div class="main-content">
+            <div class="waves-container">
+                <div class="gradient"></div>
+                <div class="gradient"></div>
+            </div>
+
+            <div class="container">
+                <div id="countdown" class="countdown"></div>
+                <div id="overtime" class="overtime hidden"></div>
+                <div id="totalTime" class="total-time hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panneau de configuration -->
+    <div class="config-panel" id="configPanel">
+            <div class="button-row">
+                <button id="stopButton" class="stop-button" onclick="handleButtonClick()">LANCER</button>
+                <button id="pauseButton" class="pause-button" onclick="handlePauseClick()">⏸</button>
+            </div>
+            <div class="config-separator"></div>
+            <div id="configMessage"></div>
+            <div class="config-row">
+                <input type="checkbox" id="debugModeCheckbox" class="config-checkbox" onchange="applyConfigFromPanel()">
+                <label class="config-label" for="debugModeCheckbox">Mode Debug</label>
+            </div>
+            <div class="config-row">
+                <label class="config-label" for="durationInput">Durée (sec):</label>
+                <input type="number" id="durationInput" class="config-input" min="1" max="300" value="60" onchange="applyConfigFromPanel()">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fonction de log stylisé
+        function debugLog(message, type = 'info', data = null) {
+            if (typeof CONFIG === 'undefined' || !CONFIG.debugMode) return;
+            
+            const styles = {
+                info: 'background: #2196F3; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold',
+                success: 'background: #4CAF50; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold',
+                warning: 'background: #FF9800; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold',
+                error: 'background: #F44336; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold',
+                state: 'background: #9C27B0; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold'
+            };
+            
+            console.log(`%c60SEC`, styles[type], message, data || '');
+        }
+        
+        // Gestion du panneau de configuration
+        function showConfigMessage(message, type = 'success') {
+            const messageEl = document.getElementById('configMessage');
+            
+            // Si un message existe déjà, le faire disparaître d'abord
+            const existingMessage = messageEl.querySelector('.config-message');
+            if (existingMessage) {
+                existingMessage.classList.add('fadeOut');
+                setTimeout(() => {
+                    messageEl.innerHTML = `<div class="config-message ${type}">${message}</div>`;
+                }, 300);
+            } else {
+                messageEl.innerHTML = `<div class="config-message ${type}">${message}</div>`;
+            }
+            
+            // Faire disparaître le message après 3 secondes avec animation
+            setTimeout(() => {
+                const msg = messageEl.querySelector('.config-message');
+                if (msg) {
+                    msg.classList.add('fadeOut');
+                    setTimeout(() => {
+                        messageEl.innerHTML = '';
+                    }, 300);
+                }
+            }, 3000);
+        }
+        
+        function updateURL() {
+            const params = new URLSearchParams();
+            if (CONFIG.countdownDuration !== 60) {
+                params.set('countdownDuration', CONFIG.countdownDuration);
+            }
+            if (CONFIG.debugMode === false) {
+                params.set('debugMode', 'false');
+            } else if (CONFIG.debugMode === true) {
+                params.set('debugMode', 'true');
+            }
+            
+            const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
+            window.history.pushState({}, '', newUrl);
+            debugLog('URL updated', 'info', { url: newUrl });
+        }
+        
+        function initConfigPanel() {
+            const debugCheckbox = document.getElementById('debugModeCheckbox');
+            const durationInput = document.getElementById('durationInput');
+            
+            if (typeof CONFIG !== 'undefined') {
+                debugCheckbox.checked = CONFIG.debugMode;
+                durationInput.value = CONFIG.countdownDuration;
+            }
+            
+            // Ajouter le support du scroll pour changer la valeur
+            durationInput.addEventListener('wheel', (e) => {
+                if (document.activeElement === durationInput) {
+                    e.preventDefault();
+                    const currentValue = parseInt(durationInput.value) || 60;
+                    const step = e.deltaY > 0 ? -1 : 1; // Scroll down = diminue, Scroll up = augmente
+                    const newValue = Math.max(1, Math.min(300, currentValue + step));
+                    durationInput.value = newValue;
+                    applyConfigFromPanel();
+                }
+            }, { passive: false });
+        }
+        
+        function applyConfigFromPanel() {
+            if (typeof CONFIG === 'undefined') return;
+            
+            const debugCheckbox = document.getElementById('debugModeCheckbox');
+            const durationInput = document.getElementById('durationInput');
+            
+            CONFIG.debugMode = debugCheckbox.checked;
+            CONFIG.countdownDuration = parseInt(durationInput.value) || 60;
+            
+            // Mettre à jour l'URL
+            updateURL();
+            
+            debugLog('Config updated from panel', 'success', { 
+                debugMode: CONFIG.debugMode, 
+                countdownDuration: CONFIG.countdownDuration 
+            });
+            
+            // Réinitialiser le jeu si nécessaire
+            if (gameStarted) {
+                debugLog('Game reset required after config change', 'warning');
+            }
+        }
+        
+        function applyJsonConfig() {
+            if (typeof CONFIG === 'undefined') return;
+            
+            const configTextarea = document.getElementById('configTextarea');
+            try {
+                const jsonConfig = JSON.parse(configTextarea.value);
+                
+                // Fusionner avec CONFIG (sans écraser debugMode et countdownDuration)
+                const debugMode = CONFIG.debugMode;
+                const countdownDuration = CONFIG.countdownDuration;
+                Object.assign(CONFIG, jsonConfig);
+                CONFIG.debugMode = debugMode;
+                CONFIG.countdownDuration = countdownDuration;
+                
+                // Réappliquer les couleurs
+                if (CONFIG.borderColor1) document.getElementById('normalStop1').style.stopColor = CONFIG.borderColor1;
+                if (CONFIG.borderColor2) document.getElementById('normalStop2').style.stopColor = CONFIG.borderColor2;
+                if (CONFIG.warningColor1) document.getElementById('warningStop1').style.stopColor = CONFIG.warningColor1;
+                if (CONFIG.warningColor2) document.getElementById('warningStop2').style.stopColor = CONFIG.warningColor2;
+                if (CONFIG.dangerColor1) document.getElementById('dangerStop1').style.stopColor = CONFIG.dangerColor1;
+                if (CONFIG.dangerColor2) document.getElementById('dangerStop2').style.stopColor = CONFIG.dangerColor2;
+                if (CONFIG.overtimeColor1) document.getElementById('overtimeStop1').style.stopColor = CONFIG.overtimeColor1;
+                if (CONFIG.overtimeColor2) document.getElementById('overtimeStop2').style.stopColor = CONFIG.overtimeColor2;
+                
+                debugLog('JSON config applied successfully', 'success', jsonConfig);
+                showConfigMessage('✓ Configuration JSON appliquée avec succès !', 'success');
+            } catch (e) {
+                debugLog('Invalid JSON config', 'error', { error: e.message });
+                showConfigMessage('✗ Erreur JSON : ' + e.message, 'error');
+            }
+        }
+        
+        function resetConfig() {
+            // Recharger sans paramètres URL
+            window.location.href = window.location.pathname;
+        }
+        
+        // Parser les paramètres de l'URL
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            const urlConfig = {};
+            
+            // countdownDuration
+            if (params.has('countdownDuration')) {
+                const duration = parseInt(params.get('countdownDuration'));
+                if (!isNaN(duration) && duration > 0) {
+                    urlConfig.countdownDuration = duration;
+                }
+            }
+            
+            // debugMode
+            if (params.has('debugMode')) {
+                const debug = params.get('debugMode');
+                urlConfig.debugMode = (debug === 'true' || debug === '1');
+            }
+            
+            return urlConfig;
+        }
+        
+        // Attendre que CONFIG soit chargé
+        if (typeof CONFIG === 'undefined') {
+            console.error('%cCONFIG ERROR', 'background: #F44336; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold', 'CONFIG non chargé. Vérifiez que config.js est présent.');
+            debugLog = () => {}; // Désactiver les logs si CONFIG n'existe pas
+        } else {
+            // Fusionner les paramètres URL avec CONFIG (URL prioritaire)
+            const urlParams = getUrlParams();
+            
+            if (Object.keys(urlParams).length > 0) {
+                Object.assign(CONFIG, urlParams);
+            }
+            
+            // Afficher un message de bienvenue compact
+            console.log('%c🎮 60 SECONDES CHALLENGE 🎮', 'background: linear-gradient(90deg, #00ff00, #00ffff); color: black; padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: 5px;');
+            debugLog('Application initialized', 'success', { 
+                countdownDuration: CONFIG.countdownDuration + 's',
+                debugMode: CONFIG.debugMode 
+            });
+            
+            // Initialiser le panneau de configuration
+            initConfigPanel();
+        }
+
+        let startTime = null;
+        let timerInterval = null;
+        let isRunning = false;
+        let isStopped = false;
+        let gameStarted = false;
+        let isPaused = false;
+        let pausedTime = 0;
+        let lastSecond = typeof CONFIG !== 'undefined' ? CONFIG.countdownDuration : 60;
+
+        const countdownElement = document.getElementById('countdown');
+        const overtimeElement = document.getElementById('overtime');
+        const totalTimeElement = document.getElementById('totalTime');
+        const stopButton = document.getElementById('stopButton');
+        const borderSvg = document.getElementById('borderSvg');
+        const borderRect = document.getElementById('borderRect');
+
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        // Initialiser les couleurs des dégradés depuis le config (avec fallback)
+        if (typeof CONFIG !== 'undefined') {
+            document.getElementById('normalStop1').style.stopColor = CONFIG.borderColor1;
+            document.getElementById('normalStop2').style.stopColor = CONFIG.borderColor2;
+            document.getElementById('warningStop1').style.stopColor = CONFIG.warningColor1;
+            document.getElementById('warningStop2').style.stopColor = CONFIG.warningColor2;
+            document.getElementById('dangerStop1').style.stopColor = CONFIG.dangerColor1;
+            document.getElementById('dangerStop2').style.stopColor = CONFIG.dangerColor2;
+            document.getElementById('overtimeStop1').style.stopColor = CONFIG.overtimeColor1;
+            document.getElementById('overtimeStop2').style.stopColor = CONFIG.overtimeColor2;
+        } else {
+            // Valeurs par défaut si CONFIG n'est pas chargé
+            document.getElementById('normalStop1').style.stopColor = '#00ff00';
+            document.getElementById('normalStop2').style.stopColor = '#00ffff';
+            document.getElementById('warningStop1').style.stopColor = '#ff9500';
+            document.getElementById('warningStop2').style.stopColor = '#ffcc00';
+            document.getElementById('dangerStop1').style.stopColor = '#ff3b30';
+            document.getElementById('dangerStop2').style.stopColor = '#ff6b60';
+            document.getElementById('overtimeStop1').style.stopColor = '#ff0000';
+            document.getElementById('overtimeStop2').style.stopColor = '#ff00ff';
+        }
+
+        function handleButtonClick() {
+            debugLog('Button clicked', 'info', { gameStarted, isRunning, isStopped });
+            if (!gameStarted) {
+                startLaunchCountdown();
+            } else if (isStopped) {
+                restartGame();
+            } else {
+                stopGame();
+            }
+        }
+
+        function handlePauseClick() {
+            const pauseButton = document.getElementById('pauseButton');
+            
+            if (!gameStarted || isStopped) return;
+            
+            if (isPaused) {
+                // Reprendre
+                isPaused = false;
+                startTime = Date.now() - pausedTime;
+                timerInterval = setInterval(updateTimer, 10);
+                pauseButton.textContent = '⏸';
+                pauseButton.style.background = 'rgba(255, 165, 0, 0.2)';
+                pauseButton.style.color = '#ffa500';
+                pauseButton.style.borderColor = 'rgba(255, 165, 0, 0.4)';
+                debugLog('Game resumed', 'info');
+            } else {
+                // Pause
+                isPaused = true;
+                pausedTime = Date.now() - startTime;
+                clearInterval(timerInterval);
+                pauseButton.textContent = '▶';
+                pauseButton.style.background = 'rgba(0, 200, 0, 0.2)';
+                pauseButton.style.color = '#00c800';
+                pauseButton.style.borderColor = 'rgba(0, 200, 0, 0.4)';
+                debugLog('Game paused', 'info', { pausedAt: (pausedTime / 1000).toFixed(2) + 's' });
+            }
+        }
+
+        function startLaunchCountdown() {
+            debugLog('Starting launch countdown', 'state');
+            stopButton.disabled = true;
+            stopButton.style.opacity = '0.2';
+            stopButton.style.cursor = 'not-allowed';
+            
+            let count = 3;
+            countdownElement.textContent = count;
+            countdownElement.style.fontSize = '120px';
+            
+            const launchInterval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdownElement.textContent = count;
+                    playBeep(600, 100);
+                } else {
+                    clearInterval(launchInterval);
+                    playFinalBeep();
+                    setTimeout(() => {
+                        startGame();
+                    }, 500);
+                }
+            }, 1000);
+        }
+
+        function startGame() {
+            debugLog('Game started', 'success', { countdownDuration: typeof CONFIG !== 'undefined' ? CONFIG.countdownDuration : 60 });
+            gameStarted = true;
+            isRunning = true;
+            isPaused = false;
+            pausedTime = 0;
+            countdownElement.style.fontSize = '80px';
+            stopButton.disabled = false;
+            stopButton.style.opacity = '';
+            stopButton.style.cursor = 'pointer';
+            stopButton.textContent = 'STOP';
+            
+            const pauseButton = document.getElementById('pauseButton');
+            pauseButton.classList.add('visible');
+            pauseButton.textContent = '⏸';
+            pauseButton.disabled = false;
+            
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 10);
+        }
+
+        function restartGame() {
+            debugLog('Game restarted', 'state');
+            // Réinitialiser toutes les variables
+            isRunning = false;
+            isStopped = false;
+            gameStarted = false;
+            isPaused = false;
+            pausedTime = 0;
+            lastSecond = CONFIG.countdownDuration;
+            
+            // Réinitialiser l'affichage
+            document.body.classList.remove('game-over');
+            borderSvg.classList.remove('hidden');
+            countdownElement.classList.remove('hidden', 'warning', 'danger');
+            overtimeElement.classList.add('hidden');
+            totalTimeElement.classList.add('hidden');
+            countdownElement.textContent = '';
+            
+            // Réinitialiser les boutons
+            stopButton.textContent = 'LANCER';
+            stopButton.style.opacity = '';
+            stopButton.style.cursor = 'pointer';
+            
+            const pauseButton = document.getElementById('pauseButton');
+            pauseButton.classList.remove('visible');
+            pauseButton.disabled = true;
+            
+            // Réinitialiser la bordure
+            borderRect.setAttribute('stroke', 'url(#gradientNormal)');
+            borderRect.classList.remove('overtime');
+            updateBorders(100, '');
+        }
+
+        function playBeep(frequency = 800, duration = 100) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = frequency;
+            oscillator.type = 'sine';
+
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration / 1000);
+        }
+
+        function playFinalBeep() {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = 400;
+            oscillator.type = 'sine';
+
+            gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        // Calculer le périmètre du rectangle pour stroke-dasharray
+        const rectPerimeter = 2 * (996 + 558.5);
+        borderRect.style.strokeDasharray = rectPerimeter;
+
+        function updateBorders(percentage, state) {
+            // percentage: 0 (fin) à 100 (début)
+            // En overtime, remettre la bordure complète
+            const dashOffset = state === 'overtime' ? 0 : rectPerimeter * (1 - percentage / 100);
+            borderRect.style.strokeDashoffset = dashOffset;
+            
+            debugLog(`Border update: ${state}`, 'info', { percentage: percentage.toFixed(2), dashOffset });
+            
+            // Changer le gradient selon l'état
+            if (state === 'overtime') {
+                borderRect.setAttribute('stroke', 'url(#gradientOvertime)');
+                borderRect.classList.add('overtime');
+                debugLog('Overtime animation activated', 'warning');
+            } else {
+                borderRect.classList.remove('overtime');
+                if (state === 'danger') {
+                    borderRect.setAttribute('stroke', 'url(#gradientDanger)');
+                } else if (state === 'warning') {
+                    borderRect.setAttribute('stroke', 'url(#gradientWarning)');
+                } else {
+                    borderRect.setAttribute('stroke', 'url(#gradientNormal)');
+                }
+            }
+        }
+
+        function updateTimer() {
+            if (!isRunning || isStopped) return;
+
+            const elapsed = Date.now() - startTime;
+            const totalSeconds = elapsed / 1000;
+            const countdownDuration = typeof CONFIG !== 'undefined' ? CONFIG.countdownDuration : 60;
+
+            if (totalSeconds < countdownDuration) {
+                const remaining = countdownDuration - totalSeconds;
+                const displayValue = Math.ceil(remaining);
+                const percentage = (remaining / countdownDuration) * 100;
+                
+                countdownElement.textContent = displayValue;
+                
+                if (displayValue !== lastSecond) {
+                    if (displayValue <= 10 && displayValue > 0) {
+                        playBeep(800 + (10 - displayValue) * 100, 80);
+                    } else if (displayValue === 0) {
+                        playFinalBeep();
+                    }
+                    lastSecond = displayValue;
+                }
+                
+                // Mettre à jour les bordures et couleurs
+                if (displayValue <= 5) {
+                    countdownElement.className = 'countdown danger';
+                    updateBorders(percentage, 'danger');
+                } else if (displayValue <= 10) {
+                    countdownElement.className = 'countdown warning';
+                    updateBorders(percentage, 'warning');
+                } else {
+                    countdownElement.className = 'countdown';
+                    updateBorders(percentage, '');
+                }
+
+                overtimeElement.classList.add('hidden');
+                totalTimeElement.classList.add('hidden');
+            } else {
+                const overtimeSeconds = totalSeconds - CONFIG.countdownDuration;
+                
+                if (Math.floor(overtimeSeconds) === 0 && lastSecond !== -999) {
+                    debugLog('Entering OVERTIME', 'error', { overtimeSeconds });
+                    lastSecond = -999;
+                }
+                
+                // Bordures clignotantes en rouge
+                updateBorders(0, 'overtime');
+                
+                countdownElement.classList.add('hidden');
+                overtimeElement.classList.remove('hidden');
+                overtimeElement.textContent = `+${Math.floor(overtimeSeconds)}sec`;
+                
+                totalTimeElement.classList.remove('hidden');
+                totalTimeElement.textContent = formatTotalTime(totalSeconds);
+            }
+        }
+
+        function formatTotalTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            
+            let result = '';
+            if (minutes > 0) {
+                result += `${minutes}min `;
+            }
+            if (secs > 0 || minutes === 0) {
+                result += `${secs}sec`;
+            }
+            
+            return result.trim();
+        }
+
+        function stopGame() {
+            if (isStopped) return;
+            
+            debugLog('Game stopped', 'warning');
+            isStopped = true;
+            isRunning = false;
+            clearInterval(timerInterval);
+            
+            const elapsed = Date.now() - startTime;
+            const totalSeconds = elapsed / 1000;
+            
+            debugLog('Stop time', 'info', { totalSeconds: totalSeconds.toFixed(2), countdownDuration: CONFIG.countdownDuration });
+            
+            document.body.classList.add('game-over');
+            
+            // Masquer la bordure
+            borderSvg.classList.add('hidden');
+            
+            const countdownDuration = typeof CONFIG !== 'undefined' ? CONFIG.countdownDuration : 60;
+            if (totalSeconds < countdownDuration) {
+                const remaining = countdownDuration - totalSeconds;
+                countdownElement.textContent = Math.ceil(remaining);
+                countdownElement.classList.remove('warning', 'danger', 'hidden');
+                countdownElement.classList.add('countdown');
+                overtimeElement.classList.add('hidden');
+                totalTimeElement.classList.add('hidden');
+                debugLog('Stopped before end', 'info', { remaining: remaining.toFixed(2) });
+            } else {
+                const overtimeSeconds = totalSeconds - countdownDuration;
+                countdownElement.classList.add('hidden');
+                overtimeElement.classList.remove('hidden');
+                overtimeElement.textContent = `+${Math.floor(overtimeSeconds)}sec`;
+                totalTimeElement.classList.remove('hidden');
+                totalTimeElement.textContent = formatTotalTime(totalSeconds);
+                debugLog('Stopped in overtime', 'warning', { overtime: overtimeSeconds.toFixed(2) });
+            }
+            
+            stopButton.textContent = 'RELANCER';
+            stopButton.style.cursor = 'pointer';
+            
+            // Cacher le bouton pause
+            const pauseButton = document.getElementById('pauseButton');
+            pauseButton.classList.remove('visible');
+            pauseButton.disabled = true;
+        }
+
+        document.addEventListener('click', () => {
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }, { once: true });
+        
+    </script>
+</body>
+</html>
