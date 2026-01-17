@@ -53,16 +53,28 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
+            transition: opacity 0.8s ease-out;
         }
 
         .progress-border-svg rect {
             fill: none;
             stroke-width: 4;
-            transition: stroke 0.3s ease, opacity 0.3s ease;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: stroke 0.6s ease-out, opacity 0.3s ease;
+        }
+
+        /* Transition fluide pour les couleurs des gradients */
+        .progress-border-svg stop {
+            transition: stop-color 0.6s ease-out;
         }
 
         .progress-border-svg rect.overtime {
             animation: borderFade 0.6s ease-in-out infinite !important;
+        }
+
+        .progress-border-svg.fade-out {
+            opacity: 0.15;
         }
 
         .progress-border-svg.hidden {
@@ -92,104 +104,70 @@
             overflow: hidden;
         }
 
-        /* Dégradé animé avec vagues fluides */
+        /* Dégradé animé avec vagues fluides - SIMPLIFIÉ */
         .waves-container {
             z-index: 0;
             position: absolute;
             inset: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             overflow: hidden;
             pointer-events: none;
         }
 
         .gradient {
-            --size: 350px;
-            --speed: 15s;
-            --easing: cubic-bezier(0.8, 0.2, 0.2, 0.8);
+            --size: 700px;
+            --speed: 28s;
             position: absolute;
+            top: 50%;
+            left: 50%;
             width: var(--size);
             height: var(--size);
-            filter: blur(60px);
-            will-change: transform;
-            background-image: linear-gradient(45deg, hsl(270, 80%, 50%), hsl(290, 70%, 60%), hsl(250, 90%, 40%));
-            animation: rotate1 var(--speed) var(--easing) infinite, morph 8s ease-in-out infinite alternate;
+            margin-left: calc(var(--size) / -2);
+            margin-top: calc(var(--size) / -2);
+            filter: blur(45px);
+            background-image: linear-gradient(45deg, hsl(270, 80%, 50%), hsl(290, 70%, 60%));
+            animation: rotate1 var(--speed) ease-in-out infinite;
             border-radius: 50%;
-            opacity: 0.2;
+            opacity: 0.15;
         }
 
         .gradient:nth-child(2) {
-            --speed: 18s;
-            animation: rotate2 var(--speed) var(--easing) infinite, morph 9s ease-in-out infinite alternate;
-            animation-delay: -3s;
-            background-image: linear-gradient(135deg, hsl(200, 70%, 50%), hsl(220, 80%, 60%));
+            --size: 650px;
+            --speed: 35s;
+            animation: rotate2 var(--speed) ease-in-out infinite;
+            animation-delay: -10s;
+            background-image: linear-gradient(135deg, hsl(280, 75%, 55%), hsl(260, 85%, 45%));
         }
 
         .gradient:nth-child(3) {
-            --speed: 20s;
-            animation: rotate3 var(--speed) var(--easing) infinite, morph 7s ease-in-out infinite alternate;
-            animation-delay: -7s;
-            background-image: linear-gradient(225deg, hsl(180, 70%, 50%), hsl(160, 80%, 55%));
-        }
-
-        .gradient:nth-child(4) {
-            --speed: 16s;
-            animation: rotate4 var(--speed) var(--easing) infinite, morph 10s ease-in-out infinite alternate;
-            animation-delay: -11s;
-            background-image: linear-gradient(315deg, hsl(310, 70%, 50%), hsl(330, 75%, 55%));
-        }
-
-        .gradient:nth-child(5) {
-            --speed: 22s;
-            animation: rotate5 var(--speed) var(--easing) infinite, morph 6s ease-in-out infinite alternate;
-            animation-delay: -5s;
-            background-image: linear-gradient(90deg, hsl(50, 75%, 55%), hsl(70, 80%, 60%));
-        }
-
-        .gradient:nth-child(6) {
-            --speed: 19s;
-            animation: rotate6 var(--speed) var(--easing) infinite, morph 11s ease-in-out infinite alternate;
-            animation-delay: -9s;
-            background-image: linear-gradient(180deg, hsl(340, 70%, 50%), hsl(360, 75%, 55%));
-        }
-
-        .gradient:nth-child(7) {
-            --speed: 17s;
-            animation: rotate7 var(--speed) var(--easing) infinite, morph 9.5s ease-in-out infinite alternate;
-            animation-delay: -13s;
-            background-image: linear-gradient(270deg, hsl(120, 65%, 50%), hsl(140, 70%, 55%));
-        }
-
-        .gradient:nth-child(8) {
-            --speed: 21s;
-            animation: rotate8 var(--speed) var(--easing) infinite, morph 7.5s ease-in-out infinite alternate;
-            animation-delay: -15s;
-            background-image: linear-gradient(60deg, hsl(30, 70%, 55%), hsl(45, 75%, 60%));
+            --size: 750px;
+            --speed: 32s;
+            animation: rotate3 var(--speed) ease-in-out infinite;
+            animation-delay: -18s;
+            background-image: linear-gradient(225deg, hsl(275, 70%, 50%), hsl(285, 75%, 60%));
         }
 
         @keyframes rotate1 {
-            0% { transform: translate(-100%, -100%) rotate(0deg); }
-            25% { transform: translate(120%, -60%) rotate(90deg); }
-            50% { transform: translate(60%, 110%) rotate(180deg); }
-            75% { transform: translate(-70%, 40%) rotate(270deg); }
-            100% { transform: translate(-100%, -100%) rotate(360deg); }
+            0% { transform: translate(calc(-50vw + 100px), calc(-28vh + 50px)) rotate(0deg) scale(1); }
+            25% { transform: translate(calc(50vw - 100px), calc(-28vh + 80px)) rotate(90deg) scale(1.1); }
+            50% { transform: translate(calc(45vw - 100px), calc(28vh - 80px)) rotate(180deg) scale(0.95); }
+            75% { transform: translate(calc(-45vw + 100px), calc(22vh - 70px)) rotate(270deg) scale(1.05); }
+            100% { transform: translate(calc(-50vw + 100px), calc(-28vh + 50px)) rotate(360deg) scale(1); }
         }
 
         @keyframes rotate2 {
-            0% { transform: translate(80%, -90%) rotate(0deg); }
-            25% { transform: translate(-110%, -40%) rotate(85deg); }
-            50% { transform: translate(-50%, 120%) rotate(175deg); }
-            75% { transform: translate(90%, 50%) rotate(265deg); }
-            100% { transform: translate(80%, -90%) rotate(360deg); }
+            0% { transform: translate(calc(48vw - 120px), calc(26vh - 90px)) rotate(0deg) scale(1); }
+            33% { transform: translate(calc(-40vw + 110px), calc(18vh - 60px)) rotate(120deg) scale(0.9); }
+            66% { transform: translate(calc(30vw - 90px), calc(-27vh + 70px)) rotate(240deg) scale(1.15); }
+            100% { transform: translate(calc(48vw - 120px), calc(26vh - 90px)) rotate(360deg) scale(1); }
         }
 
         @keyframes rotate3 {
-            0% { transform: translate(-80%, 80%) rotate(0deg); }
-            25% { transform: translate(100%, 100%) rotate(95deg); }
-            50% { transform: translate(-120%, -60%) rotate(185deg); }
-            75% { transform: translate(40%, -80%) rotate(275deg); }
-            100% { transform: translate(-80%, 80%) rotate(360deg); }
+            0% { transform: translate(0, calc(-28vh + 60px)) rotate(0deg) scale(1); }
+            20% { transform: translate(calc(-47vw + 130px), calc(-12vh + 40px)) rotate(72deg) scale(1.08); }
+            40% { transform: translate(calc(-28vw + 90px), calc(25vh - 85px)) rotate(144deg) scale(0.92); }
+            60% { transform: translate(calc(40vw - 110px), calc(27vh - 95px)) rotate(216deg) scale(1.12); }
+            80% { transform: translate(calc(50vw - 130px), calc(-10vh + 35px)) rotate(288deg) scale(0.98); }
+            100% { transform: translate(0, calc(-28vh + 60px)) rotate(360deg) scale(1); }
         }
 
         @keyframes rotate4 {
@@ -255,8 +233,8 @@
             font-size: 80px;
             font-weight: bold;
             text-shadow: 
-                0 0 10px rgba(255, 255, 255, 0.5),
-                0 0 20px rgba(200, 100, 255, 0.4);
+                0 2px 8px rgba(0, 0, 0, 0.8),
+                0 4px 16px rgba(0, 0, 0, 0.6);
             animation: pulse 1s ease-in-out infinite;
             transition: all 0.3s ease;
         }
@@ -278,8 +256,8 @@
 
         @keyframes shake {
             0%, 100% { transform: translateX(0) scale(1); }
-            25% { transform: translateX(-10px) scale(1.05); }
-            75% { transform: translateX(10px) scale(1.05); }
+            25% { transform: translateX(-5px) scale(1.05); }
+            75% { transform: translateX(5px) scale(1.05); }
         }
 
         .overtime {
@@ -287,8 +265,8 @@
             font-weight: bold;
             color: #ff3b30;
             text-shadow: 
-                0 0 10px rgba(255, 59, 48, 0.5),
-                0 0 20px rgba(255, 59, 48, 0.4);
+                0 2px 8px rgba(0, 0, 0, 0.8),
+                0 4px 16px rgba(0, 0, 0, 0.6);
             animation: blink 0.5s ease-in-out infinite;
         }
 
@@ -300,7 +278,7 @@
         .total-time {
             font-size: 24px;
             color: rgba(255, 255, 255, 0.9);
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.4);
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
             margin-top: -8px;
         }
 
@@ -611,19 +589,15 @@
                     <stop offset="100%" id="overtimeStop2" />
                 </linearGradient>
             </defs>
-            <rect id="borderRect" x="2" y="2" width="996" height="558.5" stroke="url(#gradientNormal)" />
+            <!-- Bordure de fond (trace) avec opacité réduite -->
+            <rect id="borderBackground" x="2" y="2" width="996" height="558.5" stroke="url(#gradientNormal)" stroke-linecap="round" stroke-linejoin="round" opacity="0.5" />
+            <!-- Bordure animée principale -->
+            <rect id="borderRect" x="2" y="2" width="996" height="558.5" stroke="url(#gradientNormal)" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         
         <div class="main-content">
-            <div class="waves-container">
-                <div class="gradient"></div>
-                <div class="gradient"></div>
-                <div class="gradient"></div>
-                <div class="gradient"></div>
-                <div class="gradient"></div>
-                <div class="gradient"></div>
-                <div class="gradient"></div>
-                <div class="gradient"></div>
+            <div class="waves-container" id="wavesContainer">
+                <!-- Les gradients seront générés dynamiquement -->
             </div>
 
             <div class="container">
@@ -648,7 +622,7 @@
             </div>
             <div class="config-row">
                 <label class="config-label" for="durationInput">Durée (sec):</label>
-                <input type="number" id="durationInput" class="config-input" min="1" max="300" value="60" onchange="applyConfigFromPanel()">
+                <input type="number" id="durationInput" class="config-input" min="1" max="999" value="60" onchange="applyConfigFromPanel()">
             </div>
         </div>
     </div>
@@ -857,6 +831,44 @@
 
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
+        // Générer dynamiquement les gradients
+        function generateGradients() {
+            const wavesContainer = document.getElementById('wavesContainer');
+            const numberOfGradients = (typeof CONFIG !== 'undefined' && CONFIG.numberOfGradients) ? CONFIG.numberOfGradients : 3;
+            
+            // Définir les couleurs disponibles
+            const gradientColors = [
+                { angle: 45, color1: CONFIG.gradient1Color1, color2: CONFIG.gradient1Color2 },
+                { angle: 135, color1: CONFIG.gradient2Color1, color2: CONFIG.gradient2Color2 },
+                { angle: 225, color1: CONFIG.gradient3Color1, color2: CONFIG.gradient3Color2 }
+            ];
+            
+            // Générer les éléments gradient
+            for (let i = 0; i < numberOfGradients; i++) {
+                const div = document.createElement('div');
+                div.className = 'gradient';
+                
+                // Choisir aléatoirement une des 3 couleurs
+                const randomColor = gradientColors[Math.floor(Math.random() * 3)];
+                div.style.backgroundImage = `linear-gradient(${randomColor.angle}deg, ${randomColor.color1}, ${randomColor.color2})`;
+                
+                // Varier légèrement la taille pour plus de diversité
+                const sizeVariation = 650 + Math.random() * 150; // Entre 650px et 800px
+                div.style.width = `${sizeVariation}px`;
+                div.style.height = `${sizeVariation}px`;
+                div.style.setProperty('--size', `${sizeVariation}px`);
+                
+                // Assigner une animation différente (cycle entre les 3 animations)
+                const animationIndex = (i % 3) + 1;
+                div.style.animation = `rotate${animationIndex} ${28 + i * 2}s ease-in-out infinite`;
+                div.style.animationDelay = `${-i * 5}s`;
+                
+                wavesContainer.appendChild(div);
+            }
+            
+            debugLog(`Generated ${numberOfGradients} gradients`, 'info');
+        }
+
         // Initialiser les couleurs des dégradés depuis le config (avec fallback)
         if (typeof CONFIG !== 'undefined') {
             document.getElementById('normalStop1').style.stopColor = CONFIG.borderColor1;
@@ -868,16 +880,8 @@
             document.getElementById('overtimeStop1').style.stopColor = CONFIG.overtimeColor1;
             document.getElementById('overtimeStop2').style.stopColor = CONFIG.overtimeColor2;
             
-            // Appliquer les couleurs des gradients animés
-            const gradients = document.querySelectorAll('.gradient');
-            if (gradients[0]) gradients[0].style.backgroundImage = `linear-gradient(45deg, ${CONFIG.gradient1Color1}, ${CONFIG.gradient1Color2}, ${CONFIG.gradient1Color3})`;
-            if (gradients[1]) gradients[1].style.backgroundImage = `linear-gradient(135deg, ${CONFIG.gradient2Color1}, ${CONFIG.gradient2Color2})`;
-            if (gradients[2]) gradients[2].style.backgroundImage = `linear-gradient(225deg, ${CONFIG.gradient3Color1}, ${CONFIG.gradient3Color2})`;
-            if (gradients[3]) gradients[3].style.backgroundImage = `linear-gradient(315deg, ${CONFIG.gradient4Color1}, ${CONFIG.gradient4Color2})`;
-            if (gradients[4]) gradients[4].style.backgroundImage = `linear-gradient(90deg, ${CONFIG.gradient5Color1}, ${CONFIG.gradient5Color2})`;
-            if (gradients[5]) gradients[5].style.backgroundImage = `linear-gradient(180deg, ${CONFIG.gradient6Color1}, ${CONFIG.gradient6Color2})`;
-            if (gradients[6]) gradients[6].style.backgroundImage = `linear-gradient(270deg, ${CONFIG.gradient7Color1}, ${CONFIG.gradient7Color2})`;
-            if (gradients[7]) gradients[7].style.backgroundImage = `linear-gradient(60deg, ${CONFIG.gradient8Color1}, ${CONFIG.gradient8Color2})`;
+            // Générer les gradients dynamiquement
+            generateGradients();
         } else {
             // Valeurs par défaut si CONFIG n'est pas chargé
             document.getElementById('normalStop1').style.stopColor = '#00ff00';
@@ -987,7 +991,7 @@
             
             // Réinitialiser l'affichage
             document.body.classList.remove('game-over');
-            borderSvg.classList.remove('hidden');
+            borderSvg.classList.remove('hidden', 'fade-out');
             countdownElement.classList.remove('hidden', 'warning', 'danger');
             overtimeElement.classList.add('hidden');
             totalTimeElement.classList.add('hidden');
@@ -1004,6 +1008,7 @@
             
             // Réinitialiser la bordure
             borderRect.setAttribute('stroke', 'url(#gradientNormal)');
+            borderBackground.setAttribute('stroke', 'url(#gradientNormal)');
             borderRect.classList.remove('overtime');
             updateBorders(100, '');
         }
@@ -1044,6 +1049,7 @@
 
         // Calculer le périmètre du rectangle pour stroke-dasharray
         const rectPerimeter = 2 * (996 + 558.5);
+        const borderBackground = document.getElementById('borderBackground');
         borderRect.style.strokeDasharray = rectPerimeter;
 
         function updateBorders(percentage, state) {
@@ -1054,19 +1060,23 @@
             
             debugLog(`Border update: ${state}`, 'info', { percentage: percentage.toFixed(2), dashOffset });
             
-            // Changer le gradient selon l'état
+            // Changer le gradient selon l'état (pour les deux bordures)
             if (state === 'overtime') {
                 borderRect.setAttribute('stroke', 'url(#gradientOvertime)');
+                borderBackground.setAttribute('stroke', 'url(#gradientOvertime)');
                 borderRect.classList.add('overtime');
                 debugLog('Overtime animation activated', 'warning');
             } else {
                 borderRect.classList.remove('overtime');
                 if (state === 'danger') {
                     borderRect.setAttribute('stroke', 'url(#gradientDanger)');
+                    borderBackground.setAttribute('stroke', 'url(#gradientDanger)');
                 } else if (state === 'warning') {
                     borderRect.setAttribute('stroke', 'url(#gradientWarning)');
+                    borderBackground.setAttribute('stroke', 'url(#gradientWarning)');
                 } else {
                     borderRect.setAttribute('stroke', 'url(#gradientNormal)');
+                    borderBackground.setAttribute('stroke', 'url(#gradientNormal)');
                 }
             }
         }
@@ -1080,7 +1090,7 @@
 
             if (totalSeconds < countdownDuration) {
                 const remaining = countdownDuration - totalSeconds;
-                const displayValue = Math.ceil(remaining);
+                const displayValue = Math.floor(remaining);
                 const percentage = (remaining / countdownDuration) * 100;
                 
                 countdownElement.textContent = displayValue;
@@ -1158,8 +1168,8 @@
             
             document.body.classList.add('game-over');
             
-            // Masquer la bordure
-            borderSvg.classList.add('hidden');
+            // Diminuer l'opacité de la bordure progressivement
+            borderSvg.classList.add('fade-out');
             
             const countdownDuration = typeof CONFIG !== 'undefined' ? CONFIG.countdownDuration : 60;
             if (totalSeconds < countdownDuration) {
