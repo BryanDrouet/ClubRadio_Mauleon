@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>60 Secondes Challenge - ClubRadio Mauléon</title>
     <link rel="icon" href="../assets/off.ico" type="image/x-icon">
-    <script src="60secondes/config.js"></script>
+    <script src="config.js"></script>
     <style>
         @font-face {
             font-family: 'Monofonto';
@@ -522,7 +522,6 @@
 
         .config-input[type=number] {
             -moz-appearance: textfield;
-            appearance: textfield;
         }
 
         .config-input:focus {
@@ -1090,7 +1089,8 @@
 
             if (totalSeconds < countdownDuration) {
                 const remaining = countdownDuration - totalSeconds;
-                const displayValue = Math.floor(remaining);
+                // Afficher au minimum 1 tant qu'on n'est pas en overtime
+                const displayValue = Math.max(1, Math.ceil(remaining));
                 const percentage = (remaining / countdownDuration) * 100;
                 
                 countdownElement.textContent = displayValue;
