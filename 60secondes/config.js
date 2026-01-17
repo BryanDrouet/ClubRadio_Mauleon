@@ -48,6 +48,10 @@ const CONFIG = {
     gradient3Color1: 'hsl(275, 70%, 50%)',
     gradient3Color2: 'hsl(285, 75%, 60%)',
     
+    // Modes d'affichage
+    waitingScreenMode: false,    // Mode écran d'attente
+    showBackgroundImage: true,   // Afficher l'image de fond
+    
     // Activer les logs de debug
     debugMode: false
 };

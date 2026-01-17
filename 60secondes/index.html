@@ -1335,6 +1335,12 @@
             params.set('debugMode', CONFIG.debugMode ? 'true' : 'false');
             params.set('waitingScreenMode', CONFIG.waitingScreenMode ? 'true' : 'false');
             
+            // Ajouter l'état de l'image de fond
+            const backgroundImageCheckbox = document.getElementById('backgroundImageCheckbox');
+            if (backgroundImageCheckbox) {
+                params.set('showBackgroundImage', backgroundImageCheckbox.checked ? 'true' : 'false');
+            }
+            
             // Ajouter l'état des panels
             const modesPanel = document.getElementById('modesPanel');
             const timerPanel = document.getElementById('timerPanel');
@@ -1519,6 +1525,16 @@
                 const waitingScreenCheckbox = document.getElementById('waitingScreenCheckbox');
                 if (waitingScreenCheckbox) {
                     waitingScreenCheckbox.checked = CONFIG.waitingScreenMode || false;
+                }
+                const backgroundImageCheckbox = document.getElementById('backgroundImageCheckbox');
+                if (backgroundImageCheckbox) {
+                    // Initialiser la checkbox depuis CONFIG (qui a été rempli avec l'URL)
+                    backgroundImageCheckbox.checked = CONFIG.showBackgroundImage !== undefined ? CONFIG.showBackgroundImage : true;
+                    // Appliquer immédiatement l'état à l'image
+                    const backgroundImage = document.getElementById('backgroundImage');
+                    if (backgroundImage) {
+                        backgroundImage.style.display = backgroundImageCheckbox.checked ? 'block' : 'none';
+                    }
                 }
                 durationInput.value = CONFIG.countdownDuration;
                 gradientsInput.value = CONFIG.numberOfGradients !== undefined ? CONFIG.numberOfGradients : 5;
@@ -1945,6 +1961,12 @@
             if (params.has('waitingScreenMode')) {
                 const waitingScreen = params.get('waitingScreenMode');
                 urlConfig.waitingScreenMode = (waitingScreen === 'true' || waitingScreen === '1');
+            }
+            
+            // showBackgroundImage
+            if (params.has('showBackgroundImage')) {
+                const showBg = params.get('showBackgroundImage');
+                urlConfig.showBackgroundImage = (showBg === 'true' || showBg === '1');
             }
             
             // numberOfGradients
