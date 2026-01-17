@@ -1,7 +1,11 @@
 // Configuration du jeu 60 secondes
 const CONFIG = {
     // Durée du décompte en secondes
-    countdownDuration: 60,
+    countdownDuration: 30,
+    
+    // Seuils d'alerte en secondes
+    warningThreshold: 10,  // Passage en warning à X secondes
+    dangerThreshold: 5,    // Passage en danger à X secondes
     
     // Couleurs de la bordure (dégradé)
     borderColor1: '#5a2d81',  // Violet foncé

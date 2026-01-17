@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Horloge à gauche</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: flex-start; /* aligné à gauche */
+      align-items: center;         /* centré verticalement */
+      padding-left: 30px;          /* espace depuis le bord gauche */
+    }
+  </style>
+</head>
+<body translate="no">
+  <div id="output" 
+       style="display: inline-block;
+              font-family: monospace;
+              font-size: 30px;
+              text-align: left;
+              color: lightgray; 
+              border-radius: 10px; 
+              padding: 10px; 
+              background-color: rgba(0, 0, 0, 0.75);">
+    <div id="time"></div>
+    <div id="date" style="font-size: 20px; margin-top: 5px;"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/locale/fr.js"></script>
+  <script>
+    moment.locale('fr');
+    const timeEl = document.getElementById("time");
+    const dateEl = document.getElementById("date");
+
+    function updateClock() {
+      timeEl.innerText = moment().format('HH:mm:ss');
+      dateEl.innerText = moment().format('dddd D MMMM YYYY');
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>

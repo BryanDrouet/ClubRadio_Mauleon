@@ -59,8 +59,8 @@
         .progress-border-svg rect {
             fill: none;
             stroke-width: 4;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+            stroke-linecap: butt;
+            stroke-linejoin: miter;
             transition: stroke 0.6s ease-out, opacity 0.3s ease;
         }
 
@@ -86,7 +86,7 @@
                 opacity: 1;
             }
             50% {
-                opacity: 0.2;
+                opacity: 0.05;
             }
         }
 
@@ -114,7 +114,7 @@
         }
 
         .gradient {
-            --size: 700px;
+            --size: 500px;
             --speed: 28s;
             position: absolute;
             top: 50%;
@@ -123,15 +123,17 @@
             height: var(--size);
             margin-left: calc(var(--size) / -2);
             margin-top: calc(var(--size) / -2);
-            filter: blur(45px);
+            filter: blur(20px);
             background-image: linear-gradient(45deg, hsl(270, 80%, 50%), hsl(290, 70%, 60%));
             animation: rotate1 var(--speed) ease-in-out infinite;
             border-radius: 50%;
             opacity: 0.15;
+            will-change: transform;
+            transform: translateZ(0);
         }
 
         .gradient:nth-child(2) {
-            --size: 650px;
+            --size: 480px;
             --speed: 35s;
             animation: rotate2 var(--speed) ease-in-out infinite;
             animation-delay: -10s;
@@ -139,7 +141,7 @@
         }
 
         .gradient:nth-child(3) {
-            --size: 750px;
+            --size: 520px;
             --speed: 32s;
             animation: rotate3 var(--speed) ease-in-out infinite;
             animation-delay: -18s;
@@ -147,27 +149,22 @@
         }
 
         @keyframes rotate1 {
-            0% { transform: translate(calc(-50vw + 100px), calc(-28vh + 50px)) rotate(0deg) scale(1); }
-            25% { transform: translate(calc(50vw - 100px), calc(-28vh + 80px)) rotate(90deg) scale(1.1); }
-            50% { transform: translate(calc(45vw - 100px), calc(28vh - 80px)) rotate(180deg) scale(0.95); }
-            75% { transform: translate(calc(-45vw + 100px), calc(22vh - 70px)) rotate(270deg) scale(1.05); }
-            100% { transform: translate(calc(-50vw + 100px), calc(-28vh + 50px)) rotate(360deg) scale(1); }
+            0% { transform: translate(-40vw, -20vh) rotate(0deg) translateZ(0); }
+            50% { transform: translate(40vw, 20vh) rotate(180deg) translateZ(0); }
+            100% { transform: translate(-40vw, -20vh) rotate(360deg) translateZ(0); }
         }
 
         @keyframes rotate2 {
-            0% { transform: translate(calc(48vw - 120px), calc(26vh - 90px)) rotate(0deg) scale(1); }
-            33% { transform: translate(calc(-40vw + 110px), calc(18vh - 60px)) rotate(120deg) scale(0.9); }
-            66% { transform: translate(calc(30vw - 90px), calc(-27vh + 70px)) rotate(240deg) scale(1.15); }
-            100% { transform: translate(calc(48vw - 120px), calc(26vh - 90px)) rotate(360deg) scale(1); }
+            0% { transform: translate(35vw, 18vh) rotate(0deg) translateZ(0); }
+            50% { transform: translate(-35vw, -18vh) rotate(180deg) translateZ(0); }
+            100% { transform: translate(35vw, 18vh) rotate(360deg) translateZ(0); }
         }
 
         @keyframes rotate3 {
-            0% { transform: translate(0, calc(-28vh + 60px)) rotate(0deg) scale(1); }
-            20% { transform: translate(calc(-47vw + 130px), calc(-12vh + 40px)) rotate(72deg) scale(1.08); }
-            40% { transform: translate(calc(-28vw + 90px), calc(25vh - 85px)) rotate(144deg) scale(0.92); }
-            60% { transform: translate(calc(40vw - 110px), calc(27vh - 95px)) rotate(216deg) scale(1.12); }
-            80% { transform: translate(calc(50vw - 130px), calc(-10vh + 35px)) rotate(288deg) scale(0.98); }
-            100% { transform: translate(0, calc(-28vh + 60px)) rotate(360deg) scale(1); }
+            0% { transform: translate(0, -25vh) rotate(0deg) translateZ(0); }
+            33% { transform: translate(-30vw, 15vh) rotate(120deg) translateZ(0); }
+            66% { transform: translate(30vw, 15vh) rotate(240deg) translateZ(0); }
+            100% { transform: translate(0, -25vh) rotate(360deg) translateZ(0); }
         }
 
         @keyframes rotate4 {
@@ -237,6 +234,20 @@
                 0 4px 16px rgba(0, 0, 0, 0.6);
             animation: pulse 1s ease-in-out infinite;
             transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+        }
+
+        .milliseconds {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            margin-right: -65px;
+            font-size: 24px;
+            font-weight: normal;
+            color: rgba(255, 255, 255, 0.6);
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+            font-family: 'Monofonto', 'Roboto Mono', monospace;
         }
 
         .countdown.warning {
@@ -246,6 +257,16 @@
 
         .countdown.danger {
             color: #ff3b30;
+            animation: pulse 0.3s ease-in-out infinite, shake 0.3s ease-in-out infinite;
+        }
+
+        .countdown.warning .milliseconds {
+            color: rgba(255, 149, 0, 0.5);
+            animation: pulse 0.5s ease-in-out infinite, shake 0.5s ease-in-out infinite;
+        }
+
+        .countdown.danger .milliseconds {
+            color: rgba(255, 59, 48, 0.5);
             animation: pulse 0.3s ease-in-out infinite, shake 0.3s ease-in-out infinite;
         }
 
@@ -367,7 +388,8 @@
 
         /* Panneau de configuration */
         .config-panel {
-            position: relative;
+            position: fixed;
+            bottom: 0;
             left: 50%;
             transform: translateX(-50%);
             z-index: 200;
@@ -377,8 +399,6 @@
             border-bottom: none;
             border-radius: 8px 8px 0 0;
             padding: 12px 16px;
-            margin-top: 10px;
-            margin-bottom: 10px;
             font-family: 'Monofonto', 'Roboto', sans-serif;
             font-size: 11px;
             color: rgba(255, 255, 255, 0.8);
@@ -388,6 +408,7 @@
             width: 90%;
             max-width: 400px;
             max-height: 300px;
+            overflow-y: auto;
             scrollbar-width: none; /* Firefox */
             -ms-overflow-style: none; /* IE/Edge */
         }
@@ -459,8 +480,9 @@
             width: 48px;
             height: 24px;
             cursor: pointer;
-            appearance: none;
             -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 12px;
             outline: none;
@@ -522,6 +544,7 @@
 
         .config-input[type=number] {
             -moz-appearance: textfield;
+            appearance: textfield;
         }
 
         .config-input:focus {
@@ -565,6 +588,61 @@
             background: rgba(0, 255, 0, 0.3);
             border-color: #00ff00;
         }
+
+        .input-with-arrows {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .input-with-arrows input {
+            flex: 1;
+        }
+
+        .arrow-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            height: 100%;
+        }
+
+        .arrow-button {
+            width: 20px;
+            height: 50%;
+            padding: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .arrow-button:first-child {
+            border-radius: 3px 3px 0 0;
+            border-bottom-width: 0.5px;
+        }
+
+        .arrow-button:last-child {
+            border-radius: 0 0 3px 3px;
+            border-top-width: 0.5px;
+        }
+
+        .arrow-button:hover {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: rgba(0, 255, 0, 0.4);
+            color: #00ff00;
+        }
+
+        .arrow-button:active {
+            background: rgba(0, 255, 0, 0.3);
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
@@ -589,9 +667,9 @@
                 </linearGradient>
             </defs>
             <!-- Bordure de fond (trace) avec opacité réduite -->
-            <rect id="borderBackground" x="2" y="2" width="996" height="558.5" stroke="url(#gradientNormal)" stroke-linecap="round" stroke-linejoin="round" opacity="0.5" />
+            <rect id="borderBackground" x="2" y="2" width="996" height="558.5" stroke="url(#gradientNormal)" stroke-linecap="butt" stroke-linejoin="miter" opacity="0.5" />
             <!-- Bordure animée principale -->
-            <rect id="borderRect" x="2" y="2" width="996" height="558.5" stroke="url(#gradientNormal)" stroke-linecap="round" stroke-linejoin="round" />
+            <rect id="borderRect" x="2" y="2" width="996" height="558.5" stroke="url(#gradientNormal)" stroke-linecap="butt" stroke-linejoin="miter" />
         </svg>
         
         <div class="main-content">
@@ -601,6 +679,7 @@
 
             <div class="container">
                 <div id="countdown" class="countdown"></div>
+                <div id="milliseconds" class="milliseconds"></div>
                 <div id="overtime" class="overtime hidden"></div>
                 <div id="totalTime" class="total-time hidden"></div>
             </div>
@@ -621,7 +700,43 @@
             </div>
             <div class="config-row">
                 <label class="config-label" for="durationInput">Durée (sec):</label>
-                <input type="number" id="durationInput" class="config-input" min="1" max="999" value="60" onchange="applyConfigFromPanel()">
+                <div class="input-with-arrows">
+                    <input type="number" id="durationInput" class="config-input" min="1" max="999" value="60" onchange="applyConfigFromPanel()">
+                    <div class="arrow-buttons">
+                        <button class="arrow-button" onmousedown="startIncrement('durationInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▲</button>
+                        <button class="arrow-button" onmousedown="startDecrement('durationInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▼</button>
+                    </div>
+                </div>
+            </div>
+            <div class="config-row">
+                <label class="config-label" for="gradientsInput">Lueurs:</label>
+                <div class="input-with-arrows">
+                    <input type="number" id="gradientsInput" class="config-input" min="0" max="20" value="3" onchange="applyConfigFromPanel()">
+                    <div class="arrow-buttons">
+                        <button class="arrow-button" onmousedown="startIncrement('gradientsInput', 0, 20)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▲</button>
+                        <button class="arrow-button" onmousedown="startDecrement('gradientsInput', 0, 20)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▼</button>
+                    </div>
+                </div>
+            </div>
+            <div class="config-row">
+                <label class="config-label" for="warningInput">Warning (sec):</label>
+                <div class="input-with-arrows">
+                    <input type="number" id="warningInput" class="config-input" min="1" max="999" value="10" onchange="applyConfigFromPanel()">
+                    <div class="arrow-buttons">
+                        <button class="arrow-button" onmousedown="startIncrement('warningInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▲</button>
+                        <button class="arrow-button" onmousedown="startDecrement('warningInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▼</button>
+                    </div>
+                </div>
+            </div>
+            <div class="config-row">
+                <label class="config-label" for="dangerInput">Danger (sec):</label>
+                <div class="input-with-arrows">
+                    <input type="number" id="dangerInput" class="config-input" min="1" max="999" value="5" onchange="applyConfigFromPanel()">
+                    <div class="arrow-buttons">
+                        <button class="arrow-button" onmousedown="startIncrement('dangerInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▲</button>
+                        <button class="arrow-button" onmousedown="startDecrement('dangerInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▼</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -640,6 +755,93 @@
             };
             
             console.log(`%c60SEC`, styles[type], message, data || '');
+        }
+        
+        // Fonctions pour les boutons fléchés avec accélération
+        let incrementInterval = null;
+        let incrementTimeout = null;
+        let incrementSpeed = 200; // Vitesse initiale en ms
+        
+        function startIncrement(inputId, min, max) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            
+            // Premier incrément immédiat
+            const currentValue = parseInt(input.value);
+            input.value = Math.min(max, (isNaN(currentValue) ? min : currentValue) + 1);
+            applyConfigFromPanel();
+            
+            // Démarrer l'accélération progressive après un délai
+            incrementTimeout = setTimeout(() => {
+                incrementSpeed = 200;
+                
+                const doIncrement = () => {
+                    const inputEl = document.getElementById(inputId);
+                    if (!inputEl) return;
+                    
+                    const val = parseInt(inputEl.value);
+                    if (!isNaN(val) && val < max) {
+                        inputEl.value = Math.min(max, val + 1);
+                        applyConfigFromPanel();
+                        
+                        // Accélérer progressivement
+                        if (incrementSpeed > 30) {
+                            incrementSpeed -= 15;
+                            clearInterval(incrementInterval);
+                            incrementInterval = setInterval(doIncrement, incrementSpeed);
+                        }
+                    }
+                };
+                
+                incrementInterval = setInterval(doIncrement, incrementSpeed);
+            }, 300);
+        }
+        
+        function startDecrement(inputId, min, max) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            
+            // Premier décrément immédiat
+            const currentValue = parseInt(input.value);
+            input.value = Math.max(min, (isNaN(currentValue) ? min : currentValue) - 1);
+            applyConfigFromPanel();
+            
+            // Démarrer l'accélération progressive après un délai
+            incrementTimeout = setTimeout(() => {
+                incrementSpeed = 200;
+                
+                const doDecrement = () => {
+                    const inputEl = document.getElementById(inputId);
+                    if (!inputEl) return;
+                    
+                    const val = parseInt(inputEl.value);
+                    if (!isNaN(val) && val > min) {
+                        inputEl.value = Math.max(min, val - 1);
+                        applyConfigFromPanel();
+                        
+                        // Accélérer progressivement
+                        if (incrementSpeed > 30) {
+                            incrementSpeed -= 15;
+                            clearInterval(incrementInterval);
+                            incrementInterval = setInterval(doDecrement, incrementSpeed);
+                        }
+                    }
+                };
+                
+                incrementInterval = setInterval(doDecrement, incrementSpeed);
+            }, 300);
+        }
+        
+        function stopIncrement() {
+            if (incrementInterval) {
+                clearInterval(incrementInterval);
+                incrementInterval = null;
+            }
+            if (incrementTimeout) {
+                clearTimeout(incrementTimeout);
+                incrementTimeout = null;
+            }
+            incrementSpeed = 200;
         }
         
         // Gestion du panneau de configuration
@@ -671,8 +873,16 @@
         
         function updateURL() {
             const params = new URLSearchParams();
-            if (CONFIG.countdownDuration !== 60) {
-                params.set('countdownDuration', CONFIG.countdownDuration);
+            // Toujours inclure countdownDuration et numberOfGradients dans l'URL
+            params.set('countdownDuration', CONFIG.countdownDuration);
+            if (CONFIG.numberOfGradients !== undefined) {
+                params.set('numberOfGradients', CONFIG.numberOfGradients);
+            }
+            if (CONFIG.warningThreshold !== undefined) {
+                params.set('warningThreshold', CONFIG.warningThreshold);
+            }
+            if (CONFIG.dangerThreshold !== undefined) {
+                params.set('dangerThreshold', CONFIG.dangerThreshold);
             }
             if (CONFIG.debugMode === false) {
                 params.set('debugMode', 'false');
@@ -688,20 +898,38 @@
         function initConfigPanel() {
             const debugCheckbox = document.getElementById('debugModeCheckbox');
             const durationInput = document.getElementById('durationInput');
+            const gradientsInput = document.getElementById('gradientsInput');
+            const warningInput = document.getElementById('warningInput');
+            const dangerInput = document.getElementById('dangerInput');
             
             if (typeof CONFIG !== 'undefined') {
                 debugCheckbox.checked = CONFIG.debugMode;
                 durationInput.value = CONFIG.countdownDuration;
+                gradientsInput.value = CONFIG.numberOfGradients !== undefined ? CONFIG.numberOfGradients : 3;
+                warningInput.value = CONFIG.warningThreshold !== undefined ? CONFIG.warningThreshold : 10;
+                dangerInput.value = CONFIG.dangerThreshold !== undefined ? CONFIG.dangerThreshold : 5;
             }
             
-            // Ajouter le support du scroll pour changer la valeur
+            // Ajouter le support du scroll pour changer la valeur de durée
             durationInput.addEventListener('wheel', (e) => {
                 if (document.activeElement === durationInput) {
                     e.preventDefault();
                     const currentValue = parseInt(durationInput.value) || 60;
                     const step = e.deltaY > 0 ? -1 : 1; // Scroll down = diminue, Scroll up = augmente
-                    const newValue = Math.max(1, Math.min(300, currentValue + step));
+                    const newValue = Math.max(1, Math.min(999, currentValue + step));
                     durationInput.value = newValue;
+                    applyConfigFromPanel();
+                }
+            }, { passive: false });
+            
+            // Ajouter le support du scroll pour changer le nombre de gradients
+            gradientsInput.addEventListener('wheel', (e) => {
+                if (document.activeElement === gradientsInput) {
+                    e.preventDefault();
+                    const currentValue = parseInt(gradientsInput.value);
+                    const step = e.deltaY > 0 ? -1 : 1;
+                    const newValue = Math.max(0, Math.min(20, (isNaN(currentValue) ? 3 : currentValue) + step));
+                    gradientsInput.value = newValue;
                     applyConfigFromPanel();
                 }
             }, { passive: false });
@@ -712,16 +940,36 @@
             
             const debugCheckbox = document.getElementById('debugModeCheckbox');
             const durationInput = document.getElementById('durationInput');
+            const gradientsInput = document.getElementById('gradientsInput');
+            const warningInput = document.getElementById('warningInput');
+            const dangerInput = document.getElementById('dangerInput');
+            
+            const oldGradientsCount = CONFIG.numberOfGradients || 3;
             
             CONFIG.debugMode = debugCheckbox.checked;
             CONFIG.countdownDuration = parseInt(durationInput.value) || 60;
+            const inputValue = parseInt(gradientsInput.value);
+            CONFIG.numberOfGradients = isNaN(inputValue) ? 3 : inputValue;
+            CONFIG.warningThreshold = parseInt(warningInput.value) || 10;
+            CONFIG.dangerThreshold = parseInt(dangerInput.value) || 5;
+            
+            // Régénérer les gradients si le nombre a changé
+            if (oldGradientsCount !== CONFIG.numberOfGradients) {
+                const wavesContainer = document.getElementById('wavesContainer');
+                wavesContainer.innerHTML = ''; // Nettoyer les anciens gradients
+                generateGradients(); // Générer les nouveaux
+                debugLog('Gradients regenerated', 'success', { count: CONFIG.numberOfGradients });
+            }
             
             // Mettre à jour l'URL
             updateURL();
             
             debugLog('Config updated from panel', 'success', { 
                 debugMode: CONFIG.debugMode, 
-                countdownDuration: CONFIG.countdownDuration 
+                countdownDuration: CONFIG.countdownDuration,
+                numberOfGradients: CONFIG.numberOfGradients,
+                warningThreshold: CONFIG.warningThreshold,
+                dangerThreshold: CONFIG.dangerThreshold
             });
             
             // Réinitialiser le jeu si nécessaire
@@ -786,6 +1034,30 @@
                 urlConfig.debugMode = (debug === 'true' || debug === '1');
             }
             
+            // numberOfGradients
+            if (params.has('numberOfGradients')) {
+                const gradients = parseInt(params.get('numberOfGradients'));
+                if (!isNaN(gradients) && gradients >= 0 && gradients <= 20) {
+                    urlConfig.numberOfGradients = gradients;
+                }
+            }
+            
+            // warningThreshold
+            if (params.has('warningThreshold')) {
+                const warning = parseInt(params.get('warningThreshold'));
+                if (!isNaN(warning) && warning > 0) {
+                    urlConfig.warningThreshold = warning;
+                }
+            }
+            
+            // dangerThreshold
+            if (params.has('dangerThreshold')) {
+                const danger = parseInt(params.get('dangerThreshold'));
+                if (!isNaN(danger) && danger > 0) {
+                    urlConfig.dangerThreshold = danger;
+                }
+            }
+            
             return urlConfig;
         }
         
@@ -810,6 +1082,9 @@
             
             // Initialiser le panneau de configuration
             initConfigPanel();
+            
+            // Mettre à jour l'URL pour inclure les paramètres dès le chargement
+            updateURL();
         }
 
         let startTime = null;
@@ -822,6 +1097,7 @@
         let lastSecond = typeof CONFIG !== 'undefined' ? CONFIG.countdownDuration : 60;
 
         const countdownElement = document.getElementById('countdown');
+        const millisecondsElement = document.getElementById('milliseconds');
         const overtimeElement = document.getElementById('overtime');
         const totalTimeElement = document.getElementById('totalTime');
         const stopButton = document.getElementById('stopButton');
@@ -833,7 +1109,7 @@
         // Générer dynamiquement les gradients
         function generateGradients() {
             const wavesContainer = document.getElementById('wavesContainer');
-            const numberOfGradients = (typeof CONFIG !== 'undefined' && CONFIG.numberOfGradients) ? CONFIG.numberOfGradients : 3;
+            const numberOfGradients = (typeof CONFIG !== 'undefined' && CONFIG.numberOfGradients !== undefined) ? CONFIG.numberOfGradients : 3;
             
             // Définir les couleurs disponibles
             const gradientColors = [
@@ -996,6 +1272,7 @@
             countdownElement.classList.remove('hidden', 'warning', 'danger');
             overtimeElement.classList.add('hidden');
             totalTimeElement.classList.add('hidden');
+            millisecondsElement.classList.add('hidden');
             countdownElement.textContent = '';
             
             // Réinitialiser les boutons
@@ -1206,6 +1483,7 @@
         const rectPerimeter = 2 * (996 + 558.5);
         const borderBackground = document.getElementById('borderBackground');
         borderRect.style.strokeDasharray = rectPerimeter;
+        borderRect.style.strokeDashoffset = 0; // Commencer exactement au coin supérieur gauche
 
         function updateBorders(percentage, state) {
             // percentage: 0 (fin) à 100 (début)
@@ -1249,14 +1527,28 @@
                 const displayValue = Math.max(1, Math.ceil(remaining));
                 const percentage = (remaining / countdownDuration) * 100;
                 
-                countdownElement.textContent = displayValue;
+                // Afficher les millisecondes
+                const milliseconds = Math.floor((remaining - Math.floor(remaining)) * 1000);
+                millisecondsElement.textContent = `.${String(milliseconds).padStart(3, '0')}`;
+                
+                // Formatter l'affichage : si > 60 secondes, afficher en "Xmin Xsec"
+                if (displayValue > 60) {
+                    const minutes = Math.floor(displayValue / 60);
+                    const seconds = displayValue % 60;
+                    countdownElement.textContent = `${minutes}min ${seconds}sec`;
+                } else {
+                    countdownElement.textContent = displayValue;
+                }
+                
+                const dangerThreshold = CONFIG.dangerThreshold || 5;
+                const warningThreshold = CONFIG.warningThreshold || 10;
                 
                 if (displayValue !== lastSecond) {
-                    if (displayValue === 10) {
-                        // Son spécial à 10 secondes
+                    if (displayValue === warningThreshold) {
+                        // Son spécial au seuil warning
                         playTenSecondBeep();
-                    } else if (displayValue === 5) {
-                        // Son spécial à 5 secondes
+                    } else if (displayValue === dangerThreshold) {
+                        // Son spécial au seuil danger
                         playFiveSecondBeep();
                     } else if (displayValue > 0) {
                         // Bip discret pour toutes les autres secondes
@@ -1269,10 +1561,10 @@
                 }
                 
                 // Mettre à jour les bordures et couleurs
-                if (displayValue <= 5) {
+                if (displayValue <= dangerThreshold) {
                     countdownElement.className = 'countdown danger';
                     updateBorders(percentage, 'danger');
-                } else if (displayValue <= 10) {
+                } else if (displayValue <= warningThreshold) {
                     countdownElement.className = 'countdown warning';
                     updateBorders(percentage, 'warning');
                 } else {
@@ -1282,6 +1574,7 @@
 
                 overtimeElement.classList.add('hidden');
                 totalTimeElement.classList.add('hidden');
+                millisecondsElement.classList.remove('hidden');
             } else {
                 const overtimeSeconds = totalSeconds - CONFIG.countdownDuration;
                 
@@ -1296,6 +1589,7 @@
                 updateBorders(0, 'overtime');
                 
                 countdownElement.classList.add('hidden');
+                millisecondsElement.classList.add('hidden');
                 overtimeElement.classList.remove('hidden');
                 overtimeElement.textContent = `+${Math.floor(overtimeSeconds)}sec`;
                 
