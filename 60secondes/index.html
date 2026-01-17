@@ -911,6 +911,7 @@
             
             if (isPaused) {
                 // Reprendre
+                playResumeSound();
                 isPaused = false;
                 startTime = Date.now() - pausedTime;
                 timerInterval = setInterval(updateTimer, 10);
@@ -921,6 +922,7 @@
                 debugLog('Game resumed', 'info');
             } else {
                 // Pause
+                playPauseSound();
                 isPaused = true;
                 pausedTime = Date.now() - startTime;
                 clearInterval(timerInterval);
@@ -1030,46 +1032,174 @@
             oscillator.stop(audioContext.currentTime + duration / 1000);
         }
 
-        function playFinalBeep() {
-            // Gong effet avec plusieurs harmoniques
-            const fundamentalFreq = 150; // Fréquence fondamentale basse
-            
-            // Oscillateur principal (fondamentale)
+        function playTenSecondBeep() {
+            // Double bip ascendant pour 10 secondes
             const osc1 = audioContext.createOscillator();
             const gain1 = audioContext.createGain();
             osc1.connect(gain1);
             gain1.connect(audioContext.destination);
-            osc1.frequency.value = fundamentalFreq;
+            osc1.frequency.value = 650;
             osc1.type = 'sine';
-            gain1.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gain1.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1.5);
+            gain1.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gain1.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.15);
+            osc1.start(audioContext.currentTime);
+            osc1.stop(audioContext.currentTime + 0.15);
             
-            // Harmonique 2 (octave)
+            // Deuxième bip plus aigu
             const osc2 = audioContext.createOscillator();
             const gain2 = audioContext.createGain();
             osc2.connect(gain2);
             gain2.connect(audioContext.destination);
-            osc2.frequency.value = fundamentalFreq * 2;
+            osc2.frequency.value = 800;
             osc2.type = 'sine';
-            gain2.gain.setValueAtTime(0.15, audioContext.currentTime);
-            gain2.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1.2);
+            gain2.gain.setValueAtTime(0.15, audioContext.currentTime + 0.2);
+            gain2.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.35);
+            osc2.start(audioContext.currentTime + 0.2);
+            osc2.stop(audioContext.currentTime + 0.35);
+        }
+
+        function playFiveSecondBeep() {
+            // Triple bip rapide et intense pour 5 secondes
+            for (let i = 0; i < 3; i++) {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.frequency.value = 900;
+                osc.type = 'sine';
+                const startTime = audioContext.currentTime + (i * 0.12);
+                gain.gain.setValueAtTime(0.18, startTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.1);
+                osc.start(startTime);
+                osc.stop(startTime + 0.1);
+            }
+        }
+
+        function playFinalBeep() {
+            // Son caractéristique à 0 seconde : "DING" descendant avec résonance
             
-            // Harmonique 3 (quinte)
+            // Premier "DING" fort et aigu
+            const osc1 = audioContext.createOscillator();
+            const gain1 = audioContext.createGain();
+            osc1.connect(gain1);
+            gain1.connect(audioContext.destination);
+            osc1.frequency.value = 1200; // Note aiguë
+            osc1.type = 'sine';
+            gain1.gain.setValueAtTime(0.35, audioContext.currentTime);
+            gain1.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.4);
+            osc1.start(audioContext.currentTime);
+            osc1.stop(audioContext.currentTime + 0.4);
+            
+            // Harmonique pour enrichir le son
+            const osc2 = audioContext.createOscillator();
+            const gain2 = audioContext.createGain();
+            osc2.connect(gain2);
+            gain2.connect(audioContext.destination);
+            osc2.frequency.value = 1800; // Harmonique
+            osc2.type = 'sine';
+            gain2.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gain2.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
+            osc2.start(audioContext.currentTime);
+            osc2.stop(audioContext.currentTime + 0.3);
+            
+            // Note grave de fin qui descend (effet "tombé")
             const osc3 = audioContext.createOscillator();
             const gain3 = audioContext.createGain();
             osc3.connect(gain3);
             gain3.connect(audioContext.destination);
-            osc3.frequency.value = fundamentalFreq * 3;
+            osc3.frequency.setValueAtTime(800, audioContext.currentTime + 0.15);
+            osc3.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.8);
             osc3.type = 'sine';
-            gain3.gain.setValueAtTime(0.1, audioContext.currentTime);
-            gain3.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1.0);
-            
+            gain3.gain.setValueAtTime(0.25, audioContext.currentTime + 0.15);
+            gain3.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.8);
+            osc3.start(audioContext.currentTime + 0.15);
+            osc3.stop(audioContext.currentTime + 0.8);
+        }
+
+        function playPauseSound() {
+            // Son de pause : deux notes descendantes courtes
+            const osc1 = audioContext.createOscillator();
+            const gain1 = audioContext.createGain();
+            osc1.connect(gain1);
+            gain1.connect(audioContext.destination);
+            osc1.frequency.value = 700;
+            osc1.type = 'sine';
+            gain1.gain.setValueAtTime(0.12, audioContext.currentTime);
+            gain1.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.15);
             osc1.start(audioContext.currentTime);
-            osc1.stop(audioContext.currentTime + 1.5);
-            osc2.start(audioContext.currentTime);
-            osc2.stop(audioContext.currentTime + 1.2);
-            osc3.start(audioContext.currentTime);
-            osc3.stop(audioContext.currentTime + 1.0);
+            osc1.stop(audioContext.currentTime + 0.15);
+            
+            const osc2 = audioContext.createOscillator();
+            const gain2 = audioContext.createGain();
+            osc2.connect(gain2);
+            gain2.connect(audioContext.destination);
+            osc2.frequency.value = 500;
+            osc2.type = 'sine';
+            gain2.gain.setValueAtTime(0.12, audioContext.currentTime + 0.1);
+            gain2.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.25);
+            osc2.start(audioContext.currentTime + 0.1);
+            osc2.stop(audioContext.currentTime + 0.25);
+        }
+
+        function playResumeSound() {
+            // Son de reprise : deux notes ascendantes rapides
+            const osc1 = audioContext.createOscillator();
+            const gain1 = audioContext.createGain();
+            osc1.connect(gain1);
+            gain1.connect(audioContext.destination);
+            osc1.frequency.value = 500;
+            osc1.type = 'sine';
+            gain1.gain.setValueAtTime(0.12, audioContext.currentTime);
+            gain1.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.12);
+            osc1.start(audioContext.currentTime);
+            osc1.stop(audioContext.currentTime + 0.12);
+            
+            const osc2 = audioContext.createOscillator();
+            const gain2 = audioContext.createGain();
+            osc2.connect(gain2);
+            gain2.connect(audioContext.destination);
+            osc2.frequency.value = 700;
+            osc2.type = 'sine';
+            gain2.gain.setValueAtTime(0.12, audioContext.currentTime + 0.08);
+            gain2.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.2);
+            osc2.start(audioContext.currentTime + 0.08);
+            osc2.stop(audioContext.currentTime + 0.2);
+        }
+
+        function playStopSound() {
+            // Son de stop : triple note descendante avec résonance grave
+            const osc1 = audioContext.createOscillator();
+            const gain1 = audioContext.createGain();
+            osc1.connect(gain1);
+            gain1.connect(audioContext.destination);
+            osc1.frequency.value = 800;
+            osc1.type = 'sine';
+            gain1.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gain1.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.2);
+            osc1.start(audioContext.currentTime);
+            osc1.stop(audioContext.currentTime + 0.2);
+            
+            const osc2 = audioContext.createOscillator();
+            const gain2 = audioContext.createGain();
+            osc2.connect(gain2);
+            gain2.connect(audioContext.destination);
+            osc2.frequency.value = 600;
+            osc2.type = 'sine';
+            gain2.gain.setValueAtTime(0.15, audioContext.currentTime + 0.15);
+            gain2.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.35);
+            osc2.start(audioContext.currentTime + 0.15);
+            osc2.stop(audioContext.currentTime + 0.35);
+            
+            const osc3 = audioContext.createOscillator();
+            const gain3 = audioContext.createGain();
+            osc3.connect(gain3);
+            gain3.connect(audioContext.destination);
+            osc3.frequency.value = 300;
+            osc3.type = 'sine';
+            gain3.gain.setValueAtTime(0.18, audioContext.currentTime + 0.3);
+            gain3.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.8);
+            osc3.start(audioContext.currentTime + 0.3);
+            osc3.stop(audioContext.currentTime + 0.8);
         }
 
         // Calculer le périmètre du rectangle pour stroke-dasharray
@@ -1122,8 +1252,14 @@
                 countdownElement.textContent = displayValue;
                 
                 if (displayValue !== lastSecond) {
-                    if (displayValue > 0) {
-                        // Bip discret pour toutes les secondes
+                    if (displayValue === 10) {
+                        // Son spécial à 10 secondes
+                        playTenSecondBeep();
+                    } else if (displayValue === 5) {
+                        // Son spécial à 5 secondes
+                        playFiveSecondBeep();
+                    } else if (displayValue > 0) {
+                        // Bip discret pour toutes les autres secondes
                         playBeep(550, 120);
                     } else if (displayValue === 0) {
                         // Gong pour la fin
@@ -1151,6 +1287,8 @@
                 
                 if (Math.floor(overtimeSeconds) === 0 && lastSecond !== -999) {
                     debugLog('Entering OVERTIME', 'error', { overtimeSeconds });
+                    // Jouer le son de fin à 0 seconde
+                    playFinalBeep();
                     lastSecond = -999;
                 }
                 
@@ -1185,6 +1323,7 @@
             if (isStopped) return;
             
             debugLog('Game stopped', 'warning');
+            playStopSound();
             isStopped = true;
             isRunning = false;
             clearInterval(timerInterval);
