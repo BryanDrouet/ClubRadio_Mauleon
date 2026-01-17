@@ -9,8 +9,22 @@
     <script src="config.js"></script>
     <style>
         @font-face {
-            font-family: 'Monofonto';
-            src: url('../assets/monofonto\ rg.otf') format('opentype');
+            font-family: 'Poppins';
+            src: url('assets/Poppins-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Poppins';
+            src: url('assets/Poppins-Italic.ttf') format('truetype');
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'AzeretMono';
+            src: url('assets/AzeretMono-VariableFont_wght.ttf') format('truetype');
         }
 
         * {
@@ -25,7 +39,7 @@
             justify-content: flex-start;
             height: 100vh;
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Poppins', Arial, Helvetica, sans-serif;
             text-align: center;
             color: white;
             overflow-y: auto;
@@ -258,7 +272,7 @@
         .countdown {
             font-size: 80px;
             font-weight: bold;
-            font-family: 'Monofonto', 'Roboto Mono', monospace;
+            font-family: 'AzeretMono', monospace;
             text-shadow: 
                 0 2px 8px rgba(0, 0, 0, 0.8),
                 0 4px 16px rgba(0, 0, 0, 0.6);
@@ -275,33 +289,30 @@
         .milliseconds {
             position: absolute;
             bottom: 0;
-            right: 0;
-            margin-right: -65px;
+            right: -65px;
             font-size: 24px;
             font-weight: normal;
-            color: rgba(255, 255, 255, 0.6);
-            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
-            font-family: 'Monofonto', 'Roboto Mono', monospace;
+            color: inherit;
+            opacity: 0.6;
+            text-shadow: inherit;
+            font-family: 'AzeretMono', monospace;
         }
 
-        .countdown.warning {
+        .countdown.warning,
+        .countdown.warning .milliseconds {
             color: #ff9500;
             animation: pulse 0.5s ease-in-out infinite, shake 0.5s ease-in-out infinite;
         }
 
-        .countdown.danger {
+        .countdown.danger,
+        .countdown.danger .milliseconds {
             color: #ff3b30;
             animation: pulse 0.3s ease-in-out infinite, shake 0.3s ease-in-out infinite;
         }
 
-        .countdown.warning .milliseconds {
-            color: rgba(255, 149, 0, 0.5);
-            animation: pulse 0.5s ease-in-out infinite, shake 0.5s ease-in-out infinite;
-        }
-
+        .countdown.warning .milliseconds,
         .countdown.danger .milliseconds {
-            color: rgba(255, 59, 48, 0.5);
-            animation: pulse 0.3s ease-in-out infinite, shake 0.3s ease-in-out infinite;
+            opacity: 0.6;
         }
 
         @keyframes pulse {
@@ -318,6 +329,7 @@
         .overtime {
             font-size: 60px;
             font-weight: bold;
+            font-family: 'AzeretMono', monospace;
             color: #ff3b30;
             text-shadow: 
                 0 2px 8px rgba(0, 0, 0, 0.8),
@@ -352,7 +364,7 @@
             padding: 10px 16px;
             font-size: 14px;
             font-weight: bold;
-            font-family: 'Monofonto', 'Roboto', sans-serif;
+            font-family: 'AzeretMono', sans-serif;
             background: rgba(0, 255, 0, 0.2);
             color: #00ff00;
             border: 2px solid rgba(0, 255, 0, 0.4);
@@ -390,6 +402,14 @@
             cursor: pointer;
             transition: all 0.2s ease;
             display: none;
+        }
+
+        .pause-button img {
+            width: 20px;
+            height: 20px;
+            display: block;
+            margin: 0 auto;
+            filter: brightness(0) saturate(100%) invert(63%) sepia(63%) saturate(4576%) hue-rotate(83deg) brightness(117%) contrast(128%);
         }
 
         .pause-button.visible {
@@ -477,6 +497,10 @@
         .panel-toggle {
             font-size: 12px;
             transition: transform 0.6s;
+        }
+        
+        .panel-toggle img {
+            filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(358deg) brightness(102%) contrast(104%);
         }
         
         .panel-toggle.collapsed {
@@ -724,6 +748,14 @@
             line-height: 1;
         }
         
+        .arrow-button img {
+            width: 10px;
+            height: 10px;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+            filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(358deg) brightness(102%) contrast(104%);
+        }
+        
         .reset-button {
             width: 24px;
             height: 100%;
@@ -739,6 +771,12 @@
             align-items: center;
             justify-content: center;
             border-radius: 3px;
+        }
+        
+        .reset-button img {
+            width: 14px;
+            height: 14px;
+            filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(358deg) brightness(102%) contrast(104%);
         }
         
         .reset-button:hover {
@@ -761,6 +799,10 @@
             background: rgba(0, 255, 0, 0.2);
             border-color: rgba(0, 255, 0, 0.4);
             color: #00ff00;
+        }
+        
+        .arrow-button:hover img {
+            opacity: 1;
         }
 
         .arrow-button:active {
@@ -1004,8 +1046,9 @@
             </div>
 
             <div class="container">
-                <div id="countdown" class="countdown"></div>
-                <div id="milliseconds" class="milliseconds"></div>
+                <div id="countdown" class="countdown">
+                    <div id="milliseconds" class="milliseconds"></div>
+                </div>
                 <div id="overtime" class="overtime hidden"></div>
                 <div id="totalTime" class="total-time hidden"></div>
             </div>
@@ -1016,7 +1059,7 @@
     <div class="config-panel" id="configPanel">
             <div class="button-row">
                 <button id="stopButton" class="stop-button" onclick="handleButtonClick()">LANCER</button>
-                <button id="pauseButton" class="pause-button" onclick="handlePauseClick()">⏸</button>
+                <button id="pauseButton" class="pause-button" onclick="handlePauseClick()"><img src="assets/pause.svg" alt="Pause"></button>
             </div>
             <div class="config-separator"></div>
             
@@ -1024,7 +1067,7 @@
             <div class="panel-section">
                 <div class="panel-header" onclick="togglePanel('modesPanel')">
                     <span class="panel-title">Modes</span>
-                    <span class="panel-toggle" id="modesPanelToggle">▼</span>
+                    <span class="panel-toggle" id="modesPanelToggle"><img src="assets/chevron-down.svg" alt="Toggle" style="width: 12px; height: 12px; vertical-align: middle;"></span>
                 </div>
                 <div class="panel-content" id="modesPanel">
                     <div class="config-row">
@@ -1046,7 +1089,7 @@
             <div class="panel-section">
                 <div class="panel-header" onclick="togglePanel('timerPanel')">
                     <span class="panel-title">Timer (sec)</span>
-                    <span class="panel-toggle" id="timerPanelToggle">▼</span>
+                    <span class="panel-toggle" id="timerPanelToggle"><img src="assets/chevron-down.svg" alt="Toggle" style="width: 12px; height: 12px; vertical-align: middle;"></span>
                 </div>
                 <div class="panel-content" id="timerPanel">
                     <div class="config-row">
@@ -1054,10 +1097,10 @@
                         <div class="input-with-arrows">
                             <input type="number" id="durationInput" class="config-input" min="1" max="999" value="60" onchange="applyConfigFromPanel()">
                             <div class="arrow-buttons">
-                                <button class="arrow-button" onmousedown="startIncrement('durationInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▲</button>
-                                <button class="arrow-button" onmousedown="startDecrement('durationInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▼</button>
+                                <button class="arrow-button" onmousedown="startIncrement('durationInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg" alt="+"></button>
+                                <button class="arrow-button" onmousedown="startDecrement('durationInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg" alt="-"></button>
                             </div>
-                            <button class="reset-button" onclick="resetParam('countdownDuration')" title="Réinitialiser">↻</button>
+                            <button class="reset-button" onclick="resetParam('countdownDuration')" title="Réinitialiser"><img src="assets/rotate-ccw.svg" alt="Reset"></button>
                         </div>
                     </div>
                     <div class="config-row">
@@ -1065,10 +1108,10 @@
                         <div class="input-with-arrows">
                             <input type="number" id="warningInput" class="config-input" min="1" max="999" value="10" onchange="applyConfigFromPanel()">
                             <div class="arrow-buttons">
-                                <button class="arrow-button" onmousedown="startIncrement('warningInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▲</button>
-                                <button class="arrow-button" onmousedown="startDecrement('warningInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▼</button>
+                                <button class="arrow-button" onmousedown="startIncrement('warningInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg" alt="+"></button>
+                                <button class="arrow-button" onmousedown="startDecrement('warningInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg" alt="-"></button>
                             </div>
-                            <button class="reset-button" onclick="resetParam('warningThreshold')" title="Réinitialiser">↻</button>
+                            <button class="reset-button" onclick="resetParam('warningThreshold')" title="Réinitialiser"><img src="assets/rotate-ccw.svg" alt="Reset"></button>
                         </div>
                     </div>
                     <div class="config-row">
@@ -1076,10 +1119,10 @@
                         <div class="input-with-arrows">
                             <input type="number" id="dangerInput" class="config-input" min="1" max="999" value="5" onchange="applyConfigFromPanel()">
                             <div class="arrow-buttons">
-                                <button class="arrow-button" onmousedown="startIncrement('dangerInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▲</button>
-                                <button class="arrow-button" onmousedown="startDecrement('dangerInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▼</button>
+                                <button class="arrow-button" onmousedown="startIncrement('dangerInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg" alt="+"></button>
+                                <button class="arrow-button" onmousedown="startDecrement('dangerInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg" alt="-"></button>
                             </div>
-                            <button class="reset-button" onclick="resetParam('dangerThreshold')" title="Réinitialiser">↻</button>
+                            <button class="reset-button" onclick="resetParam('dangerThreshold')" title="Réinitialiser"><img src="assets/rotate-ccw.svg" alt="Reset"></button>
                         </div>
                     </div>
                 </div>
@@ -1089,7 +1132,7 @@
             <div class="panel-section">
                 <div class="panel-header" onclick="togglePanel('gradientsPanel')">
                     <span class="panel-title">Lueurs</span>
-                    <span class="panel-toggle" id="gradientsPanelToggle">▼</span>
+                    <span class="panel-toggle" id="gradientsPanelToggle"><img src="assets/chevron-down.svg" alt="Toggle" style="width: 12px; height: 12px; vertical-align: middle;"></span>
                 </div>
                 <div class="panel-content" id="gradientsPanel">
                     <div class="config-row">
@@ -1097,10 +1140,10 @@
                         <div class="input-with-arrows">
                             <input type="number" id="gradientsInput" class="config-input" min="0" max="20" value="3" onchange="applyConfigFromPanel()">
                             <div class="arrow-buttons">
-                                <button class="arrow-button" onmousedown="startIncrement('gradientsInput', 0, 20)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▲</button>
-                                <button class="arrow-button" onmousedown="startDecrement('gradientsInput', 0, 20)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▼</button>
+                                <button class="arrow-button" onmousedown="startIncrement('gradientsInput', 0, 20)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg" alt="+"></button>
+                                <button class="arrow-button" onmousedown="startDecrement('gradientsInput', 0, 20)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg" alt="-"></button>
                             </div>
-                            <button class="reset-button" onclick="resetParam('numberOfGradients')" title="Réinitialiser">↻</button>
+                            <button class="reset-button" onclick="resetParam('numberOfGradients')" title="Réinitialiser"><img src="assets/rotate-ccw.svg" alt="Reset"></button>
                         </div>
                     </div>
                     <div class="config-row">
@@ -1108,10 +1151,10 @@
                         <div class="input-with-arrows">
                             <input type="number" id="gradientSpeedInput" class="config-input" min="0" max="100" value="50" onchange="applyConfigFromPanel()">
                             <div class="arrow-buttons">
-                                <button class="arrow-button" onmousedown="startIncrement('gradientSpeedInput', 0, 100)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▲</button>
-                                <button class="arrow-button" onmousedown="startDecrement('gradientSpeedInput', 0, 100)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▼</button>
+                                <button class="arrow-button" onmousedown="startIncrement('gradientSpeedInput', 0, 100)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg" alt="+"></button>
+                                <button class="arrow-button" onmousedown="startDecrement('gradientSpeedInput', 0, 100)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg" alt="-"></button>
                             </div>
-                            <button class="reset-button" onclick="resetParam('gradientSpeed')" title="Réinitialiser">↻</button>
+                            <button class="reset-button" onclick="resetParam('gradientSpeed')" title="Réinitialiser"><img src="assets/rotate-ccw.svg" alt="Reset"></button>
                         </div>
                     </div>
                     <div class="config-row">
@@ -1119,10 +1162,10 @@
                         <div class="input-with-arrows">
                             <input type="number" id="gradientSizeInput" class="config-input" min="0" max="500" value="300" onchange="applyConfigFromPanel()">
                             <div class="arrow-buttons">
-                                <button class="arrow-button" onmousedown="startIncrement('gradientSizeInput', 0, 500)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▲</button>
-                                <button class="arrow-button" onmousedown="startDecrement('gradientSizeInput', 0, 500)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▼</button>
+                                <button class="arrow-button" onmousedown="startIncrement('gradientSizeInput', 0, 500)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg" alt="+"></button>
+                                <button class="arrow-button" onmousedown="startDecrement('gradientSizeInput', 0, 500)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg" alt="-"></button>
                             </div>
-                            <button class="reset-button" onclick="resetParam('gradientSize')" title="Réinitialiser">↻</button>
+                            <button class="reset-button" onclick="resetParam('gradientSize')" title="Réinitialiser"><img src="assets/rotate-ccw.svg" alt="Reset"></button>
                         </div>
                     </div>
                     <div class="config-row">
@@ -1130,10 +1173,10 @@
                         <div class="input-with-arrows">
                             <input type="number" id="gradientOpacityInput" class="config-input" min="0" max="100" value="12" step="1" onchange="applyConfigFromPanel()">
                             <div class="arrow-buttons">
-                                <button class="arrow-button" onmousedown="startIncrement('gradientOpacityInput', 0, 100)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▲</button>
-                                <button class="arrow-button" onmousedown="startDecrement('gradientOpacityInput', 0, 100)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()">▼</button>
+                                <button class="arrow-button" onmousedown="startIncrement('gradientOpacityInput', 0, 100)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg" alt="+"></button>
+                                <button class="arrow-button" onmousedown="startDecrement('gradientOpacityInput', 0, 100)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg" alt="-"></button>
                             </div>
-                            <button class="reset-button" onclick="resetParam('gradientOpacity')" title="Réinitialiser">↻</button>
+                            <button class="reset-button" onclick="resetParam('gradientOpacity')" title="Réinitialiser"><img src="assets/rotate-ccw.svg" alt="Reset"></button>
                         </div>
                     </div>
                 </div>
@@ -2199,7 +2242,7 @@
                 isPaused = false;
                 startTime = Date.now() - pausedTime;
                 timerInterval = setInterval(updateTimer, 10);
-                pauseButton.textContent = '⏸';
+                pauseButton.innerHTML = '<img src="assets/pause.svg" alt="Pause">';
                 pauseButton.style.background = 'rgba(255, 165, 0, 0.2)';
                 pauseButton.style.color = '#ffa500';
                 pauseButton.style.borderColor = 'rgba(255, 165, 0, 0.4)';
@@ -2210,7 +2253,7 @@
                 isPaused = true;
                 pausedTime = Date.now() - startTime;
                 clearInterval(timerInterval);
-                pauseButton.textContent = '▶';
+                pauseButton.innerHTML = '<img src="assets/play.svg" alt="Play">';
                 pauseButton.style.background = 'rgba(0, 200, 0, 0.2)';
                 pauseButton.style.color = '#00c800';
                 pauseButton.style.borderColor = 'rgba(0, 200, 0, 0.4)';
@@ -2278,7 +2321,7 @@
             
             const pauseButton = document.getElementById('pauseButton');
             pauseButton.classList.add('visible');
-            pauseButton.textContent = '⏸';
+            pauseButton.innerHTML = '<img src="assets/pause.svg" alt="Pause">';
             pauseButton.disabled = false;
             
             startTime = Date.now();
@@ -2649,11 +2692,11 @@
                     millisecondsElement.textContent = `.${String(milliseconds).padStart(3, '0')}`;
                     millisecondsElement.classList.remove('hidden');
                     
-                    // Formatter l'affichage : si > 60 secondes, afficher en "Xmin Xsec"
+                    // Formatter l'affichage : si > 60 secondes, afficher en "X:XX"
                     if (displayValue > 60) {
                         const minutes = Math.floor(displayValue / 60);
                         const seconds = displayValue % 60;
-                        countdownElement.textContent = `${minutes}min ${seconds}sec`;
+                        countdownElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
                     } else {
                     countdownElement.textContent = displayValue;
                 }
@@ -2710,10 +2753,15 @@
                 countdownElement.classList.add('hidden');
                 millisecondsElement.classList.add('hidden');
                 overtimeElement.classList.remove('hidden');
-                overtimeElement.textContent = `+${Math.floor(overtimeSeconds)}sec`;
+                const overtimeMinutes = Math.floor(overtimeSeconds / 60);
+                const overtimeSecs = Math.floor(overtimeSeconds % 60);
+                if (overtimeMinutes > 0) {
+                    overtimeElement.textContent = `+${overtimeMinutes}min ${overtimeSecs}`;
+                } else {
+                    overtimeElement.textContent = `+${overtimeSecs}`;
+                }
                 
-                totalTimeElement.classList.remove('hidden');
-                totalTimeElement.textContent = formatTotalTime(totalSeconds);
+                totalTimeElement.classList.add('hidden');
             }
         }
 
@@ -2785,9 +2833,20 @@
                     const overtimeSeconds = totalSeconds - countdownDuration;
                     countdownElement.classList.add('hidden');
                     overtimeElement.classList.remove('hidden');
-                    overtimeElement.textContent = `+${Math.floor(overtimeSeconds)}sec`;
-                    totalTimeElement.classList.remove('hidden');
-                    totalTimeElement.textContent = formatTotalTime(totalSeconds);
+                    const overtimeMinutes = Math.floor(overtimeSeconds / 60);
+                    const overtimeSecs = Math.floor(overtimeSeconds % 60);
+                    if (overtimeMinutes > 0) {
+                        overtimeElement.textContent = `+${overtimeMinutes}min ${overtimeSecs}`;
+                    } else {
+                        overtimeElement.textContent = `+${overtimeSecs}`;
+                    }
+                    totalTimeElement.classList.add('hidden');
+                    
+                    // Arrêter le clignotement et mettre l'opacité à 100%
+                    borderRect.classList.remove('overtime');
+                    borderSvg.classList.remove('fade-out');
+                    borderSvg.style.opacity = '1';
+                    
                     debugLog('Stopped in overtime', 'warning', { overtime: overtimeSeconds.toFixed(2) });
                 }
             }
