@@ -105,41 +105,131 @@
         }
 
         .gradient {
-            --size: 500px;
+            --size: 350px;
             --speed: 15s;
             --easing: cubic-bezier(0.8, 0.2, 0.2, 0.8);
             position: absolute;
             width: var(--size);
             height: var(--size);
-            filter: blur(50px);
+            filter: blur(60px);
             will-change: transform;
             background-image: linear-gradient(45deg, hsl(270, 80%, 50%), hsl(290, 70%, 60%), hsl(250, 90%, 40%));
-            animation: rotate var(--speed) var(--easing) infinite, morph 8s ease-in-out infinite alternate;
+            animation: rotate1 var(--speed) var(--easing) infinite, morph 8s ease-in-out infinite alternate;
             border-radius: 50%;
-            opacity: 0.5;
+            opacity: 0.2;
         }
 
         .gradient:nth-child(2) {
-            animation-delay: calc(var(--speed) / -3);
+            --speed: 18s;
+            animation: rotate2 var(--speed) var(--easing) infinite, morph 9s ease-in-out infinite alternate;
+            animation-delay: -3s;
             background-image: linear-gradient(135deg, hsl(200, 70%, 50%), hsl(220, 80%, 60%));
         }
 
-        @keyframes rotate {
-            0% {
-                transform: translate(-100%, -100%) rotate(0deg);
-            }
-            25% {
-                transform: translate(100%, -50%) rotate(90deg);
-            }
-            50% {
-                transform: translate(50%, 100%) rotate(180deg);
-            }
-            75% {
-                transform: translate(-50%, 50%) rotate(270deg);
-            }
-            100% {
-                transform: translate(-100%, -100%) rotate(360deg);
-            }
+        .gradient:nth-child(3) {
+            --speed: 20s;
+            animation: rotate3 var(--speed) var(--easing) infinite, morph 7s ease-in-out infinite alternate;
+            animation-delay: -7s;
+            background-image: linear-gradient(225deg, hsl(180, 70%, 50%), hsl(160, 80%, 55%));
+        }
+
+        .gradient:nth-child(4) {
+            --speed: 16s;
+            animation: rotate4 var(--speed) var(--easing) infinite, morph 10s ease-in-out infinite alternate;
+            animation-delay: -11s;
+            background-image: linear-gradient(315deg, hsl(310, 70%, 50%), hsl(330, 75%, 55%));
+        }
+
+        .gradient:nth-child(5) {
+            --speed: 22s;
+            animation: rotate5 var(--speed) var(--easing) infinite, morph 6s ease-in-out infinite alternate;
+            animation-delay: -5s;
+            background-image: linear-gradient(90deg, hsl(50, 75%, 55%), hsl(70, 80%, 60%));
+        }
+
+        .gradient:nth-child(6) {
+            --speed: 19s;
+            animation: rotate6 var(--speed) var(--easing) infinite, morph 11s ease-in-out infinite alternate;
+            animation-delay: -9s;
+            background-image: linear-gradient(180deg, hsl(340, 70%, 50%), hsl(360, 75%, 55%));
+        }
+
+        .gradient:nth-child(7) {
+            --speed: 17s;
+            animation: rotate7 var(--speed) var(--easing) infinite, morph 9.5s ease-in-out infinite alternate;
+            animation-delay: -13s;
+            background-image: linear-gradient(270deg, hsl(120, 65%, 50%), hsl(140, 70%, 55%));
+        }
+
+        .gradient:nth-child(8) {
+            --speed: 21s;
+            animation: rotate8 var(--speed) var(--easing) infinite, morph 7.5s ease-in-out infinite alternate;
+            animation-delay: -15s;
+            background-image: linear-gradient(60deg, hsl(30, 70%, 55%), hsl(45, 75%, 60%));
+        }
+
+        @keyframes rotate1 {
+            0% { transform: translate(-100%, -100%) rotate(0deg); }
+            25% { transform: translate(120%, -60%) rotate(90deg); }
+            50% { transform: translate(60%, 110%) rotate(180deg); }
+            75% { transform: translate(-70%, 40%) rotate(270deg); }
+            100% { transform: translate(-100%, -100%) rotate(360deg); }
+        }
+
+        @keyframes rotate2 {
+            0% { transform: translate(80%, -90%) rotate(0deg); }
+            25% { transform: translate(-110%, -40%) rotate(85deg); }
+            50% { transform: translate(-50%, 120%) rotate(175deg); }
+            75% { transform: translate(90%, 50%) rotate(265deg); }
+            100% { transform: translate(80%, -90%) rotate(360deg); }
+        }
+
+        @keyframes rotate3 {
+            0% { transform: translate(-80%, 80%) rotate(0deg); }
+            25% { transform: translate(100%, 100%) rotate(95deg); }
+            50% { transform: translate(-120%, -60%) rotate(185deg); }
+            75% { transform: translate(40%, -80%) rotate(275deg); }
+            100% { transform: translate(-80%, 80%) rotate(360deg); }
+        }
+
+        @keyframes rotate4 {
+            0% { transform: translate(90%, 110%) rotate(0deg); }
+            25% { transform: translate(-90%, 80%) rotate(88deg); }
+            50% { transform: translate(110%, -90%) rotate(178deg); }
+            75% { transform: translate(-60%, -110%) rotate(268deg); }
+            100% { transform: translate(90%, 110%) rotate(360deg); }
+        }
+
+        @keyframes rotate5 {
+            0% { transform: translate(-110%, 60%) rotate(0deg); }
+            25% { transform: translate(70%, -110%) rotate(92deg); }
+            50% { transform: translate(-80%, -80%) rotate(182deg); }
+            75% { transform: translate(110%, 70%) rotate(272deg); }
+            100% { transform: translate(-110%, 60%) rotate(360deg); }
+        }
+
+        @keyframes rotate6 {
+            0% { transform: translate(60%, -120%) rotate(0deg); }
+            25% { transform: translate(-100%, 90%) rotate(87deg); }
+            50% { transform: translate(80%, 80%) rotate(177deg); }
+            75% { transform: translate(-120%, -50%) rotate(267deg); }
+            100% { transform: translate(60%, -120%) rotate(360deg); }
+        }
+
+        @keyframes rotate7 {
+            0% { transform: translate(-70%, -110%) rotate(0deg); }
+            25% { transform: translate(110%, 60%) rotate(93deg); }
+            50% { transform: translate(-90%, 100%) rotate(183deg); }
+            75% { transform: translate(50%, -100%) rotate(273deg); }
+            100% { transform: translate(-70%, -110%) rotate(360deg); }
+        }
+
+        @keyframes rotate8 {
+            0% { transform: translate(100%, 90%) rotate(0deg); }
+            25% { transform: translate(-80%, -100%) rotate(89deg); }
+            50% { transform: translate(120%, -70%) rotate(179deg); }
+            75% { transform: translate(-100%, 110%) rotate(269deg); }
+            100% { transform: translate(100%, 90%) rotate(360deg); }
         }
 
         @keyframes morph {
@@ -165,8 +255,8 @@
             font-size: 80px;
             font-weight: bold;
             text-shadow: 
-                0 0 15px rgba(255, 255, 255, 0.8),
-                0 0 30px rgba(200, 100, 255, 0.6);
+                0 0 10px rgba(255, 255, 255, 0.5),
+                0 0 20px rgba(200, 100, 255, 0.4);
             animation: pulse 1s ease-in-out infinite;
             transition: all 0.3s ease;
         }
@@ -197,8 +287,8 @@
             font-weight: bold;
             color: #ff3b30;
             text-shadow: 
-                0 0 15px rgba(255, 59, 48, 0.8),
-                0 0 30px rgba(255, 59, 48, 0.6);
+                0 0 10px rgba(255, 59, 48, 0.5),
+                0 0 20px rgba(255, 59, 48, 0.4);
             animation: blink 0.5s ease-in-out infinite;
         }
 
@@ -210,7 +300,7 @@
         .total-time {
             font-size: 24px;
             color: rgba(255, 255, 255, 0.9);
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.4);
             margin-top: -8px;
         }
 
@@ -243,7 +333,7 @@
         .stop-button:hover {
             background: rgba(0, 255, 0, 0.3);
             border-color: #00ff00;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+            box-shadow: 0 0 5px rgba(0, 255, 0, 0.2);
         }
 
         .stop-button:active {
@@ -277,7 +367,7 @@
         .pause-button:hover {
             background: rgba(255, 165, 0, 0.3);
             border-color: #ffa500;
-            box-shadow: 0 0 10px rgba(255, 165, 0, 0.3);
+            box-shadow: 0 0 5px rgba(255, 165, 0, 0.2);
         }
 
         .pause-button:active {
@@ -410,7 +500,7 @@
             left: 2px;
             background: rgba(150, 150, 150, 1);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         .config-checkbox:checked {
@@ -421,7 +511,7 @@
         .config-checkbox:checked::before {
             left: 26px;
             background: #00ff00;
-            box-shadow: 0 2px 6px rgba(0, 255, 0, 0.5);
+            box-shadow: 0 1px 3px rgba(0, 255, 0, 0.3);
         }
 
         .config-checkbox:hover {
@@ -526,6 +616,12 @@
         
         <div class="main-content">
             <div class="waves-container">
+                <div class="gradient"></div>
+                <div class="gradient"></div>
+                <div class="gradient"></div>
+                <div class="gradient"></div>
+                <div class="gradient"></div>
+                <div class="gradient"></div>
                 <div class="gradient"></div>
                 <div class="gradient"></div>
             </div>
@@ -771,6 +867,17 @@
             document.getElementById('dangerStop2').style.stopColor = CONFIG.dangerColor2;
             document.getElementById('overtimeStop1').style.stopColor = CONFIG.overtimeColor1;
             document.getElementById('overtimeStop2').style.stopColor = CONFIG.overtimeColor2;
+            
+            // Appliquer les couleurs des gradients animés
+            const gradients = document.querySelectorAll('.gradient');
+            if (gradients[0]) gradients[0].style.backgroundImage = `linear-gradient(45deg, ${CONFIG.gradient1Color1}, ${CONFIG.gradient1Color2}, ${CONFIG.gradient1Color3})`;
+            if (gradients[1]) gradients[1].style.backgroundImage = `linear-gradient(135deg, ${CONFIG.gradient2Color1}, ${CONFIG.gradient2Color2})`;
+            if (gradients[2]) gradients[2].style.backgroundImage = `linear-gradient(225deg, ${CONFIG.gradient3Color1}, ${CONFIG.gradient3Color2})`;
+            if (gradients[3]) gradients[3].style.backgroundImage = `linear-gradient(315deg, ${CONFIG.gradient4Color1}, ${CONFIG.gradient4Color2})`;
+            if (gradients[4]) gradients[4].style.backgroundImage = `linear-gradient(90deg, ${CONFIG.gradient5Color1}, ${CONFIG.gradient5Color2})`;
+            if (gradients[5]) gradients[5].style.backgroundImage = `linear-gradient(180deg, ${CONFIG.gradient6Color1}, ${CONFIG.gradient6Color2})`;
+            if (gradients[6]) gradients[6].style.backgroundImage = `linear-gradient(270deg, ${CONFIG.gradient7Color1}, ${CONFIG.gradient7Color2})`;
+            if (gradients[7]) gradients[7].style.backgroundImage = `linear-gradient(60deg, ${CONFIG.gradient8Color1}, ${CONFIG.gradient8Color2})`;
         } else {
             // Valeurs par défaut si CONFIG n'est pas chargé
             document.getElementById('normalStop1').style.stopColor = '#00ff00';
