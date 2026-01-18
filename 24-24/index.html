@@ -1,88 +1,124 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ClubRadio Mauléon - Overlay OBS 24/7">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+          content="ClubRadio Mauléon - Overlay OBS 24/7">
     <title>ClubRadio 24/7 - Overlay OBS</title>
-    
+
     <!-- Styles CSS -->
-    <link rel="stylesheet" href="style.css">
-    
+    <link rel="stylesheet"
+          href="style.css">
+
     <!-- Configuration globale (à charger en premier) -->
     <script src="config.js"></script>
 </head>
+
 <body>
+    <!-- ============================================ -->
+    <!-- BARRE DE PROGRESSION (HORS 16:9)             -->
+    <!-- ============================================ -->
+    <aside class="progress-bar"
+           id="progressBar">
+        <div class="video-info">
+            <span class="video-title"
+                  id="videoTitle">Chargement...</span>
+            <span class="video-time"
+                  id="videoTime">--:-- / --:--</span>
+            <span class="video-remaining"
+                  id="videoRemaining">Reste: --:--</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill"
+                 id="progressFill"></div>
+        </div>
+    </aside>
+
     <!-- ============================================ -->
     <!-- CONTENEUR PRINCIPAL (1920x1080 pour OBS)    -->
     <!-- ============================================ -->
     <main class="obs-container">
-        
+
         <!-- ============================================ -->
         <!-- ZONE DE LECTURE VIDÉO PRINCIPALE            -->
         <!-- ============================================ -->
-        <section class="video-container" id="videoContainer">
+        <section class="video-container"
+                 id="videoContainer">
             <!-- Lecteur vidéo principal (fichiers locaux) -->
-            <video 
-                id="mainVideo" 
-                class="main-video"
-                preload="auto"
-                muted
-                autoplay
-                playsinline
-                disablepictureinpicture>
+            <video id="mainVideo"
+                   class="main-video"
+                   preload="auto"
+                   muted
+                   autoplay
+                   playsinline
+                   disablepictureinpicture>
                 Votre navigateur ne supporte pas la balise vidéo HTML5.
             </video>
-            
+
             <!-- Lecteur audio pour les pauses musicales -->
-            <audio 
-                id="musicPlayer" 
-                class="music-player"
-                preload="auto"
-                muted
-                autoplay>
+            <audio id="musicPlayer"
+                   class="music-player"
+                   preload="auto"
+                   muted
+                   autoplay>
                 Votre navigateur ne supporte pas la balise audio HTML5.
             </audio>
-            
+
             <!-- Conteneur pour YouTube IFrame (optionnel) -->
-            <div id="youtubeContainer" class="youtube-container"></div>
-            
+            <div id="youtubeContainer"
+                 class="youtube-container"></div>
+
             <!-- Indicateur de chargement -->
-            <div id="loadingIndicator" class="loading-indicator">
+            <div id="loadingIndicator"
+                 class="loading-indicator">
                 <div class="spinner"></div>
                 <p class="loading-text">Chargement en cours...</p>
             </div>
-            
+
             <!-- Message d'erreur (si vidéo ne charge pas) -->
-            <div id="errorIndicator" class="error-indicator">
+            <div id="errorIndicator"
+                 class="error-indicator">
                 <div class="error-icon">⚠️</div>
                 <p class="error-text">Erreur de chargement - Passage à la vidéo suivante...</p>
             </div>
         </section>
-        
+
         <!-- ============================================ -->
         <!-- OVERLAY: BANDEAU D'INFORMATIONS (TICKER)    -->
         <!-- ============================================ -->
-        <aside class="ticker-bar" id="tickerBar">
+        <aside class="ticker-bar"
+               id="tickerBar">
             <!-- Conteneur du message défilant -->
-            <div class="ticker-content" id="tickerContent">
-                <span class="ticker-message" id="tickerMessage">
+            <div class="ticker-content"
+                 id="tickerContent">
+                <span class="ticker-message"
+                      id="tickerMessage">
                     Bienvenue sur ClubRadio Mauléon - Votre radio associative 24h/24 et 7j/7
                 </span>
             </div>
-            
-            <!-- Horloge fixe (coin droit) -->
-            <div class="clock" id="clock">
-                <time id="currentTime">00:00:00</time>
-            </div>
         </aside>
-        
+
+        <!-- ============================================ -->
+        <!-- OVERLAY: INFORMATIONS COMPLÉMENTAIRES       -->
+        <!-- ============================================ -->
+        <div class="info-overlay"
+             id="infoOverlay">
+            <!-- Indicateur de pause musicale (quand actif) -->
+            <div class="music-indicator"
+                 id="musicIndicator">
+                🎵 Pause Musicale
+            </div>
+        </div>
+
     </main>
-    
+
     <!-- ============================================ -->
     <!-- SCRIPTS JAVASCRIPT                          -->
     <!-- ============================================ -->
-    
+
     <!-- YouTube IFrame API (optionnel, si activé dans config) -->
     <script>
         // Chargement conditionnel de l'API YouTube
@@ -93,9 +129,10 @@
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
         }
     </script>
-    
+
     <!-- Logique principale de l'application -->
     <script src="app.js"></script>
-    
+
 </body>
+
 </html>

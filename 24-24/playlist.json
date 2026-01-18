@@ -1,70 +1,154 @@
-{
+ {
     "videos": [
         {
-            "id": "video_001",
-            "title": "Présentation ClubRadio",
-            "src": "presentation_clubradio.mp4",
-            "duration": "02:30",
-            "type": "local"
+            "id": "ltde_s1_01",
+            "title": "LE TEMPS D'UN ÉCHANGE S1 #01 | Baptiste Sechet",
+            "src": "https://youtu.be/6zyDHGfLleE",
+            "duration": "34:30",
+            "type": "youtube"
         },
         {
-            "id": "video_002",
-            "title": "Actualités du Jour",
-            "src": "actualites_local.mp4",
-            "duration": "05:00",
-            "type": "local"
+            "id": "ltde_s1_02",
+            "title": "LE TEMPS D'UN ÉCHANGE S1 #02",
+            "src": "https://youtu.be/rn76ubVIXUU",
+            "duration": "40:39",
+            "type": "youtube"
         },
         {
-            "id": "video_003",
-            "title": "Interview de la Semaine",
-            "src": "interview_semaine.mp4",
-            "duration": "08:15",
-            "type": "local"
+            "id": "ltde_s1_03",
+            "title": "LE TEMPS D'UN ÉCHANGE S1 #03 | Les Compagnons de la Tour",
+            "src": "https://youtu.be/YEDCXKu2u7I",
+            "duration": "45:06",
+            "type": "youtube"
         },
         {
-            "id": "video_004",
-            "title": "Reportage Associatif",
-            "src": "reportage_asso.mp4",
-            "duration": "04:45",
-            "type": "local"
+            "id": "ltde_s2_01",
+            "title": "LE TEMPS D'UN ÉCHANGE S2 #01 | La nuit sévrienne",
+            "src": "https://youtu.be/R08gZrLdysg",
+            "duration": "40:11",
+            "type": "youtube"
         },
         {
-            "id": "video_005",
-            "title": "Culture et Patrimoine",
-            "src": "culture_patrimoine.mp4",
-            "duration": "06:20",
-            "type": "local"
+            "id": "clubradio_s1_01",
+            "title": "ClubRadio S1 #01",
+            "src": "https://youtu.be/1r8O4dAPg8o",
+            "duration": "1:02:07",
+            "type": "youtube"
         },
         {
-            "id": "video_006",
-            "title": "Sport Local",
-            "src": "sport_local.mp4",
-            "duration": "03:50",
-            "type": "local"
+            "id": "clubradio_s1_02",
+            "title": "ClubRadio S1 #02",
+            "src": "https://youtu.be/bwOcddy2cMU",
+            "duration": "1:11:17",
+            "type": "youtube"
         },
         {
-            "id": "video_007",
-            "title": "Agenda des Événements",
-            "src": "agenda_evenements.mp4",
-            "duration": "02:15",
-            "type": "local"
+            "id": "clubradio_s1_03",
+            "title": "ClubRadio S1 #03",
+            "src": "https://youtu.be/MNjPKES-oJs",
+            "duration": "44:07",
+            "type": "youtube"
         },
         {
-            "id": "video_008",
-            "title": "Découverte du Territoire",
-            "src": "decouverte_territoire.mp4",
-            "duration": "07:30",
-            "type": "local"
+            "id": "clubradio_s1_04",
+            "title": "ClubRadio S1 #04",
+            "src": "https://youtube.com/live/9zDbKZcuPkM",
+            "duration": "50:14",
+            "type": "youtube"
+        },
+        {
+            "id": "clubradio_s1_05",
+            "title": "ClubRadio S1 #05",
+            "src": "https://youtube.com/live/m18bjg4QG1A",
+            "duration": "59:20",
+            "type": "youtube"
+        },
+        {
+            "id": "clubradio_s1_06",
+            "title": "ClubRadio S1 #06",
+            "src": "https://youtube.com/live/z9ATpPkjV3g",
+            "duration": "1:27:06",
+            "type": "youtube"
+        },
+        {
+            "id": "clubradio_s1_07",
+            "title": "ClubRadio S1 #07",
+            "src": "https://youtube.com/live/kBZzEcHEZSM",
+            "duration": "1:05:50",
+            "type": "youtube"
+        },
+        {
+            "id": "clubradio_s1_08",
+            "title": "ClubRadio S1 #08",
+            "src": "https://youtube.com/live/mvTDA-XHjBo",
+            "duration": "1:17:19",
+            "type": "youtube"
+        },
+        {
+            "id": "clubradio_s2_01",
+            "title": "ClubRadio S2 #01",
+            "src": "https://youtube.com/live/5ID8Fp8f7oM",
+            "duration": "1:17:18",
+            "type": "youtube"
+        },
+        {
+            "id": "clubradio_s2_02",
+            "title": "ClubRadio S2 #02 | Ft. @quoidneufcoaster",
+            "src": "https://youtu.be/RElXeRZTNAg",
+            "duration": "59:03",
+            "type": "youtube"
+        },
+        {
+            "id": "clubradio_s2_03",
+            "title": "ClubRadio S2 #03",
+            "src": "https://youtube.com/live/oIWhAt574hw",
+            "duration": "1:10:19",
+            "type": "youtube"
+        },
+        {
+            "id": "clubradio_s2_04",
+            "title": "ClubRadio S2 #04",
+            "src": "https://youtube.com/live/04H3v3P6uNo",
+            "duration": "1:10:29",
+            "type": "youtube"
+        },
+        {
+            "id": "clubradio_s2_05",
+            "title": "ClubRadio S2 #05 | Ft. @lecantinier",
+            "src": "https://youtube.com/live/02u4pJ7VXBw",
+            "duration": "1:13:35",
+            "type": "youtube"
+        },
+        {
+            "id": "clubradio_s2_06",
+            "title": "ClubRadio S2 #06",
+            "src": "https://youtube.com/live/QJt4eem18x4",
+            "duration": "1:17:29",
+            "type": "youtube"
+        },
+        {
+            "id": "clubradio_s2_07",
+            "title": "ClubRadio S2 #07 | Ft. @leparconaute",
+            "src": "https://youtube.com/live/LBPHZhfoOnw",
+            "duration": "1:24:46",
+            "type": "youtube"
         }
     ],
     "_comments": {
-        "structure": "Chaque vidéo doit avoir: id (unique), title, src (nom du fichier), duration (format MM:SS ou HH:MM:SS), type (local ou youtube)",
+        "structure": "Chaque vidéo doit avoir: id (unique), title, src (nom du fichier ou URL YouTube), duration (format MM:SS ou HH:MM:SS), type (local ou youtube)",
         "type_local": "Pour les fichiers .mp4 locaux dans le dossier assets/",
         "type_youtube": "Pour les vidéos YouTube (nécessite YouTube IFrame API activé dans config.js)",
+        "exemple_local": {
+            "id": "video_local_001",
+            "title": "Ma vidéo locale",
+            "src": "ma_video.mp4",
+            "duration": "05:30",
+            "type": "local"
+        },
         "exemple_youtube": {
             "id": "video_youtube_001",
-            "title": "Météo Express YouTube",
-            "src": "dQw4w9WgXcQ",
+            "title": "Ma vidéo YouTube",
+            "src": "https://youtu.be/dQw4w9WgXcQ",
             "duration": "03:30",
             "type": "youtube"
         }

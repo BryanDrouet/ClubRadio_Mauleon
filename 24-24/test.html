@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
     <title>Test ClubRadio 24/7</title>
     <style>
         * {
@@ -121,8 +123,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .file-list {
@@ -169,6 +176,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>🎙️ Test de Configuration</h1>
@@ -206,27 +214,35 @@
             <div id="scheduleTest"></div>
         </div>
 
-        <button class="btn" onclick="runAllTests()">
+        <button class="btn"
+                onclick="runAllTests()">
             🔄 Relancer les Tests
         </button>
 
-        <button class="btn" onclick="window.location.href='index.html'" style="background: #28a745;">
+        <button class="btn"
+                onclick="window.location.href='index.html'"
+                style="background: #28a745;">
             ▶️ Lancer l'Application
         </button>
 
-        <div id="summary" class="summary" style="display: none;">
+        <div id="summary"
+             class="summary"
+             style="display: none;">
             <h2>Résumé des Tests</h2>
             <div class="summary-stats">
                 <div class="stat">
-                    <div class="stat-number" id="successCount">0</div>
+                    <div class="stat-number"
+                         id="successCount">0</div>
                     <div class="stat-label">Tests Réussis</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-number" id="errorCount">0</div>
+                    <div class="stat-number"
+                         id="errorCount">0</div>
                     <div class="stat-label">Erreurs</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-number" id="warningCount">0</div>
+                    <div class="stat-number"
+                         id="warningCount">0</div>
                     <div class="stat-label">Avertissements</div>
                 </div>
             </div>
@@ -239,12 +255,12 @@
 
         async function runAllTests() {
             stats = { success: 0, error: 0, warning: 0 };
-            
+
             await testConfig();
             await testPlaylist();
             await testMusic();
             await testSchedule();
-            
+
             showSummary();
         }
 
@@ -259,7 +275,7 @@
                 }
 
                 let results = [];
-                
+
                 // Vérifier les paramètres essentiels
                 if (CONFIG.musicIntervalMinutes > 0) {
                     results.push('✅ Intervalle musique configuré: ' + CONFIG.musicIntervalMinutes + ' min');
@@ -294,7 +310,7 @@
                 if (!response.ok) throw new Error('Fichier playlist.json introuvable');
 
                 const data = await response.json();
-                
+
                 if (!data.videos || data.videos.length === 0) {
                     throw new Error('Aucune vidéo dans la playlist');
                 }
@@ -307,7 +323,7 @@
                 for (const video of data.videos.slice(0, 5)) {  // Limiter à 5 pour l'affichage
                     const filePath = CONFIG.pathPrefix + video.src;
                     const exists = await checkFileExists(filePath);
-                    
+
                     if (exists) {
                         fileList += `<div class="file-item">✅ ${video.title}</div>`;
                     } else {
@@ -315,7 +331,7 @@
                         stats.warning++;
                     }
                 }
-                
+
                 if (data.videos.length > 5) {
                     fileList += `<div class="file-item">... et ${data.videos.length - 5} autre(s)</div>`;
                 }
@@ -338,7 +354,7 @@
                 if (!response.ok) throw new Error('Fichier music.json introuvable');
 
                 const data = await response.json();
-                
+
                 if (!data.tracks || data.tracks.length === 0) {
                     container.innerHTML = `<div class="test-result warning">⚠️ Aucune musique configurée (pauses musicales désactivées)</div>`;
                     stats.warning++;
@@ -353,7 +369,7 @@
                 for (const track of data.tracks.slice(0, 3)) {
                     const filePath = CONFIG.pathPrefix + track.src;
                     const exists = await checkFileExists(filePath);
-                    
+
                     if (exists) {
                         fileList += `<div class="file-item">✅ ${track.title}</div>`;
                     } else {
@@ -361,7 +377,7 @@
                         stats.warning++;
                     }
                 }
-                
+
                 if (data.tracks.length > 3) {
                     fileList += `<div class="file-item">... et ${data.tracks.length - 3} autre(s)</div>`;
                 }
@@ -384,7 +400,7 @@
                 if (!response.ok) throw new Error('Fichier schedule.json introuvable');
 
                 const data = await response.json();
-                
+
                 if (!data.events || data.events.length === 0) {
                     container.innerHTML = `<div class="test-result warning">⚠️ Aucun événement planifié</div>`;
                     stats.warning++;
@@ -423,7 +439,7 @@
         function showSummary() {
             const summary = document.getElementById('summary');
             summary.style.display = 'block';
-            
+
             document.getElementById('successCount').textContent = stats.success;
             document.getElementById('errorCount').textContent = stats.error;
             document.getElementById('warningCount').textContent = stats.warning;
@@ -436,4 +452,5 @@
         window.addEventListener('DOMContentLoaded', runAllTests);
     </script>
 </body>
+
 </html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Démo ClubRadio 24/7 (Sans Médias)</title>
+    <link rel="stylesheet"
+          href="style.css">
+    <style>
+        /* Styles additionnels pour la démo */
+        .demo-video {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .demo-logo {
+            font-size: 120px;
+            margin-bottom: 30px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .demo-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .demo-subtitle {
+            font-size: 28px;
+            font-weight: 300;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+
+        .demo-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .demo-warning {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 193, 7, 0.9);
+            color: #000;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .rotating {
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="obs-container">
+        <section class="video-container">
+            <!-- Zone de démonstration (remplace la vraie vidéo) -->
+            <div class="demo-video"
+                 id="demoContent">
+                <div class="demo-logo rotating">🎙️</div>
+                <h1 class="demo-title">ClubRadio Mauléon</h1>
+                <p class="demo-subtitle">Votre radio associative 24h/24 et 7j/7</p>
+                <div class="demo-info">
+                    <p>Mode Démo - Sans Fichiers Média</p>
+                    <p style="font-size: 18px; margin-top: 10px;">
+                        Pour utiliser le système complet, ajoutez vos fichiers vidéo et audio
+                    </p>
+                </div>
+            </div>
+
+            <div class="demo-warning">
+                ⚠️ Mode Démonstration - Fichiers média non chargés
+            </div>
+        </section>
+
+        <!-- Bandeau d'informations (fonctionne en mode démo) -->
+        <aside class="ticker-bar">
+            <div class="ticker-content">
+                <span class="ticker-message"
+                      id="tickerMessage">
+                    🎵 Bienvenue sur ClubRadio Mauléon • Votre radio associative • Diffusion 24h/24 et 7j/7 •
+                    Mode Démonstration Actif • Ajoutez vos fichiers média pour commencer • ClubRadio c'est votre radio !
+                    🎙️
+                </span>
+            </div>
+            <div class="clock">
+                <time id="currentTime">00:00:00</time>
+            </div>
+        </aside>
+
+        <!-- Overlays informatifs -->
+        <div class="info-overlay">
+            <div class="now-playing visible">
+                <span class="label">Démo:</span>
+                <span class="title">Mode Test Sans Médias</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Script minimal pour la démo
+        const demoContent = document.getElementById('demoContent');
+        const clockElement = document.getElementById('currentTime');
+        const tickerMessage = document.getElementById('tickerMessage');
+
+        // Liste de messages de démo
+        const demoMessages = [
+            '🎵 Bienvenue sur ClubRadio Mauléon',
+            '📻 Votre radio associative locale',
+            '🎙️ Diffusion 24h/24 et 7j/7',
+            '🎬 Mode Démonstration - Ajoutez vos médias',
+            '⭐ ClubRadio, c\'est votre radio !',
+            '🎵 Prochainement : Votre contenu personnalisé'
+        ];
+
+        let messageIndex = 0;
+
+        // Mise à jour de l'horloge
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            clockElement.textContent = timeString;
+        }
+
+        // Changer le message du ticker toutes les 5 secondes
+        function updateTickerMessage() {
+            messageIndex = (messageIndex + 1) % demoMessages.length;
+            tickerMessage.textContent = demoMessages[messageIndex] + ' • ' + demoMessages.join(' • ') + ' • ';
+        }
+
+        // Changer le contenu visuel de la démo toutes les 10 secondes
+        const demoVariants = [
+            {
+                gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                emoji: '🎙️',
+                title: 'ClubRadio Mauléon',
+                subtitle: 'Votre radio associative 24h/24 et 7j/7'
+            },
+            {
+                gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                emoji: '🎵',
+                title: 'Musique & Culture',
+                subtitle: 'Découvrez nos programmes variés'
+            },
+            {
+                gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                emoji: '📻',
+                title: 'Actualités Locales',
+                subtitle: 'Restez connecté à votre territoire'
+            },
+            {
+                gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                emoji: '🎬',
+                title: 'Programmes Vidéo',
+                subtitle: 'Interviews, reportages, événements'
+            }
+        ];
+
+        let variantIndex = 0;
+
+        function updateDemoContent() {
+            const variant = demoVariants[variantIndex];
+            demoContent.style.background = variant.gradient;
+            demoContent.querySelector('.demo-logo').textContent = variant.emoji;
+            demoContent.querySelector('.demo-title').textContent = variant.title;
+            demoContent.querySelector('.demo-subtitle').textContent = variant.subtitle;
+
+            variantIndex = (variantIndex + 1) % demoVariants.length;
+        }
+
+        // Démarrer les mises à jour
+        setInterval(updateClock, 1000);
+        setInterval(updateTickerMessage, 5000);
+        setInterval(updateDemoContent, 10000);
+
+        // Initialiser
+        updateClock();
+        updateTickerMessage();
+
+        // Message de bienvenue dans la console
+        console.log('%c🎙️ ClubRadio 24/7 - Mode Démo', 'font-size: 24px; font-weight: bold; color: #667eea;');
+        console.log('%cCe mode de démonstration fonctionne sans fichiers média.', 'font-size: 14px; color: #666;');
+        console.log('%cPour utiliser le système complet :', 'font-size: 14px; font-weight: bold; color: #333;');
+        console.log('  1. Ajoutez vos fichiers vidéo dans assets/');
+        console.log('  2. Ajoutez vos fichiers audio dans assets/music/');
+        console.log('  3. Configurez playlist.json et music.json');
+        console.log('  4. Ouvrez index.html (pas demo.html)');
+        console.log('');
+        console.log('%c📚 Documentation complète : README.md', 'font-size: 14px; color: #00d4ff;');
+        console.log('%c🚀 Démarrage rapide : QUICKSTART.md', 'font-size: 14px; color: #00d4ff;');
+    </script>
+</body>
+
+</html>
