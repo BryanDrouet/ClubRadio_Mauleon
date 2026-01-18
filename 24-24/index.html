@@ -27,6 +27,8 @@
                 id="mainVideo" 
                 class="main-video"
                 preload="auto"
+                muted
+                autoplay
                 playsinline
                 disablepictureinpicture>
                 Votre navigateur ne supporte pas la balise vidéo HTML5.
@@ -36,7 +38,9 @@
             <audio 
                 id="musicPlayer" 
                 class="music-player"
-                preload="auto">
+                preload="auto"
+                muted
+                autoplay>
                 Votre navigateur ne supporte pas la balise audio HTML5.
             </audio>
             
@@ -72,22 +76,6 @@
                 <time id="currentTime">00:00:00</time>
             </div>
         </aside>
-        
-        <!-- ============================================ -->
-        <!-- OVERLAY: INFORMATIONS COMPLÉMENTAIRES       -->
-        <!-- ============================================ -->
-        <div class="info-overlay" id="infoOverlay">
-            <!-- Titre de la vidéo/musique en cours -->
-            <div class="now-playing" id="nowPlaying">
-                <span class="label">En cours:</span>
-                <span class="title" id="currentTitle">Chargement...</span>
-            </div>
-            
-            <!-- Indicateur de pause musicale (quand actif) -->
-            <div class="music-indicator" id="musicIndicator">
-                🎵 Pause Musicale
-            </div>
-        </div>
         
     </main>
     

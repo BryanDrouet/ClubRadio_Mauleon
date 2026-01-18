@@ -132,9 +132,18 @@ function cacheDOMElements() {
     DOM.tickerMessage = document.getElementById('tickerMessage');
     DOM.clock = document.getElementById('clock');
     DOM.currentTime = document.getElementById('currentTime');
-    DOM.nowPlaying = document.getElementById('nowPlaying');
-    DOM.currentTitle = document.getElementById('currentTitle');
-    DOM.musicIndicator = document.getElementById('musicIndicator');
+    
+    // Activer l'autoplay dès que possible
+    if (DOM.mainVideo) {
+        DOM.mainVideo.muted = true; // Nécessaire pour l'autoplay dans les navigateurs modernes
+        DOM.mainVideo.setAttribute('autoplay', '');
+        DOM.mainVideo.setAttribute('muted', '');
+    }
+    if (DOM.musicPlayer) {
+        DOM.musicPlayer.muted = true;
+        DOM.musicPlayer.setAttribute('autoplay', '');
+        DOM.musicPlayer.setAttribute('muted', '');
+    }
     
     log('✅ Éléments DOM récupérés');
 }
@@ -214,10 +223,6 @@ function playNextVideo() {
     APP_STATE.currentMediaTitle = video.title;
     APP_STATE.isPlayingMusic = false;
     APP_STATE.isPlayingScheduledEvent = false;
-    
-    // Mettre à jour l'interface
-    updateNowPlaying(video.title);
-    hideMusicIndicator();
     
     // Charger et lire la vidéo selon son type
     if (video.type === 'youtube' && CONFIG.enableYouTube) {
@@ -479,10 +484,6 @@ function playMusicBreak() {
     // Calculer le prochain temps de pause
     calculateNextMusicBreak();
     
-    // Mettre à jour l'interface
-    updateNowPlaying(track.title);
-    showMusicIndicator();
-    
     // Cacher la vidéo et YouTube
     DOM.mainVideo.style.display = 'none';
     if (DOM.youtubeContainer) {
@@ -593,10 +594,6 @@ function playScheduledEvent(event) {
     APP_STATE.isPlayingScheduledEvent = true;
     APP_STATE.currentMediaType = 'schedule';
     APP_STATE.currentMediaTitle = event.video.title;
-    
-    // Mettre à jour l'interface
-    updateNowPlaying(`⭐ ${event.video.title}`);
-    hideMusicIndicator();
     
     // Gérer l'interruption selon le mode configuré
     if (CONFIG.scheduleInterruptMode === 'fade') {
@@ -722,32 +719,7 @@ function getNextScheduledEvent() {
     return closestEvent;
 }
 
-/**
- * Met à jour l'affichage "En cours"
- */
-function updateNowPlaying(title) {
-    DOM.currentTitle.textContent = title;
-    DOM.nowPlaying.classList.add('visible');
-    
-    // Masquer après un certain temps
-    setTimeout(() => {
-        DOM.nowPlaying.classList.remove('visible');
-    }, CONFIG.messageDisplayDuration);
-}
 
-/**
- * Affiche l'indicateur de pause musicale
- */
-function showMusicIndicator() {
-    DOM.musicIndicator.classList.add('visible');
-}
-
-/**
- * Cache l'indicateur de pause musicale
- */
-function hideMusicIndicator() {
-    DOM.musicIndicator.classList.remove('visible');
-}
 
 // ============================================================================
 // GESTION DE L'HORLOGE
