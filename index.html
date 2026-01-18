@@ -2,36 +2,164 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape">
-    <title>Compteur de Temps Écoulé</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Radio Mauléon</title>
     <link rel="icon" href="assets/off.ico" type="image/x-icon">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .card p {
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .card-timer {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .card-player {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .card-60s {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .card-clock {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .card-timer h2, .card-timer p,
+        .card-player h2, .card-player p,
+        .card-60s h2, .card-60s p,
+        .card-clock h2, .card-clock p {
+            color: white;
+        }
+
+        footer {
+            margin-top: 50px;
+            color: white;
+            text-align: center;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-	<div class="waves-container">
-		<div class="gradient"></div>
-		<div class="gradient"></div>
-		<div class="gradient"></div>
-	</div>
-    <button class="menu-toggle" onclick="toggleSettings()"></button>
-    <button class="full-screen-button" onclick="toggleFullScreen()" id="fullscreenButton">⛶</button>
-    <div id="settingsMenu">
-        <h3>Réglages</h3>
-        <button id="removeButtons" style="height:10px" onclick="removeButtons()">Enlever les boutons</button>
-        <button id="removeBookmarks" style="height:10px" onclick="removeBookmarks()">Enlever les signets</button>
-    </div>
-    
-    <div class="container">
-        <div id="timer">00:00:00:0</div>
-        <div class="buttons" id="buttonsContainer">
-            <button id="recButton" onclick="toggleTimer()">REC</button>
-            <button id="resetButton" onclick="resetTimer()" disabled>Reset</button>
-            <button id="bookmarkButton" onclick="addSignet()" disabled>Signet</button>
-        </div>
-        <div id="bookmarksContainer" class="signet-list"></div>
+    <div class="header">
+        <h1>🎙️ Club Radio Mauléon</h1>
+        <p>Choisissez votre outil</p>
     </div>
 
-    <script src="scripts.js"></script>
+    <div class="grid-container">
+        <a href="chronometre/index.html" class="card card-timer">
+            <div class="card-icon">⏱️</div>
+            <h2>Chronomètre</h2>
+            <p>Timer pour vos émissions avec signets et enregistrement du temps</p>
+        </a>
 
+        <a href="24-24/index.html" class="card card-player">
+            <div class="card-icon">🎵</div>
+            <h2>Lecteur 24/24</h2>
+            <p>Lecteur de musique en continu avec programmation par tranches horaires</p>
+        </a>
+
+        <a href="60secondes/index.html" class="card card-60s">
+            <div class="card-icon">⏰</div>
+            <h2>60 Secondes</h2>
+            <p>Minuteur de 60 secondes pour vos interventions chronométrées</p>
+        </a>
+
+        <a href="horloge/clock.html" class="card card-clock">
+            <div class="card-icon">🕐</div>
+            <h2>Horloge</h2>
+            <p>Affichage de l'heure pour vos émissions en direct</p>
+        </a>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Club Radio Mauléon - Tous droits réservés</p>
+    </footer>
 </body>
 </html>
