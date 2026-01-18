@@ -1,0 +1,72 @@
+{
+    "videos": [
+        {
+            "id": "video_001",
+            "title": "Présentation ClubRadio",
+            "src": "presentation_clubradio.mp4",
+            "duration": "02:30",
+            "type": "local"
+        },
+        {
+            "id": "video_002",
+            "title": "Actualités du Jour",
+            "src": "actualites_local.mp4",
+            "duration": "05:00",
+            "type": "local"
+        },
+        {
+            "id": "video_003",
+            "title": "Interview de la Semaine",
+            "src": "interview_semaine.mp4",
+            "duration": "08:15",
+            "type": "local"
+        },
+        {
+            "id": "video_004",
+            "title": "Reportage Associatif",
+            "src": "reportage_asso.mp4",
+            "duration": "04:45",
+            "type": "local"
+        },
+        {
+            "id": "video_005",
+            "title": "Culture et Patrimoine",
+            "src": "culture_patrimoine.mp4",
+            "duration": "06:20",
+            "type": "local"
+        },
+        {
+            "id": "video_006",
+            "title": "Sport Local",
+            "src": "sport_local.mp4",
+            "duration": "03:50",
+            "type": "local"
+        },
+        {
+            "id": "video_007",
+            "title": "Agenda des Événements",
+            "src": "agenda_evenements.mp4",
+            "duration": "02:15",
+            "type": "local"
+        },
+        {
+            "id": "video_008",
+            "title": "Découverte du Territoire",
+            "src": "decouverte_territoire.mp4",
+            "duration": "07:30",
+            "type": "local"
+        }
+    ],
+    "_comments": {
+        "structure": "Chaque vidéo doit avoir: id (unique), title, src (nom du fichier), duration (format MM:SS ou HH:MM:SS), type (local ou youtube)",
+        "type_local": "Pour les fichiers .mp4 locaux dans le dossier assets/",
+        "type_youtube": "Pour les vidéos YouTube (nécessite YouTube IFrame API activé dans config.js)",
+        "exemple_youtube": {
+            "id": "video_youtube_001",
+            "title": "Météo Express YouTube",
+            "src": "dQw4w9WgXcQ",
+            "duration": "03:30",
+            "type": "youtube"
+        }
+    }
+}

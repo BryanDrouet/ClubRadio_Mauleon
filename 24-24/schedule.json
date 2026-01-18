@@ -1,0 +1,103 @@
+{
+    "events": [
+        {
+            "id": "schedule_001",
+            "title": "Météo Express du Matin",
+            "time": "08:00",
+            "video": {
+                "title": "Météo du Jour",
+                "src": "meteo_morning.mp4",
+                "duration": "02:30",
+                "type": "local"
+            },
+            "days": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+            "priority": 1
+        },
+        {
+            "id": "schedule_002",
+            "title": "Flash Info Midi",
+            "time": "12:00",
+            "video": {
+                "title": "Flash Info 12h",
+                "src": "flash_info_noon.mp4",
+                "duration": "03:00",
+                "type": "local"
+            },
+            "days": ["monday", "tuesday", "wednesday", "thursday", "friday"],
+            "priority": 1
+        },
+        {
+            "id": "schedule_003",
+            "title": "Météo de l'Après-Midi",
+            "time": "14:00",
+            "video": {
+                "title": "Météo Après-Midi",
+                "src": "meteo_afternoon.mp4",
+                "duration": "02:00",
+                "type": "local"
+            },
+            "days": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+            "priority": 2
+        },
+        {
+            "id": "schedule_004",
+            "title": "Journal du Soir",
+            "time": "19:00",
+            "video": {
+                "title": "Journal 19h",
+                "src": "journal_evening.mp4",
+                "duration": "05:00",
+                "type": "local"
+            },
+            "days": ["monday", "tuesday", "wednesday", "thursday", "friday"],
+            "priority": 1
+        },
+        {
+            "id": "schedule_005",
+            "title": "Météo de la Nuit",
+            "time": "23:00",
+            "video": {
+                "title": "Météo Nocturne",
+                "src": "meteo_night.mp4",
+                "duration": "01:45",
+                "type": "local"
+            },
+            "days": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+            "priority": 2
+        },
+        {
+            "id": "schedule_006",
+            "title": "Résumé Hebdomadaire",
+            "time": "20:00",
+            "video": {
+                "title": "Résumé de la Semaine",
+                "src": "weekly_summary.mp4",
+                "duration": "10:00",
+                "type": "local"
+            },
+            "days": ["sunday"],
+            "priority": 1
+        }
+    ],
+    "_comments": {
+        "structure": "Chaque événement doit avoir: id, title, time (format HH:MM), video (objet avec src, title, duration, type), days (jours actifs), priority (1=haute, 2=normale)",
+        "time_format": "Format 24h (HH:MM) - Ex: 08:00, 14:30, 23:45",
+        "days_valides": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+        "priority": "1 = Priorité haute (ne pas manquer), 2 = Priorité normale (peut être décalé si conflit)",
+        "tolerance": "La tolérance de déclenchement est définie dans config.js → scheduleToleranceSeconds",
+        "interrupt_mode": "Le comportement d'interruption est défini dans config.js → scheduleInterruptMode (wait ou fade)",
+        "youtube_exemple": {
+            "id": "schedule_youtube",
+            "title": "Météo YouTube Live",
+            "time": "06:00",
+            "video": {
+                "title": "Météo France Live",
+                "src": "YOUTUBE_VIDEO_ID",
+                "duration": "02:00",
+                "type": "youtube"
+            },
+            "days": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+            "priority": 1
+        }
+    }
+}

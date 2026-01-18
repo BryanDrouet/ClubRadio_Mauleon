@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test ClubRadio 24/7</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .test-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .test-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .test-result {
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .file-list {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .file-item {
+            padding: 5px 0;
+            color: #555;
+        }
+
+        .summary {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .summary h2 {
+            margin-bottom: 15px;
+        }
+
+        .summary-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎙️ Test de Configuration</h1>
+        <p class="subtitle">ClubRadio 24/7 - Vérification du système</p>
+
+        <div class="test-section">
+            <div class="test-title">
+                <span class="icon">📁</span>
+                1. Fichiers de Configuration
+            </div>
+            <div id="configTest"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">
+                <span class="icon">🎬</span>
+                2. Fichiers Vidéo (Playlist)
+            </div>
+            <div id="playlistTest"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">
+                <span class="icon">🎵</span>
+                3. Fichiers Audio (Musiques)
+            </div>
+            <div id="musicTest"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">
+                <span class="icon">📅</span>
+                4. Événements Planifiés
+            </div>
+            <div id="scheduleTest"></div>
+        </div>
+
+        <button class="btn" onclick="runAllTests()">
+            🔄 Relancer les Tests
+        </button>
+
+        <button class="btn" onclick="window.location.href='index.html'" style="background: #28a745;">
+            ▶️ Lancer l'Application
+        </button>
+
+        <div id="summary" class="summary" style="display: none;">
+            <h2>Résumé des Tests</h2>
+            <div class="summary-stats">
+                <div class="stat">
+                    <div class="stat-number" id="successCount">0</div>
+                    <div class="stat-label">Tests Réussis</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="errorCount">0</div>
+                    <div class="stat-label">Erreurs</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="warningCount">0</div>
+                    <div class="stat-label">Avertissements</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        let stats = { success: 0, error: 0, warning: 0 };
+
+        async function runAllTests() {
+            stats = { success: 0, error: 0, warning: 0 };
+            
+            await testConfig();
+            await testPlaylist();
+            await testMusic();
+            await testSchedule();
+            
+            showSummary();
+        }
+
+        async function testConfig() {
+            const container = document.getElementById('configTest');
+            container.innerHTML = '<div class="loading"></div> Test en cours...';
+
+            try {
+                // Vérifier que CONFIG existe
+                if (typeof CONFIG === 'undefined') {
+                    throw new Error('CONFIG non défini - config.js ne s\'est pas chargé');
+                }
+
+                let results = [];
+                
+                // Vérifier les paramètres essentiels
+                if (CONFIG.musicIntervalMinutes > 0) {
+                    results.push('✅ Intervalle musique configuré: ' + CONFIG.musicIntervalMinutes + ' min');
+                    stats.success++;
+                } else {
+                    results.push('⚠️ Intervalle musique invalide');
+                    stats.warning++;
+                }
+
+                if (CONFIG.pathPrefix) {
+                    results.push('✅ Chemin des assets: ' + CONFIG.pathPrefix);
+                    stats.success++;
+                } else {
+                    results.push('❌ Chemin des assets non défini');
+                    stats.error++;
+                }
+
+                container.innerHTML = `<div class="test-result success">${results.join('<br>')}</div>`;
+
+            } catch (error) {
+                container.innerHTML = `<div class="test-result error">❌ ${error.message}</div>`;
+                stats.error++;
+            }
+        }
+
+        async function testPlaylist() {
+            const container = document.getElementById('playlistTest');
+            container.innerHTML = '<div class="loading"></div> Test en cours...';
+
+            try {
+                const response = await fetch(CONFIG.playlistFile);
+                if (!response.ok) throw new Error('Fichier playlist.json introuvable');
+
+                const data = await response.json();
+                
+                if (!data.videos || data.videos.length === 0) {
+                    throw new Error('Aucune vidéo dans la playlist');
+                }
+
+                let results = [`✅ Playlist chargée: ${data.videos.length} vidéo(s)`];
+                stats.success++;
+
+                // Vérifier les fichiers vidéo
+                let fileList = '<div class="file-list">';
+                for (const video of data.videos.slice(0, 5)) {  // Limiter à 5 pour l'affichage
+                    const filePath = CONFIG.pathPrefix + video.src;
+                    const exists = await checkFileExists(filePath);
+                    
+                    if (exists) {
+                        fileList += `<div class="file-item">✅ ${video.title}</div>`;
+                    } else {
+                        fileList += `<div class="file-item">❌ ${video.title} (fichier manquant: ${video.src})</div>`;
+                        stats.warning++;
+                    }
+                }
+                
+                if (data.videos.length > 5) {
+                    fileList += `<div class="file-item">... et ${data.videos.length - 5} autre(s)</div>`;
+                }
+                fileList += '</div>';
+
+                container.innerHTML = `<div class="test-result success">${results.join('<br>')}${fileList}</div>`;
+
+            } catch (error) {
+                container.innerHTML = `<div class="test-result error">❌ ${error.message}</div>`;
+                stats.error++;
+            }
+        }
+
+        async function testMusic() {
+            const container = document.getElementById('musicTest');
+            container.innerHTML = '<div class="loading"></div> Test en cours...';
+
+            try {
+                const response = await fetch(CONFIG.musicFile);
+                if (!response.ok) throw new Error('Fichier music.json introuvable');
+
+                const data = await response.json();
+                
+                if (!data.tracks || data.tracks.length === 0) {
+                    container.innerHTML = `<div class="test-result warning">⚠️ Aucune musique configurée (pauses musicales désactivées)</div>`;
+                    stats.warning++;
+                    return;
+                }
+
+                let results = [`✅ Musiques chargées: ${data.tracks.length} piste(s)`];
+                stats.success++;
+
+                // Vérifier quelques fichiers
+                let fileList = '<div class="file-list">';
+                for (const track of data.tracks.slice(0, 3)) {
+                    const filePath = CONFIG.pathPrefix + track.src;
+                    const exists = await checkFileExists(filePath);
+                    
+                    if (exists) {
+                        fileList += `<div class="file-item">✅ ${track.title}</div>`;
+                    } else {
+                        fileList += `<div class="file-item">❌ ${track.title} (fichier manquant: ${track.src})</div>`;
+                        stats.warning++;
+                    }
+                }
+                
+                if (data.tracks.length > 3) {
+                    fileList += `<div class="file-item">... et ${data.tracks.length - 3} autre(s)</div>`;
+                }
+                fileList += '</div>';
+
+                container.innerHTML = `<div class="test-result success">${results.join('<br>')}${fileList}</div>`;
+
+            } catch (error) {
+                container.innerHTML = `<div class="test-result error">❌ ${error.message}</div>`;
+                stats.error++;
+            }
+        }
+
+        async function testSchedule() {
+            const container = document.getElementById('scheduleTest');
+            container.innerHTML = '<div class="loading"></div> Test en cours...';
+
+            try {
+                const response = await fetch(CONFIG.scheduleFile);
+                if (!response.ok) throw new Error('Fichier schedule.json introuvable');
+
+                const data = await response.json();
+                
+                if (!data.events || data.events.length === 0) {
+                    container.innerHTML = `<div class="test-result warning">⚠️ Aucun événement planifié</div>`;
+                    stats.warning++;
+                    return;
+                }
+
+                let results = [`✅ Événements chargés: ${data.events.length}`];
+                stats.success++;
+
+                let eventList = '<div class="file-list">';
+                for (const event of data.events.slice(0, 5)) {
+                    eventList += `<div class="file-item">📅 ${event.time} - ${event.title}</div>`;
+                }
+                if (data.events.length > 5) {
+                    eventList += `<div class="file-item">... et ${data.events.length - 5} autre(s)</div>`;
+                }
+                eventList += '</div>';
+
+                container.innerHTML = `<div class="test-result success">${results.join('<br>')}${eventList}</div>`;
+
+            } catch (error) {
+                container.innerHTML = `<div class="test-result error">❌ ${error.message}</div>`;
+                stats.error++;
+            }
+        }
+
+        async function checkFileExists(url) {
+            try {
+                const response = await fetch(url, { method: 'HEAD' });
+                return response.ok;
+            } catch {
+                return false;
+            }
+        }
+
+        function showSummary() {
+            const summary = document.getElementById('summary');
+            summary.style.display = 'block';
+            
+            document.getElementById('successCount').textContent = stats.success;
+            document.getElementById('errorCount').textContent = stats.error;
+            document.getElementById('warningCount').textContent = stats.warning;
+
+            // Scroll vers le résumé
+            summary.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Lancer les tests au chargement
+        window.addEventListener('DOMContentLoaded', runAllTests);
+    </script>
+</body>
+</html>

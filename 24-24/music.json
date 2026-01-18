@@ -1,0 +1,70 @@
+{
+    "tracks": [
+        {
+            "id": "music_001",
+            "title": "Jazz Doux - Ambiance Matinale",
+            "src": "music/jazz_morning.mp3",
+            "duration": "03:45"
+        },
+        {
+            "id": "music_002",
+            "title": "Piano Classique - Détente",
+            "src": "music/piano_relax.mp3",
+            "duration": "04:20"
+        },
+        {
+            "id": "music_003",
+            "title": "Guitare Acoustique - Voyage",
+            "src": "music/acoustic_journey.mp3",
+            "duration": "03:15"
+        },
+        {
+            "id": "music_004",
+            "title": "Électro Chill - Après-Midi",
+            "src": "music/electro_chill.mp3",
+            "duration": "04:00"
+        },
+        {
+            "id": "music_005",
+            "title": "Bossa Nova - Soirée",
+            "src": "music/bossa_evening.mp3",
+            "duration": "03:30"
+        },
+        {
+            "id": "music_006",
+            "title": "Lofi Hip-Hop - Concentration",
+            "src": "music/lofi_focus.mp3",
+            "duration": "04:15"
+        },
+        {
+            "id": "music_007",
+            "title": "World Music - Découverte",
+            "src": "music/world_discovery.mp3",
+            "duration": "03:50"
+        },
+        {
+            "id": "music_008",
+            "title": "Blues Tranquille - Nuit",
+            "src": "music/blues_night.mp3",
+            "duration": "04:30"
+        },
+        {
+            "id": "music_009",
+            "title": "Synthwave - Rétro",
+            "src": "music/synthwave_retro.mp3",
+            "duration": "03:25"
+        },
+        {
+            "id": "music_010",
+            "title": "Folk Français - Terroir",
+            "src": "music/folk_french.mp3",
+            "duration": "03:55"
+        }
+    ],
+    "_comments": {
+        "structure": "Chaque piste doit avoir: id (unique), title, src (chemin relatif depuis assets/), duration (format MM:SS)",
+        "formats_supportes": "MP3, OGG, WAV (MP3 recommandé pour la compatibilité)",
+        "organisation": "Placez vos fichiers audio dans ../assets/music/",
+        "selection": "Le mode de sélection (random/sequential) est défini dans config.js → musicSelectionMode"
+    }
+}

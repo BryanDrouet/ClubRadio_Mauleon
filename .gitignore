@@ -1,0 +1,41 @@
+# Fichiers média (trop lourds pour Git)
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.mp3
+*.wav
+*.ogg
+*.flac
+
+# Exceptions : garder les fichiers de test légers (< 1MB)
+!test_video.mp4
+!test_audio.mp3
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs et debug
+*.log
+debug.txt
+
+# Éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Fichiers temporaires
+*.tmp
+*.bak
+*.cache
+
+# Node modules (si jamais utilisé)
+node_modules/
+
+# Build outputs
+dist/
+build/
