@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>60 Secondes - Overlay OBS</title>
+    <link rel="icon"
+          href="assets/icon.png"
+          type="image/x-icon">
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <script src="firebase-config.js"></script>
+    <script src="config.js"></script>
+
+    <style>
+        @font-face {
+            font-family: 'Poppins';
+            src: url('assets/Poppins-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'AzeretMono';
+            src: url('assets/AzeretMono-VariableFont_wght.ttf') format('truetype');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Poppins', Arial, Helvetica, sans-serif;
+            text-align: center;
+            color: white;
+            overflow: hidden;
+            background: transparent;
+        }
+
+        /* Wrapper 16:9 avec bordure animée */
+        .ratio-wrapper {
+            width: 100%;
+            position: relative;
+            padding-top: 56.25%;
+            /* Ratio 16:9 */
+            box-sizing: border-box;
+        }
+
+        /* Bordure SVG progressive */
+        .progress-border-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            transition: opacity 0.8s ease-out;
+        }
+
+        .progress-border-svg rect {
+            fill: none;
+            stroke-width: 4;
+            stroke-linecap: butt;
+            stroke-linejoin: miter;
+            transition: stroke 0.6s ease-out, opacity 0.3s ease;
+        }
+
+        .progress-border-svg stop {
+            transition: stop-color 0.6s ease-out;
+        }
+
+        .progress-border-svg rect.overtime {
+            animation: borderFade 0.6s ease-in-out infinite !important;
+        }
+
+        .progress-border-svg.fade-out {
+            opacity: 0.15;
+        }
+
+        @keyframes borderFade {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.05;
+            }
+        }
+
+        @keyframes blinkAll {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.2;
+            }
+        }
+
+        .blink-mode {
+            animation: blinkAll 0.8s ease-in-out infinite !important;
+        }
+
+        /* Zone 16:9 pour le contenu principal */
+        .main-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Dégradé animé avec vagues fluides */
+        .waves-container {
+            z-index: 0;
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .gradient {
+            --size: 300px;
+            --speed: 28s;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: var(--size);
+            height: var(--size);
+            margin-left: calc(var(--size) / -2);
+            margin-top: calc(var(--size) / -2);
+            filter: blur(15px);
+            background-image: linear-gradient(45deg, hsl(270, 80%, 50%), hsl(290, 70%, 60%));
+            animation: rotate1 var(--speed) ease-in-out infinite;
+            border-radius: 50%;
+            opacity: 0.12;
+            will-change: transform;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            pointer-events: none;
+        }
+
+        .gradient:nth-child(2) {
+            --size: 280px;
+            --speed: 35s;
+            animation: rotate2 var(--speed) ease-in-out infinite;
+            animation-delay: -10s;
+            background-image: linear-gradient(135deg, hsl(280, 75%, 55%), hsl(260, 85%, 45%));
+        }
+
+        .gradient:nth-child(3) {
+            --size: 320px;
+            --speed: 32s;
+            animation: rotate3 var(--speed) ease-in-out infinite;
+            animation-delay: -18s;
+            background-image: linear-gradient(225deg, hsl(275, 70%, 50%), hsl(285, 75%, 60%));
+        }
+
+        @keyframes rotate1 {
+            0% {
+                transform: translate(-30vw, -15vh) rotate(0deg) translateZ(0);
+            }
+
+            50% {
+                transform: translate(30vw, 15vh) rotate(180deg) translateZ(0);
+            }
+
+            100% {
+                transform: translate(-30vw, -15vh) rotate(360deg) translateZ(0);
+            }
+        }
+
+        @keyframes rotate2 {
+            0% {
+                transform: translate(25vw, 12vh) rotate(0deg) translateZ(0);
+            }
+
+            50% {
+                transform: translate(-25vw, -12vh) rotate(180deg) translateZ(0);
+            }
+
+            100% {
+                transform: translate(25vw, 12vh) rotate(360deg) translateZ(0);
+            }
+        }
+
+        @keyframes rotate3 {
+            0% {
+                transform: translate(0, -20vh) rotate(0deg) translateZ(0);
+            }
+
+            33% {
+                transform: translate(-20vw, 10vh) rotate(120deg) translateZ(0);
+            }
+
+            66% {
+                transform: translate(20vw, 10vh) rotate(240deg) translateZ(0);
+            }
+
+            100% {
+                transform: translate(0, -20vh) rotate(360deg) translateZ(0);
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .countdown {
+            font-size: 80px;
+            font-weight: bold;
+            font-family: 'AzeretMono', monospace;
+            text-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.8),
+                0 4px 16px rgba(0, 0, 0, 0.6);
+            animation: pulse 1s ease-in-out infinite;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+        }
+
+        .milliseconds {
+            position: absolute;
+            bottom: 0;
+            right: -65px;
+            font-size: 24px;
+            font-weight: normal;
+            color: inherit;
+            opacity: 0.6;
+            text-shadow: inherit;
+            font-family: 'AzeretMono', monospace;
+        }
+
+        .countdown.warning,
+        .countdown.warning .milliseconds {
+            color: #ff9500;
+            animation: pulse 0.5s ease-in-out infinite, shake 0.5s ease-in-out infinite;
+        }
+
+        .countdown.danger,
+        .countdown.danger .milliseconds {
+            color: #ff3b30;
+            animation: pulse 0.3s ease-in-out infinite, shake 0.3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0) scale(1);
+            }
+
+            25% {
+                transform: translateX(-5px) scale(1.05);
+            }
+
+            75% {
+                transform: translateX(5px) scale(1.05);
+            }
+        }
+
+        .overtime {
+            font-size: 60px;
+            font-weight: bold;
+            font-family: 'AzeretMono', monospace;
+            color: #ff3b30;
+            text-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.8),
+                0 4px 16px rgba(0, 0, 0, 0.6);
+            animation: blink 0.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Indicateur de connexion */
+        .connection-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: 'Poppins', sans-serif;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .connection-status.connected {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid rgba(0, 255, 0, 0.4);
+            color: #00ff00;
+        }
+
+        .connection-status.disconnected {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid rgba(255, 0, 0, 0.4);
+            color: #ff6666;
+        }
+
+        .connection-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="connection-status disconnected"
+         id="connectionStatus">
+        <div class="connection-dot"></div>
+        <span>Connexion...</span>
+    </div>
+
+    <div class="ratio-wrapper">
+        <!-- Bordure SVG progressive -->
+        <svg class="progress-border-svg"
+             id="borderSvg"
+             viewBox="0 0 1000 562.5"
+             preserveAspectRatio="none">
+            <defs>
+                <!-- Gradients -->
+                <linearGradient id="gradientNormal"
+                                x1="0%"
+                                y1="0%"
+                                x2="100%"
+                                y2="0%">
+                    <stop offset="0%"
+                          style="stop-color:#5a2d81;stop-opacity:1" />
+                    <stop offset="100%"
+                          style="stop-color:#7b3f9e;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="gradientWarning"
+                                x1="0%"
+                                y1="0%"
+                                x2="100%"
+                                y2="0%">
+                    <stop offset="0%"
+                          style="stop-color:#ff9500;stop-opacity:1" />
+                    <stop offset="100%"
+                          style="stop-color:#ffcc00;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="gradientDanger"
+                                x1="0%"
+                                y1="0%"
+                                x2="100%"
+                                y2="0%">
+                    <stop offset="0%"
+                          style="stop-color:#ff0000;stop-opacity:1" />
+                    <stop offset="100%"
+                          style="stop-color:#ff3333;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="gradientOvertime"
+                                x1="0%"
+                                y1="0%"
+                                x2="100%"
+                                y2="0%">
+                    <stop offset="0%"
+                          style="stop-color:#ff0000;stop-opacity:1" />
+                    <stop offset="100%"
+                          style="stop-color:#ff00ff;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+
+            <!-- Bordure de fond (toujours complète, opacité fixe 15%) -->
+            <rect id="borderBackground"
+                  x="2"
+                  y="2"
+                  width="996"
+                  height="558.5"
+                  stroke="url(#gradientNormal)"
+                  style="opacity: 0.15;" />
+
+            <!-- Bordure animée (se vide progressivement) -->
+            <rect id="borderRect"
+                  x="2"
+                  y="2"
+                  width="996"
+                  height="558.5"
+                  stroke="url(#gradientNormal)" />
+        </svg>
+
+        <div class="main-content">
+            <!-- Dégradé animé avec vagues fluides -->
+            <div class="waves-container"
+                 id="wavesContainer">
+                <div class="gradient"></div>
+                <div class="gradient"></div>
+                <div class="gradient"></div>
+            </div>
+
+            <div class="container">
+                <div class="countdown"
+                     id="countdown">
+                    60
+                    <span class="milliseconds hidden"
+                          id="milliseconds">.000</span>
+                </div>
+                <div class="overtime hidden"
+                     id="overtime">+0</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialiser Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const gameRef = database.ref('game');
+        const configRef = database.ref('config');
+
+        // Éléments du DOM
+        const countdownElement = document.getElementById('countdown');
+        const millisecondsElement = document.getElementById('milliseconds');
+        const overtimeElement = document.getElementById('overtime');
+        const borderSvg = document.getElementById('borderSvg');
+        const borderRect = document.getElementById('borderRect');
+        const connectionStatus = document.getElementById('connectionStatus');
+
+        // Variables d'état
+        let isRunning = false;
+        let isPaused = false;
+        let isStopped = true;
+        let startTime = 0;
+        let pauseTime = 0;
+        let totalPausedTime = 0;
+        let lastSecond = -1;
+        let timerInterval = null;
+
+        // Configuration dynamique
+        let currentConfig = {
+            countdownDuration: CONFIG.countdownDuration || 60,
+            warningThreshold: CONFIG.warningThreshold || 10,
+            dangerThreshold: CONFIG.dangerThreshold || 5,
+            waitingScreenMode: CONFIG.waitingScreenMode || false
+        };
+
+        // Calculer le périmètre du rectangle pour stroke-dasharray
+        const rectPerimeter = 2 * (996 + 558.5);
+        borderRect.style.strokeDasharray = rectPerimeter;
+        borderRect.style.strokeDashoffset = 0;
+
+        // Surveiller la connexion Firebase
+        const connectedRef = database.ref('.info/connected');
+        connectedRef.on('value', (snap) => {
+            if (snap.val() === true) {
+                connectionStatus.className = 'connection-status connected';
+                connectionStatus.querySelector('span').textContent = 'Connecté';
+            } else {
+                connectionStatus.className = 'connection-status disconnected';
+                connectionStatus.querySelector('span').textContent = 'Déconnecté';
+            }
+        });
+
+        // Écouter les changements de configuration
+        configRef.on('value', (snapshot) => {
+            const config = snapshot.val();
+            if (config) {
+                console.log('Configuration updated:', config);
+                currentConfig = {
+                    countdownDuration: config.countdownDuration || 60,
+                    warningThreshold: config.warningThreshold || 10,
+                    dangerThreshold: config.dangerThreshold || 5,
+                    waitingScreenMode: config.waitingScreenMode || false
+                };
+
+                // Si le timer est arrêté, mettre à jour l'affichage
+                if (isStopped) {
+                    if (currentConfig.waitingScreenMode) {
+                        const minutes = Math.floor(currentConfig.countdownDuration / 60);
+                        const seconds = currentConfig.countdownDuration % 60;
+                        countdownElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+                    } else {
+                        countdownElement.textContent = currentConfig.countdownDuration;
+                    }
+                }
+            }
+        });
+
+        // Écouter les changements d'état depuis Firebase
+        gameRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (!data) return;
+
+            console.log('Firebase update:', data);
+
+            if (data.command === 'start' && !isRunning) {
+                startGame();
+            } else if (data.command === 'pause' && isRunning && !isPaused) {
+                pauseGame();
+            } else if (data.command === 'resume' && isPaused) {
+                resumeGame();
+            } else if (data.command === 'stop') {
+                stopGame();
+            } else if (data.command === 'reset') {
+                resetGame();
+            }
+        });
+
+        function startGame() {
+            console.log('Starting game');
+            isRunning = true;
+            isStopped = false;
+            isPaused = false;
+            startTime = Date.now();
+            totalPausedTime = 0;
+            lastSecond = -1;
+
+            document.body.classList.remove('game-over');
+            borderSvg.classList.remove('fade-out');
+            countdownElement.classList.remove('hidden', 'blink-mode');
+            overtimeElement.classList.add('hidden');
+
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 16);
+        }
+
+        function pauseGame() {
+            console.log('Pausing game');
+            isPaused = true;
+            pauseTime = Date.now();
+            if (currentConfig.waitingScreenMode) {
+                const minutes = Math.floor(currentConfig.countdownDuration / 60);
+                const seconds = currentConfig.countdownDuration % 60;
+                countdownElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+            } else {
+                countdownElement.textContent = currentConfig.countdownDuration;
+                isRunning = false;
+                isPaused = false;
+                clearInterval(timerInterval);
+
+                document.body.classList.add('game-over');
+                borderSvg.classList.add('fade-out');
+            }
+
+            function resetGame() {
+                console.log('Resetting game');
+                stopGame();
+
+                const countdownDuration = CONFIG.countdownDuration || 60;
+                const isWaitingScreenMode = CONFIG.waitingScreenMode || false;
+
+                if (isWaitingScreenMode) {
+                    const minutes = Math.floor(countdownDuration / 60);
+                    const seconds = countdownDuration % 60;
+                    countdownElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+                } else {
+                    countdownElement.textContent = countdownDuration;
+                }
+
+                countdownElement.className = 'countdown';
+                countdownElement.classList.remove('blink-mode');
+                millisecondsElement.classList.add('hidden');
+                overtimeElement.classList.add('hidden');
+
+                borderRect.classList.remove('overtime');
+                borderSvg.classList.remove('fade-out');
+                borderRect.setAttribute('stroke', 'url(#gradientNormal)');
+                borderRect.style.strokeDashoffset = 0;
+
+                document.body.classList.remove('game-over');
+            }
+
+            function updateBorders(percentage, state) {
+                const dashOffset = state === 'overtime' ? 0 : rectPerimeter * (1 - percentage / 100);
+                borderRect.style.strokeDashoffset = dashOffset;
+
+                if (state === 'overtime') {
+                    borderRect.setAttribute('stroke', 'url(#gradientOvertime)');
+
+                    if (totalSeconds < currentConfig.countdownDuration) {
+                        const remaining = currentConfig.countdownDuration - totalSeconds;
+                        const displayValue = currentConfig.waitingScreenMode ? Math.max(0, Math.ceil(remaining)) : Math.max(1, Math.ceil(remaining));
+                        const percentage = (remaining / currentConfig.countdownDuration) * 100;
+
+                        if (currentConfig.waitingScreenMode) {
+                            const totalSecondsRemaining = Math.floor(remaining);
+                            const minutes = Math.floor(totalSecondsRemaining / 60);
+                            const seconds = totalSecondsRemaining % 60;
+                            countdownElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+                            millisecondsElement.classList.add('hidden');
+
+                            if (totalSecondsRemaining <= currentConfig.dangerThreshold && totalSecondsRemaining > 0) {
+                                countdownElement.className = 'countdown danger';
+                                updateBorders(percentage, 'danger');
+                            } else if (totalSecondsRemaining <= currentConfig.warningThreshold && totalSecondsRemaining > 0) {
+                                countdownElement.className = 'countdown warning';
+                                updateBorders(percentage, 'warning');
+                            } else if (totalSecondsRemaining > 0) {
+                                countdownElement.className = 'countdown';
+                                updateBorders(percentage, '');
+                            }
+
+                            if (totalSecondsRemaining === 0 && lastSecond !== 0) {
+                                countdownElement.classList.add('blink-mode');
+                                borderRect.classList.add('blink-mode');
+                                const wavesContainer = document.getElementById('wavesContainer');
+                                if (wavesContainer) {
+                                    wavesContainer.querySelectorAll('.gradient').forEach(g => g.classList.add('blink-mode'));
+                                }
+                                lastSecond = 0;
+                            }
+
+                            overtimeElement.classList.add('hidden');
+                        } else {
+                            const milliseconds = Math.floor((remaining - Math.floor(remaining)) * 1000);
+                            millisecondsElement.textContent = `.${String(milliseconds).padStart(3, '0')}`;
+                            millisecondsElement.classList.remove('hidden');
+
+                            if (displayValue > 60) {
+                                const minutes = Math.floor(displayValue / 60);
+                                const seconds = displayValue % 60;
+                                countdownElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+                            } else {
+                                countdownElement.textContent = displayValue;
+                            }
+
+                            lastSecond = displayValue;
+
+                            if (displayValue <= currentConfig.dangerThreshold) {
+                                countdownElement.className = 'countdown danger';
+                                updateBorders(percentage, 'danger');
+                            } else if (displayValue <= currentConfig.warningThreshold) {
+                                countdownElement.className = 'countdown warning';
+                                updateBorders(percentage, 'warning');
+                            } else {
+                                countdownElement.className = 'countdown';
+                                updateBorders(percentage, '');
+                            }
+
+                            overtimeElement.classList.add('hidden');
+                        }
+                    } else if (!currentConfig.waitingScreenMode) {
+                        const overtimeSeconds = totalSeconds - currentConfig.countdownDuration; countdownElement.className = 'countdown danger';
+                        updateBorders(percentage, 'danger');
+                    } else if (displayValue <= warningThreshold) {
+                        countdownElement.className = 'countdown warning';
+                        updateBorders(percentage, 'warning');
+                    } else {
+                        countdownElement.className = 'countdown';
+                        updateBorders(percentage, '');
+                    }
+
+                    overtimeElement.classList.add('hidden');
+                }
+            } else if (!isWaitingScreenMode) {
+                const overtimeSeconds = totalSeconds - countdownDuration;
+
+                if (Math.floor(overtimeSeconds) === 0 && lastSecond !== -999) {
+                    lastSecond = -999;
+                }
+
+                updateBorders(0, 'overtime');
+
+                countdownElement.classList.add('hidden');
+                millisecondsElement.classList.add('hidden');
+                overtimeElement.classList.remove('hidden');
+                const overtimeMinutes = Math.floor(overtimeSeconds / 60);
+                const overtimeSecs = Math.floor(overtimeSeconds % 60);
+                if (overtimeMinutes > 0) {
+                    overtimeElement.textContent = `+${overtimeMinutes}min ${overtimeSecs}`;
+                } else {
+                    overtimeElement.textContent = `+${overtimeSecs}`;
+                }
+            }
+        }
+
+        // Initialiser l'affichage
+        if (currentConfig.waitingScreenMode) {
+            const minutes = Math.floor(currentConfig.countdownDuration / 60);
+            const seconds = currentConfig.countdownDuration % 60;
+            countdownElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+        } else {
+            countdownElement.textContent = currentConfig.countdownDuration;
+        }
+    </script>
+</body>
+
+</html>

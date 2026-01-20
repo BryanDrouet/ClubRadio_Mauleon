@@ -1,0 +1,12 @@
+{
+    "rules": {
+        "game": {
+            ".read": true,
+            ".write": "auth != null && (auth.token.email === 'bryan.drouet24@gmail.com' || auth.token.email === 'clubradio.mauleon@gmail.com')"
+        },
+        "config": {
+            ".read": true,
+            ".write": "auth != null && (auth.token.email === 'bryan.drouet24@gmail.com' || auth.token.email === 'clubradio.mauleon@gmail.com')"
+        }
+    }
+}
