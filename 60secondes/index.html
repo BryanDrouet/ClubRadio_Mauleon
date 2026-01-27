@@ -1,12 +1,55 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
     <base href="./">
     <title>60 Secondes Challenge - ClubRadio Mauléon</title>
-    <link rel="icon" href="assets/icon.png" type="image/x-icon">
-    <script src="config.js"></script>
+    <link rel="icon"
+          href="assets/icon.png"
+          type="image/x-icon">
+    <script>
+        // Variable globale pour stocker le fichier de config utilisé
+        window.LOADED_CONFIG_FILE = null;
+
+        // Charger dynamiquement le fichier de config spécifié dans l'URL
+        (function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const configFile = urlParams.get('configFile') || 'config.js';
+
+            // Stocker le fichier de config chargé
+            window.LOADED_CONFIG_FILE = configFile;
+
+            // Créer et injecter le script de config
+            const script = document.createElement('script');
+            script.src = configFile;
+            script.onerror = function () {
+                console.warn(`Impossible de charger ${configFile}, chargement de config.js par défaut`);
+                if (configFile !== 'config.js') {
+                    const fallback = document.createElement('script');
+                    fallback.src = 'config.js';
+                    fallback.onload = function () {
+                        // Initialiser après le chargement du fallback
+                        if (typeof window.initializeApp === 'function') {
+                            window.initializeApp();
+                        }
+                    };
+                    document.head.appendChild(fallback);
+                } else {
+                    console.error('Impossible de charger le fichier de configuration');
+                }
+            };
+            script.onload = function () {
+                // Initialiser après le chargement de config
+                if (typeof window.initializeApp === 'function') {
+                    window.initializeApp();
+                }
+            };
+            document.head.appendChild(script);
+        })();
+    </script>
     <style>
         @font-face {
             font-family: 'Poppins';
@@ -45,18 +88,21 @@
             overflow-y: auto;
             position: relative;
             background: transparent;
-            -ms-overflow-style: none; /* IE/Edge */
+            -ms-overflow-style: none;
+            /* IE/Edge */
         }
 
         body::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
+            display: none;
+            /* Chrome, Safari, Opera */
         }
 
         /* Wrapper 16:9 avec bordure animée */
         .ratio-wrapper {
             width: 100%;
             position: relative;
-            padding-top: 56.25%; /* Ratio 16:9 */
+            padding-top: 56.25%;
+            /* Ratio 16:9 */
             box-sizing: border-box;
         }
 
@@ -97,36 +143,45 @@
         }
 
         @keyframes borderFade {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
             }
+
             50% {
                 opacity: 0.05;
             }
         }
-        
+
         @keyframes blinkAll {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
             }
+
             50% {
                 opacity: 0.2;
             }
         }
-        
+
         .blink-mode {
             animation: blinkAll 0.8s ease-in-out infinite !important;
         }
-        
+
         @keyframes blinkAll {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
             }
+
             50% {
                 opacity: 0.2;
             }
         }
-        
+
         .blink-mode {
             animation: blinkAll 0.8s ease-in-out infinite !important;
         }
@@ -192,68 +247,168 @@
         }
 
         @keyframes rotate1 {
-            0% { transform: translate(-30vw, -15vh) rotate(0deg) translateZ(0); }
-            50% { transform: translate(30vw, 15vh) rotate(180deg) translateZ(0); }
-            100% { transform: translate(-30vw, -15vh) rotate(360deg) translateZ(0); }
+            0% {
+                transform: translate(-30vw, -15vh) rotate(0deg) translateZ(0);
+            }
+
+            50% {
+                transform: translate(30vw, 15vh) rotate(180deg) translateZ(0);
+            }
+
+            100% {
+                transform: translate(-30vw, -15vh) rotate(360deg) translateZ(0);
+            }
         }
 
         @keyframes rotate2 {
-            0% { transform: translate(25vw, 12vh) rotate(0deg) translateZ(0); }
-            50% { transform: translate(-25vw, -12vh) rotate(180deg) translateZ(0); }
-            100% { transform: translate(25vw, 12vh) rotate(360deg) translateZ(0); }
+            0% {
+                transform: translate(25vw, 12vh) rotate(0deg) translateZ(0);
+            }
+
+            50% {
+                transform: translate(-25vw, -12vh) rotate(180deg) translateZ(0);
+            }
+
+            100% {
+                transform: translate(25vw, 12vh) rotate(360deg) translateZ(0);
+            }
         }
 
         @keyframes rotate3 {
-            0% { transform: translate(0, -20vh) rotate(0deg) translateZ(0); }
-            33% { transform: translate(-20vw, 10vh) rotate(120deg) translateZ(0); }
-            66% { transform: translate(20vw, 10vh) rotate(240deg) translateZ(0); }
-            100% { transform: translate(0, -20vh) rotate(360deg) translateZ(0); }
+            0% {
+                transform: translate(0, -20vh) rotate(0deg) translateZ(0);
+            }
+
+            33% {
+                transform: translate(-20vw, 10vh) rotate(120deg) translateZ(0);
+            }
+
+            66% {
+                transform: translate(20vw, 10vh) rotate(240deg) translateZ(0);
+            }
+
+            100% {
+                transform: translate(0, -20vh) rotate(360deg) translateZ(0);
+            }
         }
 
         @keyframes rotate4 {
-            0% { transform: translate(90%, 110%) rotate(0deg); }
-            25% { transform: translate(-90%, 80%) rotate(88deg); }
-            50% { transform: translate(110%, -90%) rotate(178deg); }
-            75% { transform: translate(-60%, -110%) rotate(268deg); }
-            100% { transform: translate(90%, 110%) rotate(360deg); }
+            0% {
+                transform: translate(90%, 110%) rotate(0deg);
+            }
+
+            25% {
+                transform: translate(-90%, 80%) rotate(88deg);
+            }
+
+            50% {
+                transform: translate(110%, -90%) rotate(178deg);
+            }
+
+            75% {
+                transform: translate(-60%, -110%) rotate(268deg);
+            }
+
+            100% {
+                transform: translate(90%, 110%) rotate(360deg);
+            }
         }
 
         @keyframes rotate5 {
-            0% { transform: translate(-110%, 60%) rotate(0deg); }
-            25% { transform: translate(70%, -110%) rotate(92deg); }
-            50% { transform: translate(-80%, -80%) rotate(182deg); }
-            75% { transform: translate(110%, 70%) rotate(272deg); }
-            100% { transform: translate(-110%, 60%) rotate(360deg); }
+            0% {
+                transform: translate(-110%, 60%) rotate(0deg);
+            }
+
+            25% {
+                transform: translate(70%, -110%) rotate(92deg);
+            }
+
+            50% {
+                transform: translate(-80%, -80%) rotate(182deg);
+            }
+
+            75% {
+                transform: translate(110%, 70%) rotate(272deg);
+            }
+
+            100% {
+                transform: translate(-110%, 60%) rotate(360deg);
+            }
         }
 
         @keyframes rotate6 {
-            0% { transform: translate(60%, -120%) rotate(0deg); }
-            25% { transform: translate(-100%, 90%) rotate(87deg); }
-            50% { transform: translate(80%, 80%) rotate(177deg); }
-            75% { transform: translate(-120%, -50%) rotate(267deg); }
-            100% { transform: translate(60%, -120%) rotate(360deg); }
+            0% {
+                transform: translate(60%, -120%) rotate(0deg);
+            }
+
+            25% {
+                transform: translate(-100%, 90%) rotate(87deg);
+            }
+
+            50% {
+                transform: translate(80%, 80%) rotate(177deg);
+            }
+
+            75% {
+                transform: translate(-120%, -50%) rotate(267deg);
+            }
+
+            100% {
+                transform: translate(60%, -120%) rotate(360deg);
+            }
         }
 
         @keyframes rotate7 {
-            0% { transform: translate(-70%, -110%) rotate(0deg); }
-            25% { transform: translate(110%, 60%) rotate(93deg); }
-            50% { transform: translate(-90%, 100%) rotate(183deg); }
-            75% { transform: translate(50%, -100%) rotate(273deg); }
-            100% { transform: translate(-70%, -110%) rotate(360deg); }
+            0% {
+                transform: translate(-70%, -110%) rotate(0deg);
+            }
+
+            25% {
+                transform: translate(110%, 60%) rotate(93deg);
+            }
+
+            50% {
+                transform: translate(-90%, 100%) rotate(183deg);
+            }
+
+            75% {
+                transform: translate(50%, -100%) rotate(273deg);
+            }
+
+            100% {
+                transform: translate(-70%, -110%) rotate(360deg);
+            }
         }
 
         @keyframes rotate8 {
-            0% { transform: translate(100%, 90%) rotate(0deg); }
-            25% { transform: translate(-80%, -100%) rotate(89deg); }
-            50% { transform: translate(120%, -70%) rotate(179deg); }
-            75% { transform: translate(-100%, 110%) rotate(269deg); }
-            100% { transform: translate(100%, 90%) rotate(360deg); }
+            0% {
+                transform: translate(100%, 90%) rotate(0deg);
+            }
+
+            25% {
+                transform: translate(-80%, -100%) rotate(89deg);
+            }
+
+            50% {
+                transform: translate(120%, -70%) rotate(179deg);
+            }
+
+            75% {
+                transform: translate(-100%, 110%) rotate(269deg);
+            }
+
+            100% {
+                transform: translate(100%, 90%) rotate(360deg);
+            }
         }
 
         @keyframes morph {
-            0%, 100% {
+
+            0%,
+            100% {
                 border-radius: 50%;
             }
+
             50% {
                 border-radius: 30% 70% 70% 30% / 30% 70% 70% 30%;
             }
@@ -273,7 +428,7 @@
             font-size: 80px;
             font-weight: bold;
             font-family: 'AzeretMono', monospace;
-            text-shadow: 
+            text-shadow:
                 0 2px 8px rgba(0, 0, 0, 0.8),
                 0 4px 16px rgba(0, 0, 0, 0.6);
             animation: pulse 1s ease-in-out infinite;
@@ -281,7 +436,7 @@
             position: relative;
             display: inline-block;
         }
-        
+
         .countdown.fade-transition {
             opacity: 0;
         }
@@ -316,14 +471,31 @@
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0) scale(1); }
-            25% { transform: translateX(-5px) scale(1.05); }
-            75% { transform: translateX(5px) scale(1.05); }
+
+            0%,
+            100% {
+                transform: translateX(0) scale(1);
+            }
+
+            25% {
+                transform: translateX(-5px) scale(1.05);
+            }
+
+            75% {
+                transform: translateX(5px) scale(1.05);
+            }
         }
 
         .overtime {
@@ -331,15 +503,22 @@
             font-weight: bold;
             font-family: 'AzeretMono', monospace;
             color: #ff3b30;
-            text-shadow: 
+            text-shadow:
                 0 2px 8px rgba(0, 0, 0, 0.8),
                 0 4px 16px rgba(0, 0, 0, 0.6);
             animation: blink 0.5s ease-in-out infinite;
         }
 
         @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
         }
 
         .total-time {
@@ -461,15 +640,15 @@
             width: 90%;
             max-width: 1000px;
         }
-        
+
         .panel-section {
             margin-bottom: 8px;
         }
-        
+
         .panel-section:last-child {
             margin-bottom: 0;
         }
-        
+
         .panel-header {
             display: flex;
             justify-content: space-between;
@@ -481,32 +660,32 @@
             border-radius: 4px;
             transition: background 0.2s ease, color 0.2s ease;
         }
-        
+
         .panel-header:hover {
             background: rgba(255, 255, 255, 0.1);
             color: #00ff00;
         }
-        
+
         .panel-title {
             font-weight: 600;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
+
         .panel-toggle {
             font-size: 12px;
             transition: transform 0.6s;
         }
-        
+
         .panel-toggle img {
             filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(358deg) brightness(102%) contrast(104%);
         }
-        
+
         .panel-toggle.collapsed {
             transform: rotate(-90deg);
         }
-        
+
         .panel-content {
             max-height: 1000px;
             overflow: hidden;
@@ -519,7 +698,7 @@
             padding-bottom: 0;
             justify-content: space-between;
         }
-        
+
         .panel-content.collapsed {
             max-height: 0;
             opacity: 0;
@@ -528,7 +707,8 @@
         }
 
         .config-panel::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
+            display: none;
+            /* Chrome, Safari, Opera */
         }
 
         .config-message {
@@ -564,13 +744,14 @@
         }
 
         @keyframes slideDown {
-            from { 
-                opacity: 0; 
+            from {
+                opacity: 0;
                 transform: translateY(-15px) scale(0.95);
                 max-height: 0;
             }
-            to { 
-                opacity: 1; 
+
+            to {
+                opacity: 1;
                 transform: translateY(0) scale(1);
                 max-height: 100px;
             }
@@ -673,9 +854,19 @@
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-3px); }
-            75% { transform: translateX(3px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-3px);
+            }
+
+            75% {
+                transform: translateX(3px);
+            }
         }
 
         .config-textarea {
@@ -747,7 +938,7 @@
             justify-content: center;
             line-height: 1;
         }
-        
+
         .arrow-button img {
             width: 10px;
             height: 10px;
@@ -755,7 +946,7 @@
             transition: opacity 0.2s ease;
             filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(358deg) brightness(102%) contrast(104%);
         }
-        
+
         .reset-button {
             width: 24px;
             height: 100%;
@@ -772,13 +963,13 @@
             justify-content: center;
             border-radius: 3px;
         }
-        
+
         .reset-button img {
             width: 14px;
             height: 14px;
             filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(358deg) brightness(102%) contrast(104%);
         }
-        
+
         .reset-button:hover {
             background: rgba(255, 100, 0, 0.4);
             border-color: rgba(255, 100, 0, 0.6);
@@ -800,7 +991,7 @@
             border-color: rgba(0, 255, 0, 0.4);
             color: #00ff00;
         }
-        
+
         .arrow-button:hover img {
             opacity: 1;
         }
@@ -818,12 +1009,12 @@
                 padding: 10px 12px;
                 font-size: 10px;
             }
-            
+
             .panel-content {
                 flex-direction: column;
                 gap: 6px;
             }
-            
+
             .config-row {
                 width: 100%;
                 margin: 6px 0;
@@ -837,125 +1028,125 @@
             .config-row:last-child {
                 margin-bottom: 0;
             }
-            
+
             .config-label {
                 font-size: 10px;
                 min-width: 70px;
             }
-            
+
             .input-with-arrows {
                 flex: 1;
                 min-width: 140px;
             }
-            
+
             .config-input {
                 font-size: 12px;
                 padding: 6px 8px;
             }
-            
+
             .arrow-button {
                 width: 22px;
                 font-size: 11px;
             }
-            
+
             .reset-button {
                 width: 26px;
                 font-size: 13px;
             }
-            
+
             .button-row {
                 flex-direction: row;
                 gap: 8px;
             }
-            
+
             .stop-button,
             .pause-button {
                 font-size: 12px;
                 padding: 8px 16px;
             }
-            
+
             .panel-title {
                 font-size: 10px;
             }
-            
+
             .countdown {
                 font-size: 60px;
             }
-            
+
             .milliseconds {
                 font-size: 20px;
                 margin-right: -50px;
             }
         }
-        
+
         @media (max-width: 480px) {
             .config-panel {
                 width: 98%;
                 padding: 8px 10px;
                 font-size: 9px;
             }
-            
+
             .config-row {
                 margin: 4px 0;
                 gap: 6px;
             }
-            
+
             .config-label {
                 font-size: 9px;
                 min-width: 60px;
             }
-            
+
             .input-with-arrows {
                 min-width: 120px;
             }
-            
+
             .config-input {
                 font-size: 11px;
                 padding: 5px 6px;
             }
-            
+
             .arrow-button {
                 width: 20px;
                 font-size: 10px;
             }
-            
+
             .reset-button {
                 width: 24px;
                 font-size: 12px;
             }
-            
+
             .stop-button,
             .pause-button {
                 font-size: 11px;
                 padding: 6px 12px;
             }
-            
+
             .panel-title {
                 font-size: 9px;
             }
-            
+
             .panel-toggle {
                 font-size: 11px;
             }
-            
+
             .countdown {
                 font-size: 50px;
             }
-            
+
             .milliseconds {
                 font-size: 18px;
                 margin-right: -40px;
             }
-            
+
             .overtime {
                 font-size: 14px;
             }
-            
+
             .total-time {
                 font-size: 14px;
             }
         }
-        
+
         @media (max-width: 360px) {
             .config-panel {
                 width: 100%;
@@ -965,7 +1156,7 @@
                 border-left: none;
                 border-right: none;
             }
-            
+
             .config-row {
                 flex-direction: column;
                 align-items: stretch;
@@ -975,36 +1166,36 @@
             .config-row:first-child {
                 align-items: none;
             }
-            
+
             .config-label {
                 font-size: 9px;
                 text-align: left;
                 min-width: auto;
             }
-            
+
             .input-with-arrows {
                 width: 100%;
                 min-width: auto;
             }
-            
+
             .config-input {
                 font-size: 10px;
             }
-            
+
             .arrow-button {
                 width: 18px;
                 font-size: 9px;
             }
-            
+
             .reset-button {
                 width: 22px;
                 font-size: 11px;
             }
-            
+
             .countdown {
                 font-size: 40px;
             }
-            
+
             .milliseconds {
                 font-size: 16px;
                 margin-right: -35px;
@@ -1012,183 +1203,395 @@
         }
     </style>
 </head>
+
 <body>
     <div class="ratio-wrapper">
-        <svg class="progress-border-svg" id="borderSvg" viewBox="0 0 1000 562.5" preserveAspectRatio="none">
+        <svg class="progress-border-svg"
+             id="borderSvg"
+             viewBox="0 0 1000 562.5"
+             preserveAspectRatio="none">
             <defs>
-                <linearGradient id="gradientNormal" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" id="normalStop1" />
-                    <stop offset="100%" id="normalStop2" />
+                <linearGradient id="gradientNormal"
+                                x1="0%"
+                                y1="0%"
+                                x2="100%"
+                                y2="100%">
+                    <stop offset="0%"
+                          id="normalStop1" />
+                    <stop offset="100%"
+                          id="normalStop2" />
                 </linearGradient>
-                <linearGradient id="gradientWarning" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" id="warningStop1" />
-                    <stop offset="100%" id="warningStop2" />
+                <linearGradient id="gradientWarning"
+                                x1="0%"
+                                y1="0%"
+                                x2="100%"
+                                y2="100%">
+                    <stop offset="0%"
+                          id="warningStop1" />
+                    <stop offset="100%"
+                          id="warningStop2" />
                 </linearGradient>
-                <linearGradient id="gradientDanger" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" id="dangerStop1" />
-                    <stop offset="100%" id="dangerStop2" />
+                <linearGradient id="gradientDanger"
+                                x1="0%"
+                                y1="0%"
+                                x2="100%"
+                                y2="100%">
+                    <stop offset="0%"
+                          id="dangerStop1" />
+                    <stop offset="100%"
+                          id="dangerStop2" />
                 </linearGradient>
-                <linearGradient id="gradientOvertime" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" id="overtimeStop1" />
-                    <stop offset="100%" id="overtimeStop2" />
+                <linearGradient id="gradientOvertime"
+                                x1="0%"
+                                y1="0%"
+                                x2="100%"
+                                y2="100%">
+                    <stop offset="0%"
+                          id="overtimeStop1" />
+                    <stop offset="100%"
+                          id="overtimeStop2" />
                 </linearGradient>
             </defs>
             <!-- Bordure de fond (trace) avec opacité réduite -->
-            <rect id="borderBackground" x="2" y="2" width="996" height="558.5" stroke="url(#gradientNormal)" stroke-linecap="butt" stroke-linejoin="miter" opacity="0.5" />
+            <rect id="borderBackground"
+                  x="2"
+                  y="2"
+                  width="996"
+                  height="558.5"
+                  stroke="url(#gradientNormal)"
+                  stroke-linecap="butt"
+                  stroke-linejoin="miter"
+                  opacity="0.5" />
             <!-- Bordure animée principale -->
-            <rect id="borderRect" x="2" y="2" width="996" height="558.5" stroke="url(#gradientNormal)" stroke-linecap="butt" stroke-linejoin="miter" />
+            <rect id="borderRect"
+                  x="2"
+                  y="2"
+                  width="996"
+                  height="558.5"
+                  stroke="url(#gradientNormal)"
+                  stroke-linecap="butt"
+                  stroke-linejoin="miter" />
         </svg>
-        
+
         <div class="main-content">
-            <img id="backgroundImage" src="assets/Fond.png" alt="Fond" style="position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: -1;">
-            <div class="waves-container" id="wavesContainer">
+            <img id="backgroundImage"
+                 src="assets/Fond.png"
+                 alt="Fond"
+                 style="position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: -1;">
+            <div class="waves-container"
+                 id="wavesContainer">
                 <!-- Les gradients seront générés dynamiquement -->
             </div>
 
             <div class="container">
-                <div id="countdown" class="countdown">
-                    <div id="milliseconds" class="milliseconds"></div>
+                <div id="countdown"
+                     class="countdown">
+                    <div id="milliseconds"
+                         class="milliseconds"></div>
                 </div>
-                <div id="overtime" class="overtime hidden"></div>
-                <div id="totalTime" class="total-time hidden"></div>
+                <div id="overtime"
+                     class="overtime hidden"></div>
+                <div id="totalTime"
+                     class="total-time hidden"></div>
             </div>
         </div>
     </div>
 
     <!-- Panneau de configuration -->
-    <div class="config-panel" id="configPanel">
-            <div class="button-row">
-                <button id="stopButton" class="stop-button" onclick="handleButtonClick()">LANCER</button>
-                <button id="pauseButton" class="pause-button" onclick="handlePauseClick()"><img src="assets/pause.svg" alt="Pause"></button>
+    <div class="config-panel"
+         id="configPanel">
+        <div class="button-row">
+            <button id="stopButton"
+                    class="stop-button"
+                    onclick="handleButtonClick()">LANCER</button>
+            <button id="pauseButton"
+                    class="pause-button"
+                    onclick="handlePauseClick()"><img src="assets/pause.svg"
+                     alt="Pause"></button>
+        </div>
+        <div class="config-separator"></div>
+
+        <!-- Section Modes -->
+        <div class="panel-section">
+            <div class="panel-header"
+                 onclick="togglePanel('modesPanel')">
+                <span class="panel-title">Modes</span>
+                <span class="panel-toggle"
+                      id="modesPanelToggle"><img src="assets/chevron-down.svg"
+                         alt="Toggle"
+                         style="width: 12px; height: 12px; vertical-align: middle;"></span>
             </div>
-            <div class="config-separator"></div>
-            
-            <!-- Section Modes -->
-            <div class="panel-section">
-                <div class="panel-header" onclick="togglePanel('modesPanel')">
-                    <span class="panel-title">Modes</span>
-                    <span class="panel-toggle" id="modesPanelToggle"><img src="assets/chevron-down.svg" alt="Toggle" style="width: 12px; height: 12px; vertical-align: middle;"></span>
+            <div class="panel-content"
+                 id="modesPanel">
+                <div class="config-row">
+                    <input type="checkbox"
+                           id="debugModeCheckbox"
+                           class="config-checkbox"
+                           onchange="applyConfigFromPanel()">
+                    <label class="config-label"
+                           for="debugModeCheckbox">Mode Debug</label>
                 </div>
-                <div class="panel-content" id="modesPanel">
-                    <div class="config-row">
-                        <input type="checkbox" id="debugModeCheckbox" class="config-checkbox" onchange="applyConfigFromPanel()">
-                        <label class="config-label" for="debugModeCheckbox">Mode Debug</label>
-                    </div>
-                    <div class="config-row">
-                        <input type="checkbox" id="waitingScreenCheckbox" class="config-checkbox" onchange="applyConfigFromPanel()">
-                        <label class="config-label" for="waitingScreenCheckbox">Mode Waiting Screen</label>
-                    </div>
-                    <div class="config-row">
-                        <input type="checkbox" id="backgroundImageCheckbox" class="config-checkbox" checked onchange="applyConfigFromPanel()">
-                        <label class="config-label" for="backgroundImageCheckbox">Afficher image de fond</label>
-                    </div>
+                <div class="config-row">
+                    <input type="checkbox"
+                           id="waitingScreenCheckbox"
+                           class="config-checkbox"
+                           onchange="applyConfigFromPanel()">
+                    <label class="config-label"
+                           for="waitingScreenCheckbox">Mode Waiting Screen</label>
                 </div>
-            </div>
-            
-            <!-- Section Timer -->
-            <div class="panel-section">
-                <div class="panel-header" onclick="togglePanel('timerPanel')">
-                    <span class="panel-title">Timer (sec)</span>
-                    <span class="panel-toggle" id="timerPanelToggle"><img src="assets/chevron-down.svg" alt="Toggle" style="width: 12px; height: 12px; vertical-align: middle;"></span>
-                </div>
-                <div class="panel-content" id="timerPanel">
-                    <div class="config-row">
-                        <label class="config-label" for="durationInput">Durée:</label>
-                        <div class="input-with-arrows">
-                            <input type="number" id="durationInput" class="config-input" min="1" max="999" value="60" onchange="applyConfigFromPanel()">
-                            <div class="arrow-buttons">
-                                <button class="arrow-button" onmousedown="startIncrement('durationInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg" alt="+"></button>
-                                <button class="arrow-button" onmousedown="startDecrement('durationInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg" alt="-"></button>
-                            </div>
-                            <button class="reset-button" onclick="resetParam('countdownDuration')" title="Réinitialiser"><img src="assets/rotate-ccw.svg" alt="Reset"></button>
-                        </div>
-                    </div>
-                    <div class="config-row">
-                        <label class="config-label" for="warningInput">Warning:</label>
-                        <div class="input-with-arrows">
-                            <input type="number" id="warningInput" class="config-input" min="1" max="999" value="10" onchange="applyConfigFromPanel()">
-                            <div class="arrow-buttons">
-                                <button class="arrow-button" onmousedown="startIncrement('warningInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg" alt="+"></button>
-                                <button class="arrow-button" onmousedown="startDecrement('warningInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg" alt="-"></button>
-                            </div>
-                            <button class="reset-button" onclick="resetParam('warningThreshold')" title="Réinitialiser"><img src="assets/rotate-ccw.svg" alt="Reset"></button>
-                        </div>
-                    </div>
-                    <div class="config-row">
-                        <label class="config-label" for="dangerInput">Danger:</label>
-                        <div class="input-with-arrows">
-                            <input type="number" id="dangerInput" class="config-input" min="1" max="999" value="5" onchange="applyConfigFromPanel()">
-                            <div class="arrow-buttons">
-                                <button class="arrow-button" onmousedown="startIncrement('dangerInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg" alt="+"></button>
-                                <button class="arrow-button" onmousedown="startDecrement('dangerInput', 1, 999)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg" alt="-"></button>
-                            </div>
-                            <button class="reset-button" onclick="resetParam('dangerThreshold')" title="Réinitialiser"><img src="assets/rotate-ccw.svg" alt="Reset"></button>
-                        </div>
-                    </div>
+                <div class="config-row">
+                    <input type="checkbox"
+                           id="backgroundImageCheckbox"
+                           class="config-checkbox"
+                           checked
+                           onchange="applyConfigFromPanel()">
+                    <label class="config-label"
+                           for="backgroundImageCheckbox">Afficher image de fond</label>
                 </div>
             </div>
-            
-            <!-- Section Lueurs -->
-            <div class="panel-section">
-                <div class="panel-header" onclick="togglePanel('gradientsPanel')">
-                    <span class="panel-title">Lueurs</span>
-                    <span class="panel-toggle" id="gradientsPanelToggle"><img src="assets/chevron-down.svg" alt="Toggle" style="width: 12px; height: 12px; vertical-align: middle;"></span>
+        </div>
+
+        <!-- Section Timer -->
+        <div class="panel-section">
+            <div class="panel-header"
+                 onclick="togglePanel('timerPanel')">
+                <span class="panel-title">Timer (sec)</span>
+                <span class="panel-toggle"
+                      id="timerPanelToggle"><img src="assets/chevron-down.svg"
+                         alt="Toggle"
+                         style="width: 12px; height: 12px; vertical-align: middle;"></span>
+            </div>
+            <div class="panel-content"
+                 id="timerPanel">
+                <div class="config-row">
+                    <label class="config-label"
+                           for="durationInput">Durée:</label>
+                    <div class="input-with-arrows">
+                        <input type="number"
+                               id="durationInput"
+                               class="config-input"
+                               min="1"
+                               max="999"
+                               value="60"
+                               onchange="applyConfigFromPanel()">
+                        <div class="arrow-buttons">
+                            <button class="arrow-button"
+                                    onmousedown="startIncrement('durationInput', 1, 999)"
+                                    onmouseup="stopIncrement()"
+                                    onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg"
+                                     alt="+"></button>
+                            <button class="arrow-button"
+                                    onmousedown="startDecrement('durationInput', 1, 999)"
+                                    onmouseup="stopIncrement()"
+                                    onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg"
+                                     alt="-"></button>
+                        </div>
+                        <button class="reset-button"
+                                onclick="resetParam('countdownDuration')"
+                                title="Réinitialiser"><img src="assets/rotate-ccw.svg"
+                                 alt="Reset"></button>
+                    </div>
                 </div>
-                <div class="panel-content" id="gradientsPanel">
-                    <div class="config-row">
-                        <label class="config-label" for="gradientsInput">Nombre:</label>
-                        <div class="input-with-arrows">
-                            <input type="number" id="gradientsInput" class="config-input" min="0" max="20" value="3" onchange="applyConfigFromPanel()">
-                            <div class="arrow-buttons">
-                                <button class="arrow-button" onmousedown="startIncrement('gradientsInput', 0, 20)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg" alt="+"></button>
-                                <button class="arrow-button" onmousedown="startDecrement('gradientsInput', 0, 20)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg" alt="-"></button>
-                            </div>
-                            <button class="reset-button" onclick="resetParam('numberOfGradients')" title="Réinitialiser"><img src="assets/rotate-ccw.svg" alt="Reset"></button>
+                <div class="config-row">
+                    <label class="config-label"
+                           for="warningInput">Warning:</label>
+                    <div class="input-with-arrows">
+                        <input type="number"
+                               id="warningInput"
+                               class="config-input"
+                               min="1"
+                               max="999"
+                               value="10"
+                               onchange="applyConfigFromPanel()">
+                        <div class="arrow-buttons">
+                            <button class="arrow-button"
+                                    onmousedown="startIncrement('warningInput', 1, 999)"
+                                    onmouseup="stopIncrement()"
+                                    onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg"
+                                     alt="+"></button>
+                            <button class="arrow-button"
+                                    onmousedown="startDecrement('warningInput', 1, 999)"
+                                    onmouseup="stopIncrement()"
+                                    onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg"
+                                     alt="-"></button>
                         </div>
+                        <button class="reset-button"
+                                onclick="resetParam('warningThreshold')"
+                                title="Réinitialiser"><img src="assets/rotate-ccw.svg"
+                                 alt="Reset"></button>
                     </div>
-                    <div class="config-row">
-                        <label class="config-label" for="gradientSpeedInput">Vitesse (%):</label>
-                        <div class="input-with-arrows">
-                            <input type="number" id="gradientSpeedInput" class="config-input" min="0" max="100" value="50" onchange="applyConfigFromPanel()">
-                            <div class="arrow-buttons">
-                                <button class="arrow-button" onmousedown="startIncrement('gradientSpeedInput', 0, 100)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg" alt="+"></button>
-                                <button class="arrow-button" onmousedown="startDecrement('gradientSpeedInput', 0, 100)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg" alt="-"></button>
-                            </div>
-                            <button class="reset-button" onclick="resetParam('gradientSpeed')" title="Réinitialiser"><img src="assets/rotate-ccw.svg" alt="Reset"></button>
+                </div>
+                <div class="config-row">
+                    <label class="config-label"
+                           for="dangerInput">Danger:</label>
+                    <div class="input-with-arrows">
+                        <input type="number"
+                               id="dangerInput"
+                               class="config-input"
+                               min="1"
+                               max="999"
+                               value="5"
+                               onchange="applyConfigFromPanel()">
+                        <div class="arrow-buttons">
+                            <button class="arrow-button"
+                                    onmousedown="startIncrement('dangerInput', 1, 999)"
+                                    onmouseup="stopIncrement()"
+                                    onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg"
+                                     alt="+"></button>
+                            <button class="arrow-button"
+                                    onmousedown="startDecrement('dangerInput', 1, 999)"
+                                    onmouseup="stopIncrement()"
+                                    onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg"
+                                     alt="-"></button>
                         </div>
-                    </div>
-                    <div class="config-row">
-                        <label class="config-label" for="gradientSizeInput">Taille (px):</label>
-                        <div class="input-with-arrows">
-                            <input type="number" id="gradientSizeInput" class="config-input" min="0" max="500" value="300" onchange="applyConfigFromPanel()">
-                            <div class="arrow-buttons">
-                                <button class="arrow-button" onmousedown="startIncrement('gradientSizeInput', 0, 500)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg" alt="+"></button>
-                                <button class="arrow-button" onmousedown="startDecrement('gradientSizeInput', 0, 500)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg" alt="-"></button>
-                            </div>
-                            <button class="reset-button" onclick="resetParam('gradientSize')" title="Réinitialiser"><img src="assets/rotate-ccw.svg" alt="Reset"></button>
-                        </div>
-                    </div>
-                    <div class="config-row">
-                        <label class="config-label" for="gradientOpacityInput">Opacité (%):</label>
-                        <div class="input-with-arrows">
-                            <input type="number" id="gradientOpacityInput" class="config-input" min="0" max="100" value="12" step="1" onchange="applyConfigFromPanel()">
-                            <div class="arrow-buttons">
-                                <button class="arrow-button" onmousedown="startIncrement('gradientOpacityInput', 0, 100)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg" alt="+"></button>
-                                <button class="arrow-button" onmousedown="startDecrement('gradientOpacityInput', 0, 100)" onmouseup="stopIncrement()" onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg" alt="-"></button>
-                            </div>
-                            <button class="reset-button" onclick="resetParam('gradientOpacity')" title="Réinitialiser"><img src="assets/rotate-ccw.svg" alt="Reset"></button>
-                        </div>
+                        <button class="reset-button"
+                                onclick="resetParam('dangerThreshold')"
+                                title="Réinitialiser"><img src="assets/rotate-ccw.svg"
+                                 alt="Reset"></button>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Section Lueurs -->
+        <div class="panel-section">
+            <div class="panel-header"
+                 onclick="togglePanel('gradientsPanel')">
+                <span class="panel-title">Lueurs</span>
+                <span class="panel-toggle"
+                      id="gradientsPanelToggle"><img src="assets/chevron-down.svg"
+                         alt="Toggle"
+                         style="width: 12px; height: 12px; vertical-align: middle;"></span>
+            </div>
+            <div class="panel-content"
+                 id="gradientsPanel">
+                <div class="config-row">
+                    <label class="config-label"
+                           for="gradientsInput">Nombre:</label>
+                    <div class="input-with-arrows">
+                        <input type="number"
+                               id="gradientsInput"
+                               class="config-input"
+                               min="0"
+                               max="20"
+                               value="3"
+                               onchange="applyConfigFromPanel()">
+                        <div class="arrow-buttons">
+                            <button class="arrow-button"
+                                    onmousedown="startIncrement('gradientsInput', 0, 20)"
+                                    onmouseup="stopIncrement()"
+                                    onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg"
+                                     alt="+"></button>
+                            <button class="arrow-button"
+                                    onmousedown="startDecrement('gradientsInput', 0, 20)"
+                                    onmouseup="stopIncrement()"
+                                    onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg"
+                                     alt="-"></button>
+                        </div>
+                        <button class="reset-button"
+                                onclick="resetParam('numberOfGradients')"
+                                title="Réinitialiser"><img src="assets/rotate-ccw.svg"
+                                 alt="Reset"></button>
+                    </div>
+                </div>
+                <div class="config-row">
+                    <label class="config-label"
+                           for="gradientSpeedInput">Vitesse (%):</label>
+                    <div class="input-with-arrows">
+                        <input type="number"
+                               id="gradientSpeedInput"
+                               class="config-input"
+                               min="0"
+                               max="100"
+                               value="50"
+                               onchange="applyConfigFromPanel()">
+                        <div class="arrow-buttons">
+                            <button class="arrow-button"
+                                    onmousedown="startIncrement('gradientSpeedInput', 0, 100)"
+                                    onmouseup="stopIncrement()"
+                                    onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg"
+                                     alt="+"></button>
+                            <button class="arrow-button"
+                                    onmousedown="startDecrement('gradientSpeedInput', 0, 100)"
+                                    onmouseup="stopIncrement()"
+                                    onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg"
+                                     alt="-"></button>
+                        </div>
+                        <button class="reset-button"
+                                onclick="resetParam('gradientSpeed')"
+                                title="Réinitialiser"><img src="assets/rotate-ccw.svg"
+                                 alt="Reset"></button>
+                    </div>
+                </div>
+                <div class="config-row">
+                    <label class="config-label"
+                           for="gradientSizeInput">Taille (px):</label>
+                    <div class="input-with-arrows">
+                        <input type="number"
+                               id="gradientSizeInput"
+                               class="config-input"
+                               min="0"
+                               max="500"
+                               value="300"
+                               onchange="applyConfigFromPanel()">
+                        <div class="arrow-buttons">
+                            <button class="arrow-button"
+                                    onmousedown="startIncrement('gradientSizeInput', 0, 500)"
+                                    onmouseup="stopIncrement()"
+                                    onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg"
+                                     alt="+"></button>
+                            <button class="arrow-button"
+                                    onmousedown="startDecrement('gradientSizeInput', 0, 500)"
+                                    onmouseup="stopIncrement()"
+                                    onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg"
+                                     alt="-"></button>
+                        </div>
+                        <button class="reset-button"
+                                onclick="resetParam('gradientSize')"
+                                title="Réinitialiser"><img src="assets/rotate-ccw.svg"
+                                 alt="Reset"></button>
+                    </div>
+                </div>
+                <div class="config-row">
+                    <label class="config-label"
+                           for="gradientOpacityInput">Opacité (%):</label>
+                    <div class="input-with-arrows">
+                        <input type="number"
+                               id="gradientOpacityInput"
+                               class="config-input"
+                               min="0"
+                               max="100"
+                               value="12"
+                               step="1"
+                               onchange="applyConfigFromPanel()">
+                        <div class="arrow-buttons">
+                            <button class="arrow-button"
+                                    onmousedown="startIncrement('gradientOpacityInput', 0, 100)"
+                                    onmouseup="stopIncrement()"
+                                    onmouseleave="stopIncrement()"><img src="assets/chevron-up.svg"
+                                     alt="+"></button>
+                            <button class="arrow-button"
+                                    onmousedown="startDecrement('gradientOpacityInput', 0, 100)"
+                                    onmouseup="stopIncrement()"
+                                    onmouseleave="stopIncrement()"><img src="assets/chevron-down.svg"
+                                     alt="-"></button>
+                        </div>
+                        <button class="reset-button"
+                                onclick="resetParam('gradientOpacity')"
+                                title="Réinitialiser"><img src="assets/rotate-ccw.svg"
+                                 alt="Reset"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
 
     <script>
         // Fonction de log stylisé
         function debugLog(message, type = 'info', data = null) {
             if (typeof CONFIG === 'undefined' || !CONFIG.debugMode) return;
-            
+
             const styles = {
                 info: 'background: #2196F3; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold',
                 success: 'background: #4CAF50; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold',
@@ -1196,29 +1599,29 @@
                 error: 'background: #F44336; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold',
                 state: 'background: #9C27B0; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold'
             };
-            
+
             console.log(`%c60SEC`, styles[type], message, data || '');
         }
-        
+
         // Fonctions pour les boutons fléchés avec accélération
         let incrementInterval = null;
         let incrementTimeout = null;
         let incrementSpeed = 200; // Vitesse initiale en ms
-        
+
         function startIncrement(inputId, min, max) {
             const input = document.getElementById(inputId);
             if (!input) return;
-            
+
             // Fonction pour obtenir les limites dynamiques
             const getDynamicLimits = () => {
                 const durationInput = document.getElementById('durationInput');
                 const warningInput = document.getElementById('warningInput');
                 const dangerInput = document.getElementById('dangerInput');
-                
+
                 const durationValue = parseInt(durationInput?.value) || 60;
                 const warningValue = parseInt(warningInput?.value) || 10;
                 const dangerValue = parseInt(dangerInput?.value) || 5;
-                
+
                 // Recalculer les limites dynamiques selon l'input
                 if (inputId === 'durationInput') {
                     return { min: Math.max(3, warningValue + 1), max: 999 };
@@ -1229,34 +1632,34 @@
                 }
                 return { min, max };
             };
-            
+
             // Vérifier si le bouton est désactivé ou si on est déjà au max
             let limits = getDynamicLimits();
             const currentValue = parseInt(input.value);
             if (currentValue >= limits.max) return;
-            
+
             // Premier incrément immédiat
             input.value = Math.min(limits.max, (isNaN(currentValue) ? limits.min : currentValue) + 1);
             applyConfigFromPanel();
             updateButtonStates();
-            
+
             // Démarrer l'accélération progressive après un délai
             incrementTimeout = setTimeout(() => {
                 incrementSpeed = 200;
-                
+
                 const doIncrement = () => {
                     const inputEl = document.getElementById(inputId);
                     if (!inputEl) return;
-                    
+
                     // Recalculer les limites à chaque itération
                     limits = getDynamicLimits();
-                    
+
                     const val = parseInt(inputEl.value);
                     if (!isNaN(val) && val < limits.max) {
                         inputEl.value = Math.min(limits.max, val + 1);
                         applyConfigFromPanel();
                         updateButtonStates();
-                        
+
                         // Accélérer progressivement
                         if (incrementSpeed > 30) {
                             incrementSpeed -= 15;
@@ -1268,25 +1671,25 @@
                         stopIncrement();
                     }
                 };
-                
+
                 incrementInterval = setInterval(doIncrement, incrementSpeed);
             }, 300);
         }
-        
+
         function startDecrement(inputId, min, max) {
             const input = document.getElementById(inputId);
             if (!input) return;
-            
+
             // Fonction pour obtenir les limites dynamiques
             const getDynamicLimits = () => {
                 const durationInput = document.getElementById('durationInput');
                 const warningInput = document.getElementById('warningInput');
                 const dangerInput = document.getElementById('dangerInput');
-                
+
                 const durationValue = parseInt(durationInput?.value) || 60;
                 const warningValue = parseInt(warningInput?.value) || 10;
                 const dangerValue = parseInt(dangerInput?.value) || 5;
-                
+
                 // Recalculer les limites dynamiques selon l'input
                 if (inputId === 'durationInput') {
                     return { min: Math.max(3, warningValue + 1), max: 999 };
@@ -1297,34 +1700,34 @@
                 }
                 return { min, max };
             };
-            
+
             // Vérifier si le bouton est désactivé ou si on est déjà au min
             let limits = getDynamicLimits();
             const currentValue = parseInt(input.value);
             if (currentValue <= limits.min) return;
-            
+
             // Premier décrément immédiat
             input.value = Math.max(limits.min, (isNaN(currentValue) ? limits.min : currentValue) - 1);
             applyConfigFromPanel();
             updateButtonStates();
-            
+
             // Démarrer l'accélération progressive après un délai
             incrementTimeout = setTimeout(() => {
                 incrementSpeed = 200;
-                
+
                 const doDecrement = () => {
                     const inputEl = document.getElementById(inputId);
                     if (!inputEl) return;
-                    
+
                     // Recalculer les limites à chaque itération
                     limits = getDynamicLimits();
-                    
+
                     const val = parseInt(inputEl.value);
                     if (!isNaN(val) && val > limits.min) {
                         inputEl.value = Math.max(limits.min, val - 1);
                         applyConfigFromPanel();
                         updateButtonStates();
-                        
+
                         // Accélérer progressivement
                         if (incrementSpeed > 30) {
                             incrementSpeed -= 15;
@@ -1336,11 +1739,11 @@
                         stopIncrement();
                     }
                 };
-                
+
                 incrementInterval = setInterval(doDecrement, incrementSpeed);
             }, 300);
         }
-        
+
         function stopIncrement() {
             if (incrementInterval) {
                 clearInterval(incrementInterval);
@@ -1352,7 +1755,7 @@
             }
             incrementSpeed = 200;
         }
-        
+
         let updateURLTimeout = null;
         function updateURL(immediate = false) {
             // Debounce de 500ms pour éviter trop d'appels (sauf si immediate = true)
@@ -1364,9 +1767,15 @@
                 updateURLTimeout = setTimeout(performURLUpdate, 500);
             }
         }
-        
+
         function performURLUpdate() {
             const params = new URLSearchParams();
+
+            // Toujours ajouter le fichier de config utilisé (même si c'est config.js par défaut)
+            if (window.LOADED_CONFIG_FILE) {
+                params.set('configFile', window.LOADED_CONFIG_FILE);
+            }
+
             // Toujours inclure tous les paramètres dans l'URL
             params.set('countdownDuration', CONFIG.countdownDuration || 60);
             params.set('numberOfGradients', CONFIG.numberOfGradients !== undefined ? CONFIG.numberOfGradients : 5);
@@ -1377,13 +1786,13 @@
             params.set('dangerThreshold', CONFIG.dangerThreshold !== undefined ? CONFIG.dangerThreshold : 5);
             params.set('debugMode', CONFIG.debugMode ? 'true' : 'false');
             params.set('waitingScreenMode', CONFIG.waitingScreenMode ? 'true' : 'false');
-            
+
             // Ajouter l'état de l'image de fond
             const backgroundImageCheckbox = document.getElementById('backgroundImageCheckbox');
             if (backgroundImageCheckbox) {
                 params.set('showBackgroundImage', backgroundImageCheckbox.checked ? 'true' : 'false');
             }
-            
+
             // Ajouter l'état des panels
             const modesPanel = document.getElementById('modesPanel');
             const timerPanel = document.getElementById('timerPanel');
@@ -1397,12 +1806,12 @@
             if (gradientsPanel && gradientsPanel.classList.contains('collapsed')) {
                 params.set('gradientsPanelCollapsed', 'true');
             }
-            
+
             const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
             window.history.replaceState({}, '', newUrl);
             debugLog('URL updated', 'info', { url: newUrl });
         }
-        
+
         // Fonction pour toggle les panels
         function togglePanel(panelId) {
             const panel = document.getElementById(panelId);
@@ -1416,19 +1825,19 @@
                 updateURL();
             }
         }
-        
+
         // Fonction pour réinitialiser un paramètre à sa valeur par défaut de config.js
         function resetParam(paramName) {
             if (typeof ORIGINAL_CONFIG === 'undefined' || !ORIGINAL_CONFIG[paramName]) {
                 console.error('Impossible de réinitialiser le paramètre:', paramName);
                 return;
             }
-            
+
             debugLog('Resetting parameter', 'info', { param: paramName, value: ORIGINAL_CONFIG[paramName] });
-            
+
             // Restaurer la valeur d'origine
             CONFIG[paramName] = ORIGINAL_CONFIG[paramName];
-            
+
             // Mettre à jour l'interface selon le paramètre
             const inputMap = {
                 'countdownDuration': 'durationInput',
@@ -1439,7 +1848,7 @@
                 'gradientSize': 'gradientSizeInput',
                 'gradientOpacity': 'gradientOpacityInput'
             };
-            
+
             const inputId = inputMap[paramName];
             if (inputId) {
                 const input = document.getElementById(inputId);
@@ -1453,28 +1862,28 @@
                     } else {
                         input.value = ORIGINAL_CONFIG[paramName];
                     }
-                    
+
                     // Appliquer la configuration mise à jour
                     applyConfigFromPanel();
                 }
             }
         }
-        
+
         // Fonction pour mettre à jour l'état des boutons reset et flèches
         function updateButtonStates() {
             if (typeof ORIGINAL_CONFIG === 'undefined') return;
-            
+
             debugLog('Updating button states', 'info');
-            
+
             // Récupérer les valeurs actuelles pour les contraintes dynamiques
             const durationInput = document.getElementById('durationInput');
             const warningInput = document.getElementById('warningInput');
             const dangerInput = document.getElementById('dangerInput');
-            
+
             const durationValue = parseInt(durationInput?.value) || 60;
             const warningValue = parseInt(warningInput?.value) || 10;
             const dangerValue = parseInt(dangerInput?.value) || 5;
-            
+
             // Mapping des paramètres vers leurs inputs et limites
             const params = [
                 { name: 'countdownDuration', inputId: 'durationInput', min: Math.max(3, warningValue + 1), max: 999 },
@@ -1485,14 +1894,14 @@
                 { name: 'gradientSize', inputId: 'gradientSizeInput', min: 0, max: 500 },
                 { name: 'gradientOpacity', inputId: 'gradientOpacityInput', min: 0, max: 100, isPercent: true }
             ];
-            
+
             params.forEach(param => {
                 const input = document.getElementById(param.inputId);
                 if (!input) return;
-                
+
                 const currentValue = parseInt(input.value) || 0;
                 let originalValue = ORIGINAL_CONFIG[param.name];
-                
+
                 // Convertir les valeurs spéciales
                 if (param.name === 'gradientOpacity') {
                     originalValue = Math.round(originalValue * 100);
@@ -1500,7 +1909,7 @@
                     // Convertir de secondes vers pourcentage
                     originalValue = originalValue >= 999 ? 0 : Math.round(((120 - originalValue) / 115) * 100);
                 }
-                
+
                 // Trouver le bouton reset associé
                 const resetButton = input.parentElement.querySelector('.reset-button');
                 if (resetButton) {
@@ -1515,13 +1924,13 @@
                         resetButton.style.cursor = 'pointer';
                     }
                 }
-                
+
                 // Trouver les boutons flèches
                 const arrowButtons = input.parentElement.querySelector('.arrow-buttons');
                 if (arrowButtons) {
                     const upButton = arrowButtons.children[0];
                     const downButton = arrowButtons.children[1];
-                    
+
                     if (upButton) {
                         // Désactiver flèche haut si on est au max
                         if (currentValue >= param.max) {
@@ -1534,7 +1943,7 @@
                             upButton.style.cursor = 'pointer';
                         }
                     }
-                    
+
                     if (downButton) {
                         // Désactiver flèche bas si on est au min
                         if (currentValue <= param.min) {
@@ -1550,10 +1959,10 @@
                 }
             });
         }
-        
+
         function initConfigPanel() {
             debugLog('Initializing config panel', 'info');
-            
+
             const debugCheckbox = document.getElementById('debugModeCheckbox');
             const durationInput = document.getElementById('durationInput');
             const gradientsInput = document.getElementById('gradientsInput');
@@ -1562,7 +1971,7 @@
             const gradientOpacityInput = document.getElementById('gradientOpacityInput');
             const warningInput = document.getElementById('warningInput');
             const dangerInput = document.getElementById('dangerInput');
-            
+
             if (typeof CONFIG !== 'undefined') {
                 debugCheckbox.checked = CONFIG.debugMode;
                 const waitingScreenCheckbox = document.getElementById('waitingScreenCheckbox');
@@ -1588,7 +1997,7 @@
                 warningInput.value = CONFIG.warningThreshold !== undefined ? CONFIG.warningThreshold : 10;
                 dangerInput.value = CONFIG.dangerThreshold !== undefined ? CONFIG.dangerThreshold : 5;
             }
-            
+
             // Ajouter le support du scroll pour changer la valeur de durée
             // Fonction utilitaire pour ajouter le support wheel avec gestion d'erreur
             function addWheelSupport(input, min, max, step = 1, defaultValue = 0) {
@@ -1599,19 +2008,19 @@
                         const currentValue = isNaN(parsedValue) ? defaultValue : parsedValue;
                         const scrollStep = e.deltaY > 0 ? -step : step;
                         const newValue = Math.max(min, Math.min(max, currentValue + scrollStep));
-                        
+
                         if (newValue === currentValue) {
                             input.classList.add('error');
                             setTimeout(() => input.classList.remove('error'), 300);
                         }
-                        
+
                         input.value = newValue;
                         applyConfigFromPanel();
                         updateButtonStates();
                     }
                 }, { passive: false });
             }
-            
+
             // Ajouter le support du scroll pour la durée
             durationInput.addEventListener('wheel', (e) => {
                 if (document.activeElement === durationInput) {
@@ -1619,25 +2028,25 @@
                     const currentValue = parseInt(durationInput.value) || 60;
                     const step = e.deltaY > 0 ? -1 : 1;
                     const newValue = Math.max(3, Math.min(999, currentValue + step));
-                    
+
                     if (newValue === currentValue) {
                         durationInput.classList.add('error');
                         setTimeout(() => durationInput.classList.remove('error'), 300);
                     }
-                    
+
                     durationInput.value = newValue;
                     applyConfigFromPanel();
                     updateButtonStates();
                 }
             }, { passive: false });
-            
+
             // Validation pour les flèches de la durée
-            durationInput.addEventListener('keydown', function(e) {
+            durationInput.addEventListener('keydown', function (e) {
                 if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
                     const currentValue = parseInt(this.value) || 60;
                     const step = e.key === 'ArrowUp' ? 1 : -1;
                     const newValue = Math.max(3, Math.min(999, currentValue + step));
-                    
+
                     if (newValue === currentValue) {
                         e.preventDefault();
                         this.classList.add('error');
@@ -1645,7 +2054,7 @@
                     }
                 }
             });
-            
+
             // Ajouter le support du scroll pour changer le warning
             warningInput.addEventListener('wheel', (e) => {
                 if (document.activeElement === warningInput) {
@@ -1655,10 +2064,10 @@
                     const durationValue = parseInt(durationInput.value) || 60;
                     const step = e.deltaY > 0 ? -1 : 1;
                     const requestedValue = currentValue + step;
-                    
+
                     // Calculer la nouvelle valeur en tenant compte des contraintes
                     let newValue = Math.max(dangerValue + 1, Math.min(durationValue - 1, requestedValue));
-                    
+
                     // Si on essaye de descendre mais qu'on est déjà au minimum, bloquer
                     if (step < 0 && newValue === dangerValue + 1 && currentValue === dangerValue + 1) {
                         newValue = currentValue;
@@ -1667,19 +2076,19 @@
                     if (step > 0 && newValue === durationValue - 1 && currentValue === durationValue - 1) {
                         newValue = currentValue;
                     }
-                    
+
                     // Si la valeur n'a pas changé (bloquée par validation), afficher l'erreur
                     if (newValue === currentValue) {
                         warningInput.classList.add('error');
                         setTimeout(() => warningInput.classList.remove('error'), 300);
                     }
-                    
+
                     warningInput.value = newValue;
                     applyConfigFromPanel();
                     updateButtonStates();
                 }
             }, { passive: false });
-            
+
             // Ajouter le support du scroll pour changer le danger
             dangerInput.addEventListener('wheel', (e) => {
                 if (document.activeElement === dangerInput) {
@@ -1689,10 +2098,10 @@
                     const durationValue = parseInt(durationInput.value) || 60;
                     const step = e.deltaY > 0 ? -1 : 1;
                     const requestedValue = currentValue + step;
-                    
+
                     // Calculer la nouvelle valeur en tenant compte des contraintes
                     let newValue = Math.max(1, Math.min(Math.min(warningValue - 1, durationValue), requestedValue));
-                    
+
                     // Si on essaye de monter mais qu'on est déjà au maximum, bloquer
                     if (step > 0 && newValue === warningValue - 1 && currentValue === warningValue - 1) {
                         newValue = currentValue;
@@ -1701,28 +2110,28 @@
                     if (step < 0 && newValue === 1 && currentValue === 1) {
                         newValue = currentValue;
                     }
-                    
+
                     // Si la valeur n'a pas changé (bloquée par validation), afficher l'erreur
                     if (newValue === currentValue) {
                         dangerInput.classList.add('error');
                         setTimeout(() => dangerInput.classList.remove('error'), 300);
                     }
-                    
+
                     dangerInput.value = newValue;
                     applyConfigFromPanel();
                     updateButtonStates();
                 }
             }, { passive: false });
-            
+
             // Utiliser les variables déjà déclarées pour le support du scroll
             addWheelSupport(gradientsInput, 0, 20, 1, 3);
             addWheelSupport(gradientSpeedInput, 0, 100, 1, 50);
             addWheelSupport(gradientSizeInput, 0, 500, 1, 300);
             addWheelSupport(gradientOpacityInput, 0, 100, 1, 12);
-            
+
             // Mettre à jour l'état des boutons au chargement
             updateButtonStates();
-            
+
             // Fonction pour valider et afficher l'erreur si bloqué
             function validateAndShowError(input, oldValue, newValue) {
                 if (newValue !== oldValue && newValue === parseInt(input.value)) {
@@ -1730,48 +2139,48 @@
                     setTimeout(() => input.classList.remove('error'), 300);
                 }
             }
-            
+
             // Validation pour la saisie manuelle du warning
-            warningInput.addEventListener('change', function() {
+            warningInput.addEventListener('change', function () {
                 const oldValue = parseInt(this.dataset.oldValue) || parseInt(this.value);
                 const dangerValue = parseInt(dangerInput.value) || 5;
                 const durationValue = parseInt(durationInput.value) || 60;
                 let newValue = parseInt(this.value) || 10;
-                
+
                 newValue = Math.max(1, Math.min(durationValue - 1, newValue));
                 if (newValue <= dangerValue) {
                     newValue = dangerValue + 1;
                 }
                 newValue = Math.min(newValue, durationValue - 1);
-                
+
                 if (newValue !== parseInt(this.value)) {
                     this.classList.add('error');
                     setTimeout(() => this.classList.remove('error'), 300);
                 }
-                
+
                 this.value = newValue;
                 this.dataset.oldValue = newValue;
                 applyConfigFromPanel();
             });
-            
-            warningInput.addEventListener('focus', function() {
+
+            warningInput.addEventListener('focus', function () {
                 this.dataset.oldValue = this.value;
             });
-            
+
             // Validation pour les flèches du warning
-            warningInput.addEventListener('keydown', function(e) {
+            warningInput.addEventListener('keydown', function (e) {
                 if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
                     const currentValue = parseInt(this.value) || 10;
                     const dangerValue = parseInt(dangerInput.value) || 5;
                     const durationValue = parseInt(durationInput.value) || 60;
                     const step = e.key === 'ArrowUp' ? 1 : -1;
                     let newValue = Math.max(1, Math.min(durationValue - 1, currentValue + step));
-                    
+
                     if (newValue <= dangerValue) {
                         newValue = dangerValue + 1;
                     }
                     newValue = Math.min(newValue, durationValue - 1);
-                    
+
                     if (newValue === currentValue) {
                         e.preventDefault();
                         this.classList.add('error');
@@ -1779,48 +2188,48 @@
                     }
                 }
             });
-            
+
             // Validation pour la saisie manuelle du danger
-            dangerInput.addEventListener('change', function() {
+            dangerInput.addEventListener('change', function () {
                 const oldValue = parseInt(this.dataset.oldValue) || parseInt(this.value);
                 const warningValue = parseInt(warningInput.value) || 10;
                 const durationValue = parseInt(durationInput.value) || 60;
                 let newValue = parseInt(this.value) || 5;
-                
+
                 newValue = Math.max(1, Math.min(durationValue, newValue));
                 if (newValue >= warningValue) {
                     newValue = warningValue - 1;
                 }
                 newValue = Math.min(newValue, durationValue);
-                
+
                 if (newValue !== parseInt(this.value)) {
                     this.classList.add('error');
                     setTimeout(() => this.classList.remove('error'), 300);
                 }
-                
+
                 this.value = newValue;
                 this.dataset.oldValue = newValue;
                 applyConfigFromPanel();
             });
-            
-            dangerInput.addEventListener('focus', function() {
+
+            dangerInput.addEventListener('focus', function () {
                 this.dataset.oldValue = this.value;
             });
-            
+
             // Validation pour les flèches du danger
-            dangerInput.addEventListener('keydown', function(e) {
+            dangerInput.addEventListener('keydown', function (e) {
                 if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
                     const currentValue = parseInt(this.value) || 5;
                     const warningValue = parseInt(warningInput.value) || 10;
                     const durationValue = parseInt(durationInput.value) || 60;
                     const step = e.key === 'ArrowUp' ? 1 : -1;
                     let newValue = Math.max(1, Math.min(durationValue, currentValue + step));
-                    
+
                     if (newValue >= warningValue) {
                         newValue = warningValue - 1;
                     }
                     newValue = Math.min(newValue, durationValue);
-                    
+
                     if (newValue === currentValue) {
                         e.preventDefault();
                         this.classList.add('error');
@@ -1829,10 +2238,10 @@
                 }
             });
         }
-        
+
         function applyConfigFromPanel() {
             if (typeof CONFIG === 'undefined') return;
-            
+
             const debugCheckbox = document.getElementById('debugModeCheckbox');
             const waitingScreenCheckbox = document.getElementById('waitingScreenCheckbox');
             const backgroundImageCheckbox = document.getElementById('backgroundImageCheckbox');
@@ -1843,7 +2252,7 @@
             const gradientOpacityInput = document.getElementById('gradientOpacityInput');
             const warningInput = document.getElementById('warningInput');
             const dangerInput = document.getElementById('dangerInput');
-            
+
             const oldGradientsCount = CONFIG.numberOfGradients || 3;
             const oldGradientSpeed = CONFIG.gradientSpeed;
             const oldGradientSize = CONFIG.gradientSize;
@@ -1852,16 +2261,16 @@
             const oldDuration = CONFIG.countdownDuration;
             const oldWarning = CONFIG.warningThreshold;
             const oldDanger = CONFIG.dangerThreshold;
-            
+
             CONFIG.debugMode = debugCheckbox.checked;
             CONFIG.waitingScreenMode = waitingScreenCheckbox.checked;
-            
+
             // Gérer l'affichage de l'image de fond
             const backgroundImage = document.getElementById('backgroundImage');
             if (backgroundImage) {
                 backgroundImage.style.display = backgroundImageCheckbox.checked ? 'block' : 'none';
             }
-            
+
             const durationValue = Math.max(3, parseInt(durationInput.value) || 60);
             durationInput.value = durationValue;
             CONFIG.countdownDuration = durationValue;
@@ -1873,92 +2282,92 @@
             CONFIG.gradientSize = Math.max(0, Math.min(500, parseInt(gradientSizeInput.value) || 300));
             const opacityValue = parseInt(gradientOpacityInput.value);
             CONFIG.gradientOpacity = Math.max(0, Math.min(100, isNaN(opacityValue) ? 12 : opacityValue)) / 100;
-            
+
             // Validation: warning doit être supérieur au danger et strictement inférieur à la durée
             let warningValue = parseInt(warningInput.value) || 10;
             let dangerValue = parseInt(dangerInput.value) || 5;
-            
+
             // Warning ne peut pas être égal ou dépasser la durée, danger ne peut pas dépasser la durée
             const maxThreshold = CONFIG.countdownDuration;
             warningValue = Math.min(warningValue, maxThreshold - 1);
             dangerValue = Math.min(dangerValue, maxThreshold);
-            
+
             // Ajuster automatiquement si nécessaire
             if (warningValue <= dangerValue) {
                 warningValue = Math.min(dangerValue + 1, maxThreshold - 1);
             }
-            
+
             // Si warning atteint maxThreshold - 1, ajuster danger si nécessaire
             if (warningValue >= maxThreshold - 1 && dangerValue >= warningValue) {
                 dangerValue = Math.max(1, warningValue - 1);
             }
-            
+
             warningInput.value = warningValue;
             dangerInput.value = dangerValue;
-            
+
             CONFIG.warningThreshold = warningValue;
             CONFIG.dangerThreshold = dangerValue;
-            
+
             // Régénérer les gradients si le nombre OU les paramètres ont changé
-            const gradientParamsChanged = oldGradientSpeed !== CONFIG.gradientSpeed || 
-                                         oldGradientSize !== CONFIG.gradientSize || 
-                                         oldGradientOpacity !== CONFIG.gradientOpacity;
-            
+            const gradientParamsChanged = oldGradientSpeed !== CONFIG.gradientSpeed ||
+                oldGradientSize !== CONFIG.gradientSize ||
+                oldGradientOpacity !== CONFIG.gradientOpacity;
+
             if (oldGradientsCount !== CONFIG.numberOfGradients || gradientParamsChanged) {
                 const wavesContainer = document.getElementById('wavesContainer');
                 wavesContainer.innerHTML = ''; // Nettoyer les anciens gradients
                 generateGradients(); // Générer les nouveaux
-                debugLog('Gradients regenerated', 'success', { 
+                debugLog('Gradients regenerated', 'success', {
                     count: CONFIG.numberOfGradients,
                     speed: CONFIG.gradientSpeed,
                     size: CONFIG.gradientSize,
                     opacity: CONFIG.gradientOpacity
                 });
             }
-            
+
             // Mettre à jour l'URL (avec debounce)
             updateURL();
-            
+
             // Logger seulement si quelque chose a changé
-            const hasChanges = oldDebugMode !== CONFIG.debugMode || 
-                              oldDuration !== CONFIG.countdownDuration || 
-                              oldGradientsCount !== CONFIG.numberOfGradients ||
-                              oldWarning !== CONFIG.warningThreshold ||
-                              oldDanger !== CONFIG.dangerThreshold;
-            
+            const hasChanges = oldDebugMode !== CONFIG.debugMode ||
+                oldDuration !== CONFIG.countdownDuration ||
+                oldGradientsCount !== CONFIG.numberOfGradients ||
+                oldWarning !== CONFIG.warningThreshold ||
+                oldDanger !== CONFIG.dangerThreshold;
+
             if (hasChanges) {
-                debugLog('Config updated from panel', 'success', { 
-                    debugMode: CONFIG.debugMode, 
+                debugLog('Config updated from panel', 'success', {
+                    debugMode: CONFIG.debugMode,
                     countdownDuration: CONFIG.countdownDuration,
                     numberOfGradients: CONFIG.numberOfGradients,
                     warningThreshold: CONFIG.warningThreshold,
                     dangerThreshold: CONFIG.dangerThreshold
                 });
             }
-            
+
             // Mettre à jour l'état des boutons
             updateButtonStates();
-            
+
             // Réinitialiser le jeu si nécessaire
             if (gameStarted) {
                 debugLog('Game reset required after config change', 'warning');
             }
         }
-        
+
         function applyJsonConfig() {
             if (typeof CONFIG === 'undefined') return;
-            
+
             const configTextarea = document.getElementById('configTextarea');
             try {
                 const jsonConfig = JSON.parse(configTextarea.value);
-                
+
                 // Fusionner avec CONFIG (sans écraser debugMode et countdownDuration)
                 const debugMode = CONFIG.debugMode;
                 const countdownDuration = CONFIG.countdownDuration;
                 Object.assign(CONFIG, jsonConfig);
                 CONFIG.debugMode = debugMode;
                 CONFIG.countdownDuration = countdownDuration;
-                
+
                 // Réappliquer les couleurs
                 if (CONFIG.borderColor1) document.getElementById('normalStop1').style.stopColor = CONFIG.borderColor1;
                 if (CONFIG.borderColor2) document.getElementById('normalStop2').style.stopColor = CONFIG.borderColor2;
@@ -1968,24 +2377,24 @@
                 if (CONFIG.dangerColor2) document.getElementById('dangerStop2').style.stopColor = CONFIG.dangerColor2;
                 if (CONFIG.overtimeColor1) document.getElementById('overtimeStop1').style.stopColor = CONFIG.overtimeColor1;
                 if (CONFIG.overtimeColor2) document.getElementById('overtimeStop2').style.stopColor = CONFIG.overtimeColor2;
-                
+
                 debugLog('JSON config applied successfully', 'success', jsonConfig);
             } catch (e) {
                 debugLog('Invalid JSON config', 'error', { error: e.message });
             }
         }
-        
+
         function resetConfig() {
             debugLog('Resetting config to defaults', 'warning');
             // Recharger sans paramètres URL
             window.location.href = window.location.pathname;
         }
-        
+
         // Parser les paramètres de l'URL
         function getUrlParams() {
             const params = new URLSearchParams(window.location.search);
             const urlConfig = {};
-            
+
             // countdownDuration (minimum 3)
             if (params.has('countdownDuration')) {
                 const duration = parseInt(params.get('countdownDuration'));
@@ -1993,25 +2402,25 @@
                     urlConfig.countdownDuration = duration;
                 }
             }
-            
+
             // debugMode
             if (params.has('debugMode')) {
                 const debug = params.get('debugMode');
                 urlConfig.debugMode = (debug === 'true' || debug === '1');
             }
-            
+
             // waitingScreenMode
             if (params.has('waitingScreenMode')) {
                 const waitingScreen = params.get('waitingScreenMode');
                 urlConfig.waitingScreenMode = (waitingScreen === 'true' || waitingScreen === '1');
             }
-            
+
             // showBackgroundImage
             if (params.has('showBackgroundImage')) {
                 const showBg = params.get('showBackgroundImage');
                 urlConfig.showBackgroundImage = (showBg === 'true' || showBg === '1');
             }
-            
+
             // numberOfGradients
             if (params.has('numberOfGradients')) {
                 const gradients = parseInt(params.get('numberOfGradients'));
@@ -2019,7 +2428,7 @@
                     urlConfig.numberOfGradients = gradients;
                 }
             }
-            
+
             // gradientSpeed
             if (params.has('gradientSpeed')) {
                 const speed = parseInt(params.get('gradientSpeed'));
@@ -2027,7 +2436,7 @@
                     urlConfig.gradientSpeed = speed;
                 }
             }
-            
+
             // gradientSize
             if (params.has('gradientSize')) {
                 const size = parseInt(params.get('gradientSize'));
@@ -2035,7 +2444,7 @@
                     urlConfig.gradientSize = size;
                 }
             }
-            
+
             // gradientOpacity
             if (params.has('gradientOpacity')) {
                 const opacity = parseInt(params.get('gradientOpacity'));
@@ -2043,10 +2452,10 @@
                     urlConfig.gradientOpacity = opacity / 100;
                 }
             }
-            
+
             // Récupérer la durée pour valider les seuils
             const durationForValidation = urlConfig.countdownDuration || CONFIG.countdownDuration || 60;
-            
+
             // warningThreshold (doit être strictement inférieur à la durée)
             if (params.has('warningThreshold')) {
                 const warning = parseInt(params.get('warningThreshold'));
@@ -2054,7 +2463,7 @@
                     urlConfig.warningThreshold = warning;
                 }
             }
-            
+
             // dangerThreshold (ne peut pas dépasser la durée et doit être inférieur à warning)
             if (params.has('dangerThreshold')) {
                 const danger = parseInt(params.get('dangerThreshold'));
@@ -2063,53 +2472,40 @@
                     urlConfig.dangerThreshold = danger;
                 }
             }
-            
+
+            // Couleurs de la bordure
+            if (params.has('borderColor1')) {
+                urlConfig.borderColor1 = '#' + params.get('borderColor1').replace('#', '');
+            }
+            if (params.has('borderColor2')) {
+                urlConfig.borderColor2 = '#' + params.get('borderColor2').replace('#', '');
+            }
+
+            // Couleurs des gradients animés
+            if (params.has('gradient1Color1')) {
+                urlConfig.gradient1Color1 = decodeURIComponent(params.get('gradient1Color1'));
+            }
+            if (params.has('gradient1Color2')) {
+                urlConfig.gradient1Color2 = decodeURIComponent(params.get('gradient1Color2'));
+            }
+            if (params.has('gradient2Color1')) {
+                urlConfig.gradient2Color1 = decodeURIComponent(params.get('gradient2Color1'));
+            }
+            if (params.has('gradient2Color2')) {
+                urlConfig.gradient2Color2 = decodeURIComponent(params.get('gradient2Color2'));
+            }
+            if (params.has('gradient3Color1')) {
+                urlConfig.gradient3Color1 = decodeURIComponent(params.get('gradient3Color1'));
+            }
+            if (params.has('gradient3Color2')) {
+                urlConfig.gradient3Color2 = decodeURIComponent(params.get('gradient3Color2'));
+            }
+
             return urlConfig;
         }
-        
+
         // Conserver une copie de CONFIG d'origine pour reset
         let ORIGINAL_CONFIG = {};
-        
-        // Attendre que CONFIG soit chargé
-        if (typeof CONFIG === 'undefined') {
-            console.error('%cCONFIG ERROR', 'background: #F44336; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold', 'CONFIG non chargé. Vérifiez que config.js est présent.');
-            debugLog = () => {}; // Désactiver les logs si CONFIG n'existe pas
-        } else {
-            // Sauvegarder la configuration d'origine avant toute modification
-            ORIGINAL_CONFIG = JSON.parse(JSON.stringify(CONFIG));
-            
-            // Fusionner les paramètres URL avec CONFIG (URL prioritaire)
-            const urlParams = getUrlParams();
-            
-            if (Object.keys(urlParams).length > 0) {
-                Object.assign(CONFIG, urlParams);
-            }
-            
-            // Afficher un message de bienvenue compact
-            console.log('%c🎮 60 SECONDES CHALLENGE 🎮', 'background: linear-gradient(90deg, #00ff00, #00ffff); color: black; padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: 5px;');
-            debugLog('Application initialized', 'success', { 
-                countdownDuration: CONFIG.countdownDuration + 's',
-                debugMode: CONFIG.debugMode 
-            });
-            
-            // Initialiser le panneau de configuration
-            initConfigPanel();
-            
-            // Restaurer l'état des panels depuis l'URL
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('modesPanelCollapsed') === 'true') {
-                togglePanel('modesPanel');
-            }
-            if (params.get('timerPanelCollapsed') === 'true') {
-                togglePanel('timerPanel');
-            }
-            if (params.get('gradientsPanelCollapsed') === 'true') {
-                togglePanel('gradientsPanel');
-            }
-            
-            // Mettre à jour l'URL pour inclure les paramètres dès le chargement (immédiatement)
-            updateURL(true);
-        }
 
         let startTime = null;
         let timerInterval = null;
@@ -2137,39 +2533,39 @@
             const baseSpeed = (typeof CONFIG !== 'undefined' && CONFIG.gradientSpeed !== undefined) ? CONFIG.gradientSpeed : 30;
             const baseSize = (typeof CONFIG !== 'undefined' && CONFIG.gradientSize !== undefined) ? CONFIG.gradientSize : 300;
             const opacity = (typeof CONFIG !== 'undefined' && CONFIG.gradientOpacity !== undefined) ? CONFIG.gradientOpacity : 0.12;
-            
+
             // Définir les couleurs disponibles
             const gradientColors = [
                 { angle: 45, color1: CONFIG.gradient1Color1, color2: CONFIG.gradient1Color2 },
                 { angle: 135, color1: CONFIG.gradient2Color1, color2: CONFIG.gradient2Color2 },
                 { angle: 225, color1: CONFIG.gradient3Color1, color2: CONFIG.gradient3Color2 }
             ];
-            
+
             // Générer les éléments gradient
             for (let i = 0; i < numberOfGradients; i++) {
                 const div = document.createElement('div');
                 div.className = 'gradient';
-                
+
                 // Choisir aléatoirement une des 3 couleurs
                 const randomColor = gradientColors[Math.floor(Math.random() * 3)];
                 div.style.backgroundImage = `linear-gradient(${randomColor.angle}deg, ${randomColor.color1}, ${randomColor.color2})`;
-                
+
                 // Varier légèrement la taille autour de la taille de base
                 const sizeVariation = baseSize * (0.9 + Math.random() * 0.2); // ±10%
                 div.style.width = `${sizeVariation}px`;
                 div.style.height = `${sizeVariation}px`;
                 div.style.setProperty('--size', `${sizeVariation}px`);
-                
+
                 // Op acité personnalisée
                 div.style.opacity = opacity;
-                
+
                 // Générer des déplacements aléatoires pour chaque gradient
                 const randomX1 = -40 + Math.random() * 30; // Entre -40vw et -10vw
                 const randomY1 = -25 + Math.random() * 20; // Entre -25vh et -5vh
                 const randomX2 = 10 + Math.random() * 30;  // Entre 10vw et 40vw
                 const randomY2 = 5 + Math.random() * 20;   // Entre 5vh et 25vh
                 const randomRotation = Math.random() * 360;
-                
+
                 // Créer une animation unique pour ce gradient
                 const animationName = `rotate-${i}-${Date.now()}`;
                 const keyframes = `
@@ -2179,45 +2575,95 @@
                         100% { transform: translate(${randomX1}vw, ${randomY1}vh) rotate(${randomRotation * 2}deg) translateZ(0); }
                     }
                 `;
-                
+
                 // Ajouter les keyframes au document
                 const styleSheet = document.styleSheets[0];
                 styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
-                
+
                 // Appliquer l'animation
                 const animationSpeed = baseSpeed + (i * 2); // Variation de vitesse
                 div.style.animation = `${animationName} ${animationSpeed}s ease-in-out infinite`;
                 div.style.animationDelay = `${-i * 5}s`;
-                
+
                 wavesContainer.appendChild(div);
             }
-            
+
             debugLog(`Generated ${numberOfGradients} gradients`, 'info');
         }
 
-        // Initialiser les couleurs des dégradés depuis le config (avec fallback)
-        if (typeof CONFIG !== 'undefined') {
-            document.getElementById('normalStop1').style.stopColor = CONFIG.borderColor1;
-            document.getElementById('normalStop2').style.stopColor = CONFIG.borderColor2;
-            document.getElementById('warningStop1').style.stopColor = CONFIG.warningColor1;
-            document.getElementById('warningStop2').style.stopColor = CONFIG.warningColor2;
-            document.getElementById('dangerStop1').style.stopColor = CONFIG.dangerColor1;
-            document.getElementById('dangerStop2').style.stopColor = CONFIG.dangerColor2;
-            document.getElementById('overtimeStop1').style.stopColor = CONFIG.overtimeColor1;
-            document.getElementById('overtimeStop2').style.stopColor = CONFIG.overtimeColor2;
-            
+        // Fonction d'initialisation principale appelée après le chargement de CONFIG
+        window.initializeApp = function () {
+            // Conserver une copie de CONFIG d'origine pour reset
+            window.ORIGINAL_CONFIG = {};
+
+            // Attendre que CONFIG soit chargé
+            if (typeof CONFIG === 'undefined') {
+                console.error('%cCONFIG ERROR', 'background: #F44336; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold', 'CONFIG non chargé. Vérifiez que config.js est présent.');
+                window.debugLog = () => { }; // Désactiver les logs si CONFIG n'existe pas
+                return;
+            }
+
+            // Sauvegarder la configuration d'origine avant toute modification
+            window.ORIGINAL_CONFIG = JSON.parse(JSON.stringify(CONFIG));
+
+            // Fusionner les paramètres URL avec CONFIG (URL prioritaire)
+            const urlParams = getUrlParams();
+
+            if (Object.keys(urlParams).length > 0) {
+                Object.assign(CONFIG, urlParams);
+                debugLog('URL parameters applied', 'success', urlParams);
+            }
+
+            // Initialiser les couleurs des dégradés SVG depuis le config
+            document.getElementById('normalStop1').style.stopColor = CONFIG.borderColor1 || '#5a2d81';
+            document.getElementById('normalStop2').style.stopColor = CONFIG.borderColor2 || '#7b3f9e';
+            document.getElementById('warningStop1').style.stopColor = CONFIG.warningColor1 || '#ff9500';
+            document.getElementById('warningStop2').style.stopColor = CONFIG.warningColor2 || '#ffcc00';
+            document.getElementById('dangerStop1').style.stopColor = CONFIG.dangerColor1 || '#ff0000';
+            document.getElementById('dangerStop2').style.stopColor = CONFIG.dangerColor2 || '#ff3333';
+            document.getElementById('overtimeStop1').style.stopColor = CONFIG.overtimeColor1 || '#ff0000';
+            document.getElementById('overtimeStop2').style.stopColor = CONFIG.overtimeColor2 || '#ff00ff';
+
+            // Appliquer l'image de fond depuis la configuration
+            const backgroundImage = document.getElementById('backgroundImage');
+            if (backgroundImage && CONFIG.backgroundImageUrl) {
+                backgroundImage.src = CONFIG.backgroundImageUrl;
+                debugLog('Background image set', 'info', { url: CONFIG.backgroundImageUrl });
+            }
+
             // Générer les gradients dynamiquement
             generateGradients();
-        } else {
-            // Valeurs par défaut si CONFIG n'est pas chargé
-            document.getElementById('normalStop1').style.stopColor = '#00ff00';
-            document.getElementById('normalStop2').style.stopColor = '#00ffff';
-            document.getElementById('warningStop1').style.stopColor = '#ff9500';
-            document.getElementById('warningStop2').style.stopColor = '#ffcc00';
-            document.getElementById('dangerStop1').style.stopColor = '#ff3b30';
-            document.getElementById('dangerStop2').style.stopColor = '#ff6b60';
-            document.getElementById('overtimeStop1').style.stopColor = '#ff0000';
-            document.getElementById('overtimeStop2').style.stopColor = '#ff00ff';
+
+            // Afficher un message de bienvenue compact
+            console.log('%c🎮 60 SECONDES CHALLENGE 🎮', 'background: linear-gradient(90deg, #00ff00, #00ffff); color: black; padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: 5px;');
+            debugLog('Application initialized', 'success', {
+                configFile: new URLSearchParams(window.location.search).get('configFile') || 'config.js',
+                countdownDuration: CONFIG.countdownDuration + 's',
+                debugMode: CONFIG.debugMode
+            });
+
+            // Initialiser le panneau de configuration
+            initConfigPanel();
+
+            // Restaurer l'état des panels depuis l'URL
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('modesPanelCollapsed') === 'true') {
+                togglePanel('modesPanel');
+            }
+            if (params.get('timerPanelCollapsed') === 'true') {
+                togglePanel('timerPanel');
+            }
+            if (params.get('gradientsPanelCollapsed') === 'true') {
+                togglePanel('gradientsPanel');
+            }
+
+            // Mettre à jour l'URL pour inclure les paramètres dès le chargement (immédiatement)
+            updateURL(true);
+        };
+
+        // Initialiser immédiatement si CONFIG est déjà chargé (pour compatibilité avec ancienne méthode)
+        if (typeof CONFIG !== 'undefined') {
+            window.initializeApp();
         }
 
         function handleButtonClick() {
@@ -2233,9 +2679,9 @@
 
         function handlePauseClick() {
             const pauseButton = document.getElementById('pauseButton');
-            
+
             if (!gameStarted || isStopped) return;
-            
+
             if (isPaused) {
                 // Reprendre
                 playResumeSound();
@@ -2263,18 +2709,18 @@
 
         function startLaunchCountdown() {
             debugLog('Starting launch countdown', 'state');
-            
+
             // En mode waiting screen, pas de décompte 3-2-1 mais garder l'animation
             const isWaitingScreenMode = typeof CONFIG !== 'undefined' && CONFIG.waitingScreenMode;
             if (isWaitingScreenMode) {
                 stopButton.disabled = true;
                 stopButton.style.opacity = '0.2';
                 stopButton.style.cursor = 'not-allowed';
-                
+
                 // Animation d'apparition
                 countdownElement.style.fontSize = '120px';
                 countdownElement.style.opacity = '0';
-                
+
                 setTimeout(() => {
                     countdownElement.style.opacity = '1';
                     setTimeout(() => {
@@ -2283,15 +2729,15 @@
                 }, 100);
                 return;
             }
-            
+
             stopButton.disabled = true;
             stopButton.style.opacity = '0.2';
             stopButton.style.cursor = 'not-allowed';
-            
+
             let count = 3;
             countdownElement.textContent = count;
             countdownElement.style.fontSize = '120px';
-            
+
             const launchInterval = setInterval(() => {
                 count--;
                 if (count > 0) {
@@ -2318,24 +2764,24 @@
             stopButton.style.opacity = '';
             stopButton.style.cursor = 'pointer';
             stopButton.textContent = 'STOP';
-            
+
             const pauseButton = document.getElementById('pauseButton');
             pauseButton.classList.add('visible');
             pauseButton.innerHTML = '<img src="assets/pause.svg" alt="Pause">';
             pauseButton.disabled = false;
-            
+
             startTime = Date.now();
             timerInterval = setInterval(updateTimer, 10);
         }
 
         function restartGame() {
             debugLog('Game restarted', 'state');
-            
+
             // Transition en fondue
             countdownElement.classList.add('fade-transition');
             overtimeElement.classList.add('fade-transition');
             totalTimeElement.classList.add('fade-transition');
-            
+
             // Retirer le mode blink si actif
             document.body.classList.remove('blink-mode');
             countdownElement.classList.remove('blink-mode');
@@ -2348,7 +2794,7 @@
                 const gradients = wavesContainer.querySelectorAll('.gradient');
                 gradients.forEach(g => g.classList.remove('blink-mode'));
             }
-            
+
             setTimeout(() => {
                 // Réinitialiser toutes les variables
                 isRunning = false;
@@ -2357,7 +2803,7 @@
                 isPaused = false;
                 pausedTime = 0;
                 lastSecond = CONFIG.countdownDuration;
-                
+
                 // Réinitialiser l'affichage
                 document.body.classList.remove('game-over');
                 borderSvg.classList.remove('hidden', 'fade-out');
@@ -2368,16 +2814,16 @@
                 totalTimeElement.classList.remove('fade-transition');
                 millisecondsElement.classList.add('hidden');
                 countdownElement.textContent = '';
-                
+
                 // Réinitialiser les boutons
                 stopButton.textContent = 'LANCER';
                 stopButton.style.opacity = '';
                 stopButton.style.cursor = 'pointer';
-            
+
                 const pauseButton = document.getElementById('pauseButton');
                 pauseButton.classList.remove('visible');
                 pauseButton.disabled = true;
-                
+
                 // Réinitialiser la bordure
                 borderRect.setAttribute('stroke', 'url(#gradientNormal)');
                 borderBackground.setAttribute('stroke', 'url(#gradientNormal)');
@@ -2417,7 +2863,7 @@
             gain1.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.15);
             osc1.start(audioContext.currentTime);
             osc1.stop(audioContext.currentTime + 0.15);
-            
+
             // Deuxième bip plus aigu
             const osc2 = audioContext.createOscillator();
             const gain2 = audioContext.createGain();
@@ -2452,7 +2898,7 @@
         function playFinalBeep() {
             debugLog('Playing final beep at 0 seconds', 'error');
             // Son caractéristique à 0 seconde : "DING" descendant avec résonance
-            
+
             // Premier "DING" fort et aigu
             const osc1 = audioContext.createOscillator();
             const gain1 = audioContext.createGain();
@@ -2464,7 +2910,7 @@
             gain1.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.4);
             osc1.start(audioContext.currentTime);
             osc1.stop(audioContext.currentTime + 0.4);
-            
+
             // Harmonique pour enrichir le son
             const osc2 = audioContext.createOscillator();
             const gain2 = audioContext.createGain();
@@ -2476,7 +2922,7 @@
             gain2.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
             osc2.start(audioContext.currentTime);
             osc2.stop(audioContext.currentTime + 0.3);
-            
+
             // Note grave de fin qui descend (effet "tombé")
             const osc3 = audioContext.createOscillator();
             const gain3 = audioContext.createGain();
@@ -2503,7 +2949,7 @@
             gain1.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.15);
             osc1.start(audioContext.currentTime);
             osc1.stop(audioContext.currentTime + 0.15);
-            
+
             const osc2 = audioContext.createOscillator();
             const gain2 = audioContext.createGain();
             osc2.connect(gain2);
@@ -2528,7 +2974,7 @@
             gain1.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.12);
             osc1.start(audioContext.currentTime);
             osc1.stop(audioContext.currentTime + 0.12);
-            
+
             const osc2 = audioContext.createOscillator();
             const gain2 = audioContext.createGain();
             osc2.connect(gain2);
@@ -2553,7 +2999,7 @@
             gain1.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.2);
             osc1.start(audioContext.currentTime);
             osc1.stop(audioContext.currentTime + 0.2);
-            
+
             const osc2 = audioContext.createOscillator();
             const gain2 = audioContext.createGain();
             osc2.connect(gain2);
@@ -2564,7 +3010,7 @@
             gain2.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.35);
             osc2.start(audioContext.currentTime + 0.15);
             osc2.stop(audioContext.currentTime + 0.35);
-            
+
             const osc3 = audioContext.createOscillator();
             const gain3 = audioContext.createGain();
             osc3.connect(gain3);
@@ -2588,9 +3034,9 @@
             // En overtime, remettre la bordure complète
             const dashOffset = state === 'overtime' ? 0 : rectPerimeter * (1 - percentage / 100);
             borderRect.style.strokeDashoffset = dashOffset;
-            
+
             debugLog(`Border update: ${state}`, 'info', { percentage: percentage.toFixed(2), dashOffset });
-            
+
             // Changer le gradient selon l'état (pour les deux bordures)
             if (state === 'overtime') {
                 borderRect.setAttribute('stroke', 'url(#gradientOvertime)');
@@ -2625,7 +3071,7 @@
                 // Afficher au minimum 1 tant qu'on n'est pas en overtime (ou 0 en mode waiting screen)
                 const displayValue = isWaitingScreenMode ? Math.max(0, Math.ceil(remaining)) : Math.max(1, Math.ceil(remaining));
                 const percentage = (remaining / countdownDuration) * 100;
-                
+
                 if (isWaitingScreenMode) {
                     // Mode waiting screen: affichage minutes:secondes sans millisecondes
                     const totalSecondsRemaining = Math.floor(remaining);
@@ -2633,11 +3079,11 @@
                     const seconds = totalSecondsRemaining % 60;
                     countdownElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
                     millisecondsElement.classList.add('hidden');
-                    
+
                     // Gestion du warning et danger
                     const dangerThreshold = CONFIG.dangerThreshold || 5;
                     const warningThreshold = CONFIG.warningThreshold || 10;
-                    
+
                     if (totalSecondsRemaining !== lastSecond) {
                         if (totalSecondsRemaining === warningThreshold) {
                             playTenSecondBeep();
@@ -2648,7 +3094,7 @@
                         }
                         lastSecond = totalSecondsRemaining;
                     }
-                    
+
                     // Mettre à jour les bordures et couleurs
                     if (totalSecondsRemaining <= dangerThreshold && totalSecondsRemaining > 0) {
                         countdownElement.className = 'countdown danger';
@@ -2660,19 +3106,19 @@
                         countdownElement.className = 'countdown';
                         updateBorders(percentage, '');
                     }
-                    
+
                     // À 0, activer le clignotement
                     if (totalSecondsRemaining === 0 && lastSecond !== 0) {
                         debugLog('Waiting screen reached 0 - activating blink mode', 'warning');
                         playFinalBeep();
                         countdownElement.classList.add('blink-mode');
-                        
+
                         // Faire clignoter la bordure
                         const borderRect = document.getElementById('borderRect');
                         if (borderRect) {
                             borderRect.classList.add('blink-mode');
                         }
-                        
+
                         // Faire clignoter les gradients
                         const wavesContainer = document.getElementById('wavesContainer');
                         if (wavesContainer) {
@@ -2681,7 +3127,7 @@
                         }
                         lastSecond = 0;
                     }
-                    
+
                     // Pas d'overtime en mode waiting screen
                     overtimeElement.classList.add('hidden');
                     totalTimeElement.classList.add('hidden');
@@ -2691,65 +3137,65 @@
                     const milliseconds = Math.floor((remaining - Math.floor(remaining)) * 1000);
                     millisecondsElement.textContent = `.${String(milliseconds).padStart(3, '0')}`;
                     millisecondsElement.classList.remove('hidden');
-                    
+
                     // Formatter l'affichage : si > 60 secondes, afficher en "X:XX"
                     if (displayValue > 60) {
                         const minutes = Math.floor(displayValue / 60);
                         const seconds = displayValue % 60;
                         countdownElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
                     } else {
-                    countdownElement.textContent = displayValue;
-                }
-                
-                const dangerThreshold = CONFIG.dangerThreshold || 5;
-                const warningThreshold = CONFIG.warningThreshold || 10;
-                
-                if (displayValue !== lastSecond) {
-                    if (displayValue === warningThreshold) {
-                        // Son spécial au seuil warning
-                        playTenSecondBeep();
-                    } else if (displayValue === dangerThreshold) {
-                        // Son spécial au seuil danger
-                        playFiveSecondBeep();
-                    } else if (displayValue > 0) {
-                        // Bip discret pour toutes les autres secondes
-                        playBeep(550, 120);
-                    } else if (displayValue === 0) {
-                        // Gong pour la fin
-                        playFinalBeep();
+                        countdownElement.textContent = displayValue;
                     }
-                    lastSecond = displayValue;
-                }
-                
-                // Mettre à jour les bordures et couleurs
-                if (displayValue <= dangerThreshold) {
-                    countdownElement.className = 'countdown danger';
-                    updateBorders(percentage, 'danger');
-                } else if (displayValue <= warningThreshold) {
-                    countdownElement.className = 'countdown warning';
-                    updateBorders(percentage, 'warning');
-                } else {
-                    countdownElement.className = 'countdown';
-                    updateBorders(percentage, '');
-                }
 
-                overtimeElement.classList.add('hidden');
-                totalTimeElement.classList.add('hidden');
+                    const dangerThreshold = CONFIG.dangerThreshold || 5;
+                    const warningThreshold = CONFIG.warningThreshold || 10;
+
+                    if (displayValue !== lastSecond) {
+                        if (displayValue === warningThreshold) {
+                            // Son spécial au seuil warning
+                            playTenSecondBeep();
+                        } else if (displayValue === dangerThreshold) {
+                            // Son spécial au seuil danger
+                            playFiveSecondBeep();
+                        } else if (displayValue > 0) {
+                            // Bip discret pour toutes les autres secondes
+                            playBeep(550, 120);
+                        } else if (displayValue === 0) {
+                            // Gong pour la fin
+                            playFinalBeep();
+                        }
+                        lastSecond = displayValue;
+                    }
+
+                    // Mettre à jour les bordures et couleurs
+                    if (displayValue <= dangerThreshold) {
+                        countdownElement.className = 'countdown danger';
+                        updateBorders(percentage, 'danger');
+                    } else if (displayValue <= warningThreshold) {
+                        countdownElement.className = 'countdown warning';
+                        updateBorders(percentage, 'warning');
+                    } else {
+                        countdownElement.className = 'countdown';
+                        updateBorders(percentage, '');
+                    }
+
+                    overtimeElement.classList.add('hidden');
+                    totalTimeElement.classList.add('hidden');
                 }
             } else if (!isWaitingScreenMode) {
                 // Overtime uniquement en mode normal
                 const overtimeSeconds = totalSeconds - CONFIG.countdownDuration;
-                
+
                 if (Math.floor(overtimeSeconds) === 0 && lastSecond !== -999) {
                     debugLog('Entering OVERTIME', 'error', { overtimeSeconds });
                     // Jouer le son de fin à 0 seconde
                     playFinalBeep();
                     lastSecond = -999;
                 }
-                
+
                 // Bordures clignotantes en rouge
                 updateBorders(0, 'overtime');
-                
+
                 countdownElement.classList.add('hidden');
                 millisecondsElement.classList.add('hidden');
                 overtimeElement.classList.remove('hidden');
@@ -2760,7 +3206,7 @@
                 } else {
                     overtimeElement.textContent = `+${overtimeSecs}`;
                 }
-                
+
                 totalTimeElement.classList.add('hidden');
             }
         }
@@ -2768,7 +3214,7 @@
         function formatTotalTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             const secs = Math.floor(seconds % 60);
-            
+
             let result = '';
             if (minutes > 0) {
                 result += `${minutes}min `;
@@ -2776,35 +3222,35 @@
             if (secs > 0 || minutes === 0) {
                 result += `${secs}sec`;
             }
-            
+
             return result.trim();
         }
 
         function stopGame() {
             if (isStopped) return;
-            
+
             debugLog('Game stopped', 'warning');
             playStopSound();
             isStopped = true;
             isRunning = false;
             clearInterval(timerInterval);
-            
+
             const elapsed = Date.now() - startTime;
             const totalSeconds = elapsed / 1000;
-            
+
             debugLog('Stop time', 'info', { totalSeconds: totalSeconds.toFixed(2), countdownDuration: CONFIG.countdownDuration });
-            
+
             const isWaitingScreenMode = typeof CONFIG !== 'undefined' && CONFIG.waitingScreenMode;
-            
+
             document.body.classList.add('game-over');
-            
+
             // Diminuer l'opacité de la bordure progressivement
             borderSvg.classList.add('fade-out');
-            
+
             const countdownDuration = typeof CONFIG !== 'undefined' ? CONFIG.countdownDuration : 60;
             if (totalSeconds < countdownDuration) {
                 const remaining = countdownDuration - totalSeconds;
-                
+
                 if (isWaitingScreenMode) {
                     // En mode waiting screen, afficher en format minutes:secondes
                     const totalSecondsRemaining = Math.ceil(remaining);
@@ -2814,7 +3260,7 @@
                 } else {
                     countdownElement.textContent = Math.ceil(remaining);
                 }
-                
+
                 countdownElement.classList.remove('warning', 'danger', 'hidden');
                 countdownElement.classList.add('countdown');
                 overtimeElement.classList.add('hidden');
@@ -2841,19 +3287,19 @@
                         overtimeElement.textContent = `+${overtimeSecs}`;
                     }
                     totalTimeElement.classList.add('hidden');
-                    
+
                     // Arrêter le clignotement et mettre l'opacité à 100%
                     borderRect.classList.remove('overtime');
                     borderSvg.classList.remove('fade-out');
                     borderSvg.style.opacity = '1';
-                    
+
                     debugLog('Stopped in overtime', 'warning', { overtime: overtimeSeconds.toFixed(2) });
                 }
             }
-            
+
             stopButton.textContent = 'RELANCER';
             stopButton.style.cursor = 'pointer';
-            
+
             // Cacher le bouton pause
             const pauseButton = document.getElementById('pauseButton');
             pauseButton.classList.remove('visible');
@@ -2865,7 +3311,36 @@
                 audioContext.resume();
             }
         }, { once: true });
-        
+
+        // Surveiller les changements d'URL pour détecter les modifications du configFile
+        let currentConfigFile = new URLSearchParams(window.location.search).get('configFile') || 'config.js';
+
+        // Vérifier périodiquement si l'URL a changé (utile si l'utilisateur modifie l'URL manuellement)
+        setInterval(() => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const newConfigFile = urlParams.get('configFile') || 'config.js';
+
+            if (newConfigFile !== currentConfigFile) {
+                currentConfigFile = newConfigFile;
+                debugLog('Config file changed in URL, reloading...', 'warning', { newConfigFile });
+
+                // Recharger la page avec le nouveau configFile
+                window.location.reload();
+            }
+        }, 500);
+
+        // Écouter les événements de navigation (bouton retour/avant du navigateur)
+        window.addEventListener('popstate', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const newConfigFile = urlParams.get('configFile') || 'config.js';
+
+            if (newConfigFile !== currentConfigFile) {
+                debugLog('Config file changed via navigation, reloading...', 'warning', { newConfigFile });
+                window.location.reload();
+            }
+        });
+
     </script>
 </body>
+
 </html>

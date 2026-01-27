@@ -3,7 +3,7 @@
 const firebaseConfig = {
     apiKey: "AIzaSyAmUKH0t6EFIbzLAXax6FUFzmipci2_hVw",
     authDomain: "secondes-9c7df.firebaseapp.com",
-    databaseURL: "https://secondes-9c7df-default-rtdb.firebaseio.com",
+    databaseURL: "https://secondes-9c7df-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "secondes-9c7df",
     storageBucket: "secondes-9c7df.firebasestorage.app",
     messagingSenderId: "51241088767",

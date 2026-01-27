@@ -58,6 +58,28 @@
             box-sizing: border-box;
         }
 
+        /* Image de fond pour la zone 16:9 */
+        .ratio-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('assets/Fond.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .ratio-wrapper.show-background::before {
+            opacity: 1;
+        }
+
         /* Bordure SVG progressive */
         .progress-border-svg {
             position: absolute;
@@ -83,6 +105,10 @@
 
         .progress-border-svg rect.overtime {
             animation: borderFade 0.6s ease-in-out infinite !important;
+        }
+
+        .progress-border-svg {
+            opacity: 1 !important;
         }
 
         .progress-border-svg.fade-out {
@@ -143,6 +169,11 @@
         .gradient {
             --size: 300px;
             --speed: 28s;
+            --start-x: 0vw;
+            --start-y: 0vh;
+            --end-x: 0vw;
+            --end-y: 0vh;
+            --rotation: 0deg;
             position: absolute;
             top: 50%;
             left: 50%;
@@ -152,7 +183,7 @@
             margin-top: calc(var(--size) / -2);
             filter: blur(15px);
             background-image: linear-gradient(45deg, hsl(270, 80%, 50%), hsl(290, 70%, 60%));
-            animation: rotate1 var(--speed) ease-in-out infinite;
+            animation: randomFloat var(--speed) ease-in-out infinite;
             border-radius: 50%;
             opacity: 0.12;
             will-change: transform;
@@ -164,62 +195,26 @@
         .gradient:nth-child(2) {
             --size: 280px;
             --speed: 35s;
-            animation: rotate2 var(--speed) ease-in-out infinite;
-            animation-delay: -10s;
             background-image: linear-gradient(135deg, hsl(280, 75%, 55%), hsl(260, 85%, 45%));
         }
 
         .gradient:nth-child(3) {
             --size: 320px;
             --speed: 32s;
-            animation: rotate3 var(--speed) ease-in-out infinite;
-            animation-delay: -18s;
             background-image: linear-gradient(225deg, hsl(275, 70%, 50%), hsl(285, 75%, 60%));
         }
 
-        @keyframes rotate1 {
+        @keyframes randomFloat {
             0% {
-                transform: translate(-30vw, -15vh) rotate(0deg) translateZ(0);
+                transform: translate(var(--start-x), var(--start-y)) rotate(0deg) translateZ(0);
             }
 
             50% {
-                transform: translate(30vw, 15vh) rotate(180deg) translateZ(0);
+                transform: translate(var(--end-x), var(--end-y)) rotate(calc(var(--rotation) + 180deg)) translateZ(0);
             }
 
             100% {
-                transform: translate(-30vw, -15vh) rotate(360deg) translateZ(0);
-            }
-        }
-
-        @keyframes rotate2 {
-            0% {
-                transform: translate(25vw, 12vh) rotate(0deg) translateZ(0);
-            }
-
-            50% {
-                transform: translate(-25vw, -12vh) rotate(180deg) translateZ(0);
-            }
-
-            100% {
-                transform: translate(25vw, 12vh) rotate(360deg) translateZ(0);
-            }
-        }
-
-        @keyframes rotate3 {
-            0% {
-                transform: translate(0, -20vh) rotate(0deg) translateZ(0);
-            }
-
-            33% {
-                transform: translate(-20vw, 10vh) rotate(120deg) translateZ(0);
-            }
-
-            66% {
-                transform: translate(20vw, 10vh) rotate(240deg) translateZ(0);
-            }
-
-            100% {
-                transform: translate(0, -20vh) rotate(360deg) translateZ(0);
+                transform: translate(var(--start-x), var(--start-y)) rotate(calc(var(--rotation) + 360deg)) translateZ(0);
             }
         }
 
@@ -322,7 +317,17 @@
         }
 
         .hidden {
-            display: none;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+        }
+
+        .visible {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transition: opacity 0.3s ease, visibility 0s linear 0s;
         }
 
         /* Indicateur de connexion */
@@ -460,14 +465,12 @@
             </div>
 
             <div class="container">
-                <div class="countdown"
+                <div class="countdown hidden"
                      id="countdown">
                     60
                     <span class="milliseconds hidden"
                           id="milliseconds">.000</span>
                 </div>
-                <div class="overtime hidden"
-                     id="overtime">+0</div>
             </div>
         </div>
     </div>
@@ -482,7 +485,6 @@
         // Éléments du DOM
         const countdownElement = document.getElementById('countdown');
         const millisecondsElement = document.getElementById('milliseconds');
-        const overtimeElement = document.getElementById('overtime');
         const borderSvg = document.getElementById('borderSvg');
         const borderRect = document.getElementById('borderRect');
         const connectionStatus = document.getElementById('connectionStatus');
@@ -502,13 +504,80 @@
             countdownDuration: CONFIG.countdownDuration || 60,
             warningThreshold: CONFIG.warningThreshold || 10,
             dangerThreshold: CONFIG.dangerThreshold || 5,
-            waitingScreenMode: CONFIG.waitingScreenMode || false
+            waitingScreenMode: CONFIG.waitingScreenMode || false,
+            showBackgroundImage: CONFIG.showBackgroundImage !== undefined ? CONFIG.showBackgroundImage : true,
+            numberOfGradients: CONFIG.numberOfGradients !== undefined ? CONFIG.numberOfGradients : 5,
+            gradientSpeed: CONFIG.gradientSpeed || 30,
+            gradientSize: CONFIG.gradientSize || 300,
+            gradientOpacity: CONFIG.gradientOpacity !== undefined ? CONFIG.gradientOpacity : 0.12
         };
+
+        // Fonction pour appliquer les paramètres visuels
+        function applyVisualConfig() {
+            // Appliquer l'image de fond sur la zone 16:9
+            const ratioWrapper = document.querySelector('.ratio-wrapper');
+            if (currentConfig.showBackgroundImage) {
+                ratioWrapper.classList.add('show-background');
+            } else {
+                ratioWrapper.classList.remove('show-background');
+            }
+
+            // Appliquer les lueurs
+            const wavesContainer = document.getElementById('wavesContainer');
+            const existingGradients = wavesContainer.querySelectorAll('.gradient');
+
+            // Ajuster le nombre de gradients
+            const currentCount = existingGradients.length;
+            const targetCount = currentConfig.numberOfGradients;
+
+            if (currentCount < targetCount) {
+                // Ajouter des gradients
+                for (let i = currentCount; i < targetCount; i++) {
+                    const gradient = document.createElement('div');
+                    gradient.className = 'gradient';
+                    wavesContainer.appendChild(gradient);
+                }
+            } else if (currentCount > targetCount) {
+                // Retirer des gradients en trop
+                for (let i = currentCount - 1; i >= targetCount; i--) {
+                    existingGradients[i].remove();
+                }
+            }
+
+            // Appliquer les propriétés CSS à tous les gradients avec positions aléatoires
+            const allGradients = wavesContainer.querySelectorAll('.gradient');
+            allGradients.forEach((gradient, index) => {
+                gradient.style.setProperty('--size', currentConfig.gradientSize + 'px');
+                gradient.style.setProperty('--speed', currentConfig.gradientSpeed + 's');
+                gradient.style.opacity = currentConfig.gradientOpacity;
+
+                // Positions aléatoires pour l'animation
+                const startX = (Math.random() - 0.5) * 60; // -30vw à +30vw
+                const startY = (Math.random() - 0.5) * 40; // -20vh à +20vh
+                const endX = (Math.random() - 0.5) * 60;
+                const endY = (Math.random() - 0.5) * 40;
+                const rotation = Math.random() * 360;
+                const delay = -Math.random() * currentConfig.gradientSpeed;
+
+                gradient.style.setProperty('--start-x', startX + 'vw');
+                gradient.style.setProperty('--start-y', startY + 'vh');
+                gradient.style.setProperty('--end-x', endX + 'vw');
+                gradient.style.setProperty('--end-y', endY + 'vh');
+                gradient.style.setProperty('--rotation', rotation + 'deg');
+                gradient.style.animationDelay = delay + 's';
+            });
+        }
+
+        // Appliquer la configuration initiale
+        applyVisualConfig();
 
         // Calculer le périmètre du rectangle pour stroke-dasharray
         const rectPerimeter = 2 * (996 + 558.5);
         borderRect.style.strokeDasharray = rectPerimeter;
         borderRect.style.strokeDashoffset = 0;
+
+        // S'assurer que la bordure est visible au démarrage
+        borderSvg.classList.remove('fade-out');
 
         // Surveiller la connexion Firebase
         const connectedRef = database.ref('.info/connected');
@@ -516,9 +585,15 @@
             if (snap.val() === true) {
                 connectionStatus.className = 'connection-status connected';
                 connectionStatus.querySelector('span').textContent = 'Connecté';
+
+                // Masquer après 2 secondes
+                setTimeout(() => {
+                    connectionStatus.style.display = 'none';
+                }, 2000);
             } else {
                 connectionStatus.className = 'connection-status disconnected';
                 connectionStatus.querySelector('span').textContent = 'Déconnecté';
+                connectionStatus.style.display = 'flex';
             }
         });
 
@@ -531,8 +606,16 @@
                     countdownDuration: config.countdownDuration || 60,
                     warningThreshold: config.warningThreshold || 10,
                     dangerThreshold: config.dangerThreshold || 5,
-                    waitingScreenMode: config.waitingScreenMode || false
+                    waitingScreenMode: config.waitingScreenMode || false,
+                    showBackgroundImage: config.showBackgroundImage !== undefined ? config.showBackgroundImage : true,
+                    numberOfGradients: config.numberOfGradients !== undefined ? config.numberOfGradients : 5,
+                    gradientSpeed: config.gradientSpeed || 30,
+                    gradientSize: config.gradientSize || 300,
+                    gradientOpacity: config.gradientOpacity !== undefined ? config.gradientOpacity : 0.12
                 };
+
+                // Appliquer les paramètres visuels
+                applyVisualConfig();
 
                 // Si le timer est arrêté, mettre à jour l'affichage
                 if (isStopped) {
@@ -553,6 +636,27 @@
             if (!data) return;
 
             console.log('Firebase update:', data);
+
+            // Restaurer l'état après F5
+            if (data.isRunning && !isRunning && data.startTime) {
+                console.log('Restoring game state after reload');
+                isRunning = true;
+                isStopped = false;
+                isPaused = data.isPaused || false;
+                startTime = data.startTime;
+                totalPausedTime = data.totalPausedTime || 0;
+                if (data.isPaused && data.pauseTime) {
+                    pauseTime = data.pauseTime;
+                }
+
+                document.body.classList.remove('game-over');
+                borderSvg.classList.remove('fade-out');
+                countdownElement.classList.remove('hidden');
+                countdownElement.classList.add('visible');
+
+                if (timerInterval) clearInterval(timerInterval);
+                timerInterval = setInterval(updateTimer, 16);
+            }
 
             if (data.command === 'start' && !isRunning) {
                 startGame();
@@ -578,8 +682,9 @@
 
             document.body.classList.remove('game-over');
             borderSvg.classList.remove('fade-out');
-            countdownElement.classList.remove('hidden', 'blink-mode');
-            overtimeElement.classList.add('hidden');
+            countdownElement.classList.remove('hidden');
+            countdownElement.classList.add('visible');
+            countdownElement.classList.remove('blink-mode');
 
             if (timerInterval) clearInterval(timerInterval);
             timerInterval = setInterval(updateTimer, 16);
@@ -589,132 +694,135 @@
             console.log('Pausing game');
             isPaused = true;
             pauseTime = Date.now();
-            if (currentConfig.waitingScreenMode) {
-                const minutes = Math.floor(currentConfig.countdownDuration / 60);
-                const seconds = currentConfig.countdownDuration % 60;
-                countdownElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
-            } else {
-                countdownElement.textContent = currentConfig.countdownDuration;
-                isRunning = false;
-                isPaused = false;
-                clearInterval(timerInterval);
+        }
 
-                document.body.classList.add('game-over');
-                borderSvg.classList.add('fade-out');
-            }
+        function resumeGame() {
+            console.log('Resuming game');
+            isPaused = false;
+            const pauseDuration = Date.now() - pauseTime;
+            totalPausedTime += pauseDuration;
+        }
 
-            function resetGame() {
-                console.log('Resetting game');
-                stopGame();
+        function stopGame() {
+            console.log('Stopping game');
+            isRunning = false;
+            isPaused = false;
+            isStopped = true;
+            clearInterval(timerInterval);
 
-                const countdownDuration = CONFIG.countdownDuration || 60;
-                const isWaitingScreenMode = CONFIG.waitingScreenMode || false;
+            document.body.classList.add('game-over');
+            borderSvg.classList.add('fade-out');
+        }
 
-                if (isWaitingScreenMode) {
-                    const minutes = Math.floor(countdownDuration / 60);
-                    const seconds = countdownDuration % 60;
-                    countdownElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
-                } else {
-                    countdownElement.textContent = countdownDuration;
-                }
+        function resetGame() {
+            console.log('Resetting game');
+            stopGame();
 
-                countdownElement.className = 'countdown';
-                countdownElement.classList.remove('blink-mode');
-                millisecondsElement.classList.add('hidden');
-                overtimeElement.classList.add('hidden');
+            // Masquer le compteur avec opacity
+            millisecondsElement.classList.remove('visible');
+            millisecondsElement.classList.add('hidden');
+            countdownElement.classList.remove('visible');
+            countdownElement.classList.add('hidden');
 
+            countdownElement.className = 'countdown hidden';
+            countdownElement.classList.remove('blink-mode');
+
+            borderRect.classList.remove('overtime');
+            borderSvg.classList.add('fade-out');
+            borderRect.setAttribute('stroke', 'url(#gradientNormal)');
+            borderRect.style.strokeDashoffset = 0;
+
+            document.body.classList.remove('game-over');
+        }
+
+        function updateBorders(percentage, state) {
+            const dashOffset = state === 'overtime' ? 0 : rectPerimeter * (1 - percentage / 100);
+            borderRect.style.strokeDashoffset = dashOffset;
+
+            if (state === 'overtime') {
+                borderRect.setAttribute('stroke', 'url(#gradientOvertime)');
+                borderRect.classList.add('overtime');
+            } else if (state === 'danger') {
+                borderRect.setAttribute('stroke', 'url(#gradientDanger)');
                 borderRect.classList.remove('overtime');
-                borderSvg.classList.remove('fade-out');
+            } else if (state === 'warning') {
+                borderRect.setAttribute('stroke', 'url(#gradientWarning)');
+                borderRect.classList.remove('overtime');
+            } else {
                 borderRect.setAttribute('stroke', 'url(#gradientNormal)');
-                borderRect.style.strokeDashoffset = 0;
-
-                document.body.classList.remove('game-over');
+                borderRect.classList.remove('overtime');
             }
+        }
 
-            function updateBorders(percentage, state) {
-                const dashOffset = state === 'overtime' ? 0 : rectPerimeter * (1 - percentage / 100);
-                borderRect.style.strokeDashoffset = dashOffset;
+        function updateTimer() {
+            if (!isRunning || isPaused) return;
 
-                if (state === 'overtime') {
-                    borderRect.setAttribute('stroke', 'url(#gradientOvertime)');
+            const now = Date.now();
+            const elapsed = now - startTime - totalPausedTime;
+            const totalSeconds = elapsed / 1000;
 
-                    if (totalSeconds < currentConfig.countdownDuration) {
-                        const remaining = currentConfig.countdownDuration - totalSeconds;
-                        const displayValue = currentConfig.waitingScreenMode ? Math.max(0, Math.ceil(remaining)) : Math.max(1, Math.ceil(remaining));
-                        const percentage = (remaining / currentConfig.countdownDuration) * 100;
+            if (totalSeconds < currentConfig.countdownDuration) {
+                const remaining = currentConfig.countdownDuration - totalSeconds;
+                const displayValue = currentConfig.waitingScreenMode ? Math.max(0, Math.ceil(remaining)) : Math.max(1, Math.ceil(remaining));
+                const percentage = (remaining / currentConfig.countdownDuration) * 100;
 
-                        if (currentConfig.waitingScreenMode) {
-                            const totalSecondsRemaining = Math.floor(remaining);
-                            const minutes = Math.floor(totalSecondsRemaining / 60);
-                            const seconds = totalSecondsRemaining % 60;
-                            countdownElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
-                            millisecondsElement.classList.add('hidden');
+                if (currentConfig.waitingScreenMode) {
+                    const totalSecondsRemaining = Math.floor(remaining);
+                    const minutes = Math.floor(totalSecondsRemaining / 60);
+                    const seconds = totalSecondsRemaining % 60;
+                    countdownElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+                    millisecondsElement.classList.add('hidden');
+                    millisecondsElement.classList.remove('visible');
 
-                            if (totalSecondsRemaining <= currentConfig.dangerThreshold && totalSecondsRemaining > 0) {
-                                countdownElement.className = 'countdown danger';
-                                updateBorders(percentage, 'danger');
-                            } else if (totalSecondsRemaining <= currentConfig.warningThreshold && totalSecondsRemaining > 0) {
-                                countdownElement.className = 'countdown warning';
-                                updateBorders(percentage, 'warning');
-                            } else if (totalSecondsRemaining > 0) {
-                                countdownElement.className = 'countdown';
-                                updateBorders(percentage, '');
-                            }
-
-                            if (totalSecondsRemaining === 0 && lastSecond !== 0) {
-                                countdownElement.classList.add('blink-mode');
-                                borderRect.classList.add('blink-mode');
-                                const wavesContainer = document.getElementById('wavesContainer');
-                                if (wavesContainer) {
-                                    wavesContainer.querySelectorAll('.gradient').forEach(g => g.classList.add('blink-mode'));
-                                }
-                                lastSecond = 0;
-                            }
-
-                            overtimeElement.classList.add('hidden');
-                        } else {
-                            const milliseconds = Math.floor((remaining - Math.floor(remaining)) * 1000);
-                            millisecondsElement.textContent = `.${String(milliseconds).padStart(3, '0')}`;
-                            millisecondsElement.classList.remove('hidden');
-
-                            if (displayValue > 60) {
-                                const minutes = Math.floor(displayValue / 60);
-                                const seconds = displayValue % 60;
-                                countdownElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
-                            } else {
-                                countdownElement.textContent = displayValue;
-                            }
-
-                            lastSecond = displayValue;
-
-                            if (displayValue <= currentConfig.dangerThreshold) {
-                                countdownElement.className = 'countdown danger';
-                                updateBorders(percentage, 'danger');
-                            } else if (displayValue <= currentConfig.warningThreshold) {
-                                countdownElement.className = 'countdown warning';
-                                updateBorders(percentage, 'warning');
-                            } else {
-                                countdownElement.className = 'countdown';
-                                updateBorders(percentage, '');
-                            }
-
-                            overtimeElement.classList.add('hidden');
-                        }
-                    } else if (!currentConfig.waitingScreenMode) {
-                        const overtimeSeconds = totalSeconds - currentConfig.countdownDuration; countdownElement.className = 'countdown danger';
+                    if (totalSecondsRemaining <= currentConfig.dangerThreshold && totalSecondsRemaining > 0) {
+                        countdownElement.className = 'countdown danger';
                         updateBorders(percentage, 'danger');
-                    } else if (displayValue <= warningThreshold) {
+                    } else if (totalSecondsRemaining <= currentConfig.warningThreshold && totalSecondsRemaining > 0) {
+                        countdownElement.className = 'countdown warning';
+                        updateBorders(percentage, 'warning');
+                    } else if (totalSecondsRemaining > 0) {
+                        countdownElement.className = 'countdown';
+                        updateBorders(percentage, '');
+                    }
+
+                    if (totalSecondsRemaining === 0 && lastSecond !== 0) {
+                        countdownElement.classList.add('blink-mode');
+                        borderRect.classList.add('blink-mode');
+                        const wavesContainer = document.getElementById('wavesContainer');
+                        if (wavesContainer) {
+                            wavesContainer.querySelectorAll('.gradient').forEach(g => g.classList.add('blink-mode'));
+                        }
+                        lastSecond = 0;
+                    }
+                } else {
+                    const milliseconds = Math.floor((remaining - Math.floor(remaining)) * 1000);
+                    millisecondsElement.textContent = `.${String(milliseconds).padStart(3, '0')}`;
+                    millisecondsElement.classList.remove('hidden');
+                    millisecondsElement.classList.add('visible');
+
+                    if (displayValue > 60) {
+                        const minutes = Math.floor(displayValue / 60);
+                        const seconds = displayValue % 60;
+                        countdownElement.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+                    } else {
+                        countdownElement.textContent = displayValue;
+                    }
+
+                    lastSecond = displayValue;
+
+                    if (displayValue <= currentConfig.dangerThreshold) {
+                        countdownElement.className = 'countdown danger';
+                        updateBorders(percentage, 'danger');
+                    } else if (displayValue <= currentConfig.warningThreshold) {
                         countdownElement.className = 'countdown warning';
                         updateBorders(percentage, 'warning');
                     } else {
                         countdownElement.className = 'countdown';
                         updateBorders(percentage, '');
                     }
-
-                    overtimeElement.classList.add('hidden');
                 }
-            } else if (!isWaitingScreenMode) {
-                const overtimeSeconds = totalSeconds - countdownDuration;
+            } else {
+                const overtimeSeconds = totalSeconds - currentConfig.countdownDuration;
 
                 if (Math.floor(overtimeSeconds) === 0 && lastSecond !== -999) {
                     lastSecond = -999;
@@ -722,15 +830,19 @@
 
                 updateBorders(0, 'overtime');
 
-                countdownElement.classList.add('hidden');
+                // Garder le texte au même endroit (dans countdownElement)
+                countdownElement.className = 'countdown danger';
+                countdownElement.classList.remove('hidden');
+                countdownElement.classList.add('visible');
                 millisecondsElement.classList.add('hidden');
-                overtimeElement.classList.remove('hidden');
+                millisecondsElement.classList.remove('visible');
+
                 const overtimeMinutes = Math.floor(overtimeSeconds / 60);
                 const overtimeSecs = Math.floor(overtimeSeconds % 60);
                 if (overtimeMinutes > 0) {
-                    overtimeElement.textContent = `+${overtimeMinutes}min ${overtimeSecs}`;
+                    countdownElement.textContent = `+${overtimeMinutes}min ${overtimeSecs}`;
                 } else {
-                    overtimeElement.textContent = `+${overtimeSecs}`;
+                    countdownElement.textContent = `+${overtimeSecs}`;
                 }
             }
         }
