@@ -81,7 +81,7 @@
             <!-- Message d'erreur (si vidéo ne charge pas) -->
             <div id="errorIndicator"
                  class="error-indicator">
-                <div class="error-icon">⚠️</div>
+                <div class="error-icon"></div>
                 <p class="error-text">Erreur de chargement - Passage à la vidéo suivante...</p>
             </div>
         </section>
@@ -109,7 +109,7 @@
             <!-- Indicateur de pause musicale (quand actif) -->
             <div class="music-indicator"
                  id="musicIndicator">
-                🎵 Pause Musicale
+                Pause Musicale
             </div>
         </div>
 
@@ -119,18 +119,6 @@
     <!-- SCRIPTS JAVASCRIPT                          -->
     <!-- ============================================ -->
 
-    <!-- YouTube IFrame API (optionnel, si activé dans config) -->
-    <script>
-        // Chargement conditionnel de l'API YouTube
-        if (CONFIG.enableYouTube) {
-            const tag = document.createElement('script');
-            tag.src = "https://www.youtube.com/iframe_api";
-            const firstScriptTag = document.getElementsByTagName('script')[0];
-            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        }
-    </script>
-
-    <!-- Logique principale de l'application -->
     <script src="app.js"></script>
 
 </body>

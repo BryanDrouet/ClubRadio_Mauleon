@@ -1130,18 +1130,15 @@ window.addEventListener('beforeunload', () => {
     }
 });
 
-// ============================================================================
-// DÉMARRAGE AUTOMATIQUE
-// ============================================================================
+if (CONFIG.enableYouTube) {
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+}
 
-// Attendre que le DOM soit complètement chargé
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeApp);
 } else {
-    // DOM déjà chargé
     initializeApp();
 }
-
-// ============================================================================
-// FIN DU FICHIER APP.JS
-// ============================================================================

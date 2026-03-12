@@ -1,6 +1,18 @@
 @font-face {
     font-family: 'Monofonto';
     src: url('assets/monofonto-rg.otf') format('opentype');
+    font-display: swap;
+}
+
+:root {
+    color-scheme: dark;
+    --bg-deep: #1a0028;
+    --bg-dark: #2c0e3d;
+    --accent-pink: #e6006f;
+    --accent-pink-hover: #ff4081;
+    --accent-light: #c084fc;
+    --text-primary: #f0e8ff;
+    --text-muted: #c3d2e1;
 }
 
 body {
@@ -12,15 +24,15 @@ body {
     margin: 0;
     font-family: 'Roboto', sans-serif;
     text-align: center;
-    color: white;
+    color: var(--text-primary);
     overflow: hidden;
     position: relative;
-    animation: backgroundAnimation 5s infinite alternate ease-in-out;
+    background-color: var(--bg-deep);
+    animation: backgroundAnimation 10s infinite alternate ease-in-out;
 }
 
-/* Dégradé animé avec vagues fluides */
 .waves-container {
-    z-index: -1000;
+    z-index: -1;
     position: absolute;
     inset: 0;
     display: flex;
@@ -33,12 +45,11 @@ body {
     --size: 750px;
     --speed: 20s;
     --easing: cubic-bezier(0.8, 0.2, 0.2, 0.8);
-
     position: absolute;
     width: var(--size);
     height: var(--size);
-    filter: blur(calc(var(--size) / 10)); /* Réduction du blur */
-    will-change: transform, opacity; /* Optimisation GPU */
+    filter: blur(calc(var(--size) / 10));
+    will-change: transform, opacity;
     backface-visibility: hidden;
     transform-origin: center;
     background-image: linear-gradient(45deg, hsl(270, 80%, 50%), hsl(290, 70%, 60%), hsl(250, 90%, 40%));
@@ -47,7 +58,6 @@ body {
     opacity: 0.6;
     transform: translate3d(0, 0, 0);
 }
-
 
 .gradient:nth-child(2) {
     --size: 600px;
@@ -65,53 +75,28 @@ body {
     opacity: 0.3;
 }
 
-/* Animations */
 @keyframes rotate {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 @keyframes morph {
-    0% {
-        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-    }
-    50% {
-        border-radius: 40% 60% 60% 40% / 40% 40% 60% 60%;
-    }
-    100% {
-        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-    }
+    0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+    50% { border-radius: 40% 60% 60% 40% / 40% 40% 60% 60%; }
+    100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
 }
 
 @keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+    0% { opacity: 0; }
+    100% { opacity: 1; }
 }
 
 @keyframes backgroundAnimation {
-    0% {
-        background-color: #2c003e;
-        opacity: 1;
-    }
-    50% {
-        background-color: #4a0072;
-        opacity: 0.9;
-    }
-    100% {
-        background-color: #2c003e;
-        opacity: 1;
-    }
+    0% { background-color: #1a0028; }
+    50% { background-color: #2c0e3d; }
+    100% { background-color: #1a0028; }
 }
 
-/* Effet de bruit pour texture */
 body::before {
     content: "";
     position: absolute;
@@ -119,22 +104,21 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><filter id="grainy"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#grainy)" opacity="0.15"/></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%25" height="100%25"><filter id="grainy"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23grainy)" opacity="0.15"/></svg>');
     pointer-events: none;
     z-index: -1;
 }
 
-/* Bouton Menu */
 #settingsMenu {
     position: fixed;
     left: -250px;
     height: 100%;
     width: 250px;
-    background: rgba(20, 20, 20, 0.95);
+    background: rgba(20, 0, 35, 0.95);
     padding: 20px;
     transition: left 0.3s ease-in-out, opacity 0.3s ease-in-out;
     opacity: 0;
-    color: white;
+    color: var(--text-primary);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -153,48 +137,36 @@ body::before {
     top: 10px;
     width: 50px;
     height: 50px;
-    background: transparent; /* Initial background transparent */
+    background: transparent;
     border: none;
-    color: white;
-    font-size: 1.5em;
+    color: var(--text-primary);
     cursor: pointer;
     z-index: 1100;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: background-color 0.3s ease, transform 0.3s ease; /* Transition pour background et transform */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    border-radius: 8px;
+}
+
+.menu-toggle svg,
+.full-screen-button svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    stroke: var(--text-primary);
 }
 
 .menu-toggle {
     left: 10px;
 }
 
-.menu-toggle::after {
-    content: '☰';
-    transform: rotate(0);
-    transition: transform 0.3s ease;
-}
-
-.menu-open .menu-toggle::after {
-    content: 'X';
-    transform: rotate(180deg);
-}
-
-/* Survol du menu burger et du bouton plein écran */
-.menu-toggle:hover,
-.full-screen-button:hover {
-    background-color: #ff4081; /* Couleur rose au survol */
-    transform: scale(1.05);
-}
-
-/* Transition du bouton plein écran */
 .full-screen-button {
     right: 10px;
-    transition: transform 0.3s ease, background-color 0.3s ease; /* Transition similaire */
 }
 
+.menu-toggle:hover,
 .full-screen-button:hover {
-    background-color: #ff4081; /* Couleur rose au survol */
+    background-color: var(--accent-pink);
     transform: scale(1.05);
 }
 
@@ -208,12 +180,11 @@ body::before {
     transform: translateX(-50%);
 }
 
-/* Timer */
 #timer {
     font-family: 'Monofonto', monospace;
     font-size: 6em;
     font-weight: normal;
-    color: #ffffff;
+    color: var(--text-primary);
     transition: color 0.5s ease-out;
 }
 
@@ -221,7 +192,6 @@ body::before {
     color: #ffccd5;
 }
 
-/* Boutons */
 .buttons {
     margin-top: 20px;
     display: flex;
@@ -237,43 +207,24 @@ button {
     cursor: pointer;
     flex: 1;
     font-weight: bold;
-    background: #e6006f;
+    background: var(--accent-pink);
     color: white;
     transition: background-color 0.3s, transform 0.2s ease-in-out;
     font-size: 1em;
 }
 
 button:hover {
-    background-color: #ff4081;
+    background-color: var(--accent-pink-hover);
     transform: scale(1.05);
 }
 
-#removeButtons {
-    max-height: 50px;
-    margin-top: 10px;
-    padding: 6px 20px;
-    height: auto;
-    background: #e6006f;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: transform 0.3s ease, background-color 0.3s;
-    width: 100%;
-    font-size: 1em;
-    text-align: center;
-}
-
-#removeButtons:hover {
-    background-color: #ff4081;
-    transform: scale(1.05);
-}
-
+#removeButtons,
 #removeBookmarks {
     max-height: 50px;
     margin-top: 10px;
     padding: 6px 20px;
     height: auto;
-    background: #e6006f;
+    background: var(--accent-pink);
     color: white;
     border-radius: 5px;
     cursor: pointer;
@@ -283,22 +234,12 @@ button:hover {
     text-align: center;
 }
 
+#removeButtons:hover,
 #removeBookmarks:hover {
-    background-color: #ff4081;
+    background-color: var(--accent-pink-hover);
     transform: scale(1.05);
 }
 
-.buttons button:hover {
-    background-color: #ff4081;
-    transform: scale(1.05);
-}
-
-.menu-toggle:hover::after,
-.full-screen-button:hover {
-    color: white;
-}
-
-/* Animation du slide et de l'opacité des boutons */
 #buttonsContainer {
     transition: transform 0.5s ease, opacity 0.5s ease;
 }
@@ -315,15 +256,15 @@ button:hover {
 
 .signet-list {
     margin-top: 20px;
-    color: white;
-    max-height: 300px;  /* Limite la hauteur visible */
-    overflow-y: auto;   /* Permet de défiler */
+    color: var(--text-primary);
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .signet-item {
     justify-content: space-between;
     align-items: center;
-    background-color: #f4f4f421;
+    background-color: rgba(244, 244, 244, 0.13);
     margin: 5px 0;
     padding: 10px;
     border-radius: 5px;
@@ -344,7 +285,7 @@ button:hover {
 
 .signet-item span {
     margin-left: 10px;
-    color: #ff4081;
+    color: var(--accent-pink-hover);
     font-style: italic;
 }
 
@@ -354,10 +295,31 @@ button:hover {
     border: none;
     cursor: pointer;
     transition: transform 0.3s ease;
+    flex: 0;
+    padding: 4px;
+}
+
+.signet-item button svg {
+    width: 1rem;
+    height: 1rem;
+    stroke: var(--text-muted);
 }
 
 .signet-item button:hover {
     transform: scale(1.1);
+    background-color: transparent;
+}
+
+.signet-item button:hover svg {
+    stroke: var(--accent-pink-hover);
+}
+
+.signet-rename-button:hover svg {
+    stroke: var(--accent-light);
+}
+
+.signet-delete-button:hover svg {
+    stroke: var(--accent-pink-hover);
 }
 
 .signet-item.signet-deleted {
@@ -366,7 +328,6 @@ button:hover {
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* Styles pour le bouton signet */
 .signet-button {
     font-size: 1em;
     display: flex;
@@ -374,7 +335,7 @@ button:hover {
     cursor: pointer;
     background: none;
     border: none;
-    color: white;
+    color: var(--text-primary);
 }
 
 .signet-button span {
@@ -382,55 +343,19 @@ button:hover {
 }
 
 .signet-button:hover {
-    background-color: #ff4081;
+    background-color: var(--accent-pink);
     transform: scale(1.05);
 }
 
 #bookmarksContainer {
     position: relative;
-    max-height: 300px;  /* Ajuste la hauteur de ton conteneur */
-    overflow-y: auto;   /* Permet de faire défiler le contenu */
-    scrollbar-width: thin;  /* Masque la barre de défilement pour Firefox */
-    scrollbar-color: transparent transparent;  /* Masque la barre de défilement pour Firefox */
+    max-height: 300px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
 }
 
 #bookmarksContainer::-webkit-scrollbar {
-    width: 0px;  /* Cache la barre de défilement horizontale */
-    height: 0px; /* Cache la barre de défilement verticale */
-}
-
-#bookmarksContainer::-webkit-scrollbar-thumb {
-    background-color: transparent; /* Cache le "pouce" de la barre de défilement */
-}
-
-#bookmarkButton:disabled {
-    background-color: #db5093af;  /* Gris clair */
-    cursor: not-allowed;        /* Souris normale */
-    pointer-events: none;       /* Désactive les événements de clic */
-}
-
-/* Optionnel : désactiver l'effet hover lorsque le bouton est désactivé */
-#bookmarkButton:disabled:hover {
-    background-color: #db5093af;  /* Maintient la couleur grise même en hover */
-}
-
-#resetButton:disabled {
-    background-color: #db5093af;  /* Gris clair */
-    cursor: not-allowed;        /* Souris normale */
-    pointer-events: none;       /* Désactive les événements de clic */
-}
-
-/* Optionnel : désactiver l'effet hover lorsque le bouton est désactivé */
-#resetButton:disabled:hover {
-    background-color: #db5093af;  /* Maintient la couleur grise même en hover */
-}
-
-#bookmarksContainer.overflow::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 50px; /* Ajuste cette valeur pour obtenir l'effet de fondu désiré */
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.26)); /* Dégradé de transparent à blanc */
+    width: 0px;
+    height: 0px;
 }

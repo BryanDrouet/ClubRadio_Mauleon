@@ -61,7 +61,7 @@ body {
 .video-time {
     font-size: 16px;
     font-weight: 500;
-    color: #00d4ff;
+    color: #c084fc;
     font-variant-numeric: tabular-nums;
     margin-right: 20px;
 }
@@ -69,7 +69,7 @@ body {
 .video-remaining {
     font-size: 14px;
     font-weight: 500;
-    color: #ffa500;
+    color: #e6006f;
     font-variant-numeric: tabular-nums;
 }
 
@@ -83,7 +83,7 @@ body {
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #00d4ff 0%, #0096ff 100%);
+    background: linear-gradient(90deg, #9600e1 0%, #c084fc 100%);
     width: 0%;
     transition: width 0.3s ease-out;
     border-radius: 2px;
@@ -196,7 +196,7 @@ body {
     width: 60px;
     height: 60px;
     border: 5px solid rgba(255, 255, 255, 0.2);
-    border-top-color: #00d4ff;
+    border-top-color: #c084fc;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto 20px;
@@ -308,11 +308,11 @@ body {
     left: 20px;
     display: inline-flex;
     align-items: center;
-    background: linear-gradient(135deg, rgba(255, 100, 200, 0.3), rgba(200, 0, 255, 0.2));
+    background: linear-gradient(135deg, rgba(150, 0, 225, 0.3), rgba(230, 0, 111, 0.2));
     padding: 15px 30px;
     border-radius: 12px;
     backdrop-filter: blur(15px);
-    border: 2px solid rgba(255, 100, 200, 0.6);
+    border: 2px solid rgba(150, 0, 225, 0.5);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     font-size: 24px;
     font-weight: 700;
@@ -341,7 +341,7 @@ body {
     }
 
     50% {
-        box-shadow: 0 8px 32px rgba(255, 100, 200, 0.6);
+        box-shadow: 0 8px 32px rgba(150, 0, 225, 0.5);
     }
 }
 
