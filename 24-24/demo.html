@@ -96,10 +96,10 @@
 <body>
     <main class="obs-container">
         <section class="video-container">
-            <!-- Zone de démonstration (remplace la vraie vidéo) -->
+            
             <div class="demo-video"
                  id="demoContent">
-                <div class="demo-logo rotating">🎙️</div>
+                <div class="demo-logo rotating"></div>
                 <h1 class="demo-title">ClubRadio Mauléon</h1>
                 <p class="demo-subtitle">Votre radio associative 24h/24 et 7j/7</p>
                 <div class="demo-info">
@@ -111,18 +111,18 @@
             </div>
 
             <div class="demo-warning">
-                ⚠️ Mode Démonstration - Fichiers média non chargés
+                 Mode Démonstration - Fichiers média non chargés
             </div>
         </section>
 
-        <!-- Bandeau d'informations (fonctionne en mode démo) -->
+        
         <aside class="ticker-bar">
             <div class="ticker-content">
                 <span class="ticker-message"
                       id="tickerMessage">
-                    🎵 Bienvenue sur ClubRadio Mauléon • Votre radio associative • Diffusion 24h/24 et 7j/7 •
+                     Bienvenue sur ClubRadio Mauléon • Votre radio associative • Diffusion 24h/24 et 7j/7 •
                     Mode Démonstration Actif • Ajoutez vos fichiers média pour commencer • ClubRadio c'est votre radio !
-                    🎙️
+                    
                 </span>
             </div>
             <div class="clock">
@@ -130,7 +130,7 @@
             </div>
         </aside>
 
-        <!-- Overlays informatifs -->
+        
         <div class="info-overlay">
             <div class="now-playing visible">
                 <span class="label">Démo:</span>
@@ -147,12 +147,12 @@
 
         // Liste de messages de démo
         const demoMessages = [
-            '🎵 Bienvenue sur ClubRadio Mauléon',
-            '📻 Votre radio associative locale',
-            '🎙️ Diffusion 24h/24 et 7j/7',
-            '🎬 Mode Démonstration - Ajoutez vos médias',
+            ' Bienvenue sur ClubRadio Mauléon',
+            ' Votre radio associative locale',
+            ' Diffusion 24h/24 et 7j/7',
+            ' Mode Démonstration - Ajoutez vos médias',
             '⭐ ClubRadio, c\'est votre radio !',
-            '🎵 Prochainement : Votre contenu personnalisé'
+            ' Prochainement : Votre contenu personnalisé'
         ];
 
         let messageIndex = 0;
@@ -179,25 +179,25 @@
         const demoVariants = [
             {
                 gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                emoji: '🎙️',
+                emoji: '',
                 title: 'ClubRadio Mauléon',
                 subtitle: 'Votre radio associative 24h/24 et 7j/7'
             },
             {
                 gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                emoji: '🎵',
+                emoji: '',
                 title: 'Musique & Culture',
                 subtitle: 'Découvrez nos programmes variés'
             },
             {
                 gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-                emoji: '📻',
+                emoji: '',
                 title: 'Actualités Locales',
                 subtitle: 'Restez connecté à votre territoire'
             },
             {
                 gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-                emoji: '🎬',
+                emoji: '',
                 title: 'Programmes Vidéo',
                 subtitle: 'Interviews, reportages, événements'
             }
@@ -225,7 +225,7 @@
         updateTickerMessage();
 
         // Message de bienvenue dans la console
-        console.log('%c🎙️ ClubRadio 24/7 - Mode Démo', 'font-size: 24px; font-weight: bold; color: #667eea;');
+        console.log('%c ClubRadio 24/7 - Mode Démo', 'font-size: 24px; font-weight: bold; color: #667eea;');
         console.log('%cCe mode de démonstration fonctionne sans fichiers média.', 'font-size: 14px; color: #666;');
         console.log('%cPour utiliser le système complet :', 'font-size: 14px; font-weight: bold; color: #333;');
         console.log('  1. Ajoutez vos fichiers vidéo dans assets/');
@@ -233,8 +233,8 @@
         console.log('  3. Configurez playlist.json et music.json');
         console.log('  4. Ouvrez index.html (pas demo.html)');
         console.log('');
-        console.log('%c📚 Documentation complète : README.md', 'font-size: 14px; color: #00d4ff;');
-        console.log('%c🚀 Démarrage rapide : QUICKSTART.md', 'font-size: 14px; color: #00d4ff;');
+        console.log('%c Documentation complète : README.md', 'font-size: 14px; color: #00d4ff;');
+        console.log('%c Démarrage rapide : QUICKSTART.md', 'font-size: 14px; color: #00d4ff;');
     </script>
 </body>
 

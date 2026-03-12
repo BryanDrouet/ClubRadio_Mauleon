@@ -1,13 +1,4 @@
-/**
- * STYLES CSS - ClubRadio 24/7 Overlay OBS
- * ========================================
- * Design optimisé pour OBS Studio (1920x1080)
- * Performance: Utilisation de GPU acceleration (transform, opacity)
- */
 
-/* ============================================
-   RÉINITIALISATION ET BASE
-   ============================================ */
 
 * {
     margin: 0;
@@ -24,10 +15,6 @@ body {
     background-color: #000000;
     color: #ffffff;
 }
-
-/* ============================================
-   BARRE DE PROGRESSION (HORS 16:9)
-   ============================================ */
 
 .progress-bar {
     position: fixed;
@@ -89,24 +76,16 @@ body {
     border-radius: 2px;
 }
 
-/* ============================================
-   CONTENEUR PRINCIPAL OBS (1920x1080)
-   ============================================ */
-
 .obs-container {
     position: relative;
     width: 1920px;
     height: 1080px;
     margin: 70px auto 0;
-    /* Ajout de marge en haut pour la barre */
+    
     background-color: #000000;
     overflow: hidden;
     border-radius: 15px;
 }
-
-/* ============================================
-   ZONE DE LECTURE VIDÉO
-   ============================================ */
 
 .video-container {
     position: absolute;
@@ -120,7 +99,6 @@ body {
     justify-content: center;
 }
 
-/* Vidéo principale */
 .main-video {
     position: absolute;
     top: 0;
@@ -128,7 +106,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    /* Préserver le ratio 16:9 */
+    
     background-color: #000000;
     opacity: 1;
     transition: opacity 0.5s ease-in-out;
@@ -142,12 +120,10 @@ body {
     opacity: 1;
 }
 
-/* Lecteur audio (invisible mais présent) */
 .music-player {
     display: none;
 }
 
-/* Conteneur YouTube */
 .youtube-container {
     position: absolute;
     top: 0;
@@ -168,10 +144,6 @@ body {
     border: none;
 }
 
-/* ============================================
-   INDICATEURS DE CHARGEMENT ET ERREUR
-   ============================================ */
-
 .loading-indicator,
 .error-indicator {
     position: absolute;
@@ -191,7 +163,6 @@ body {
     visibility: visible;
 }
 
-/* Spinner de chargement */
 .spinner {
     width: 60px;
     height: 60px;
@@ -228,10 +199,6 @@ body {
     backdrop-filter: blur(10px);
 }
 
-/* ============================================
-   BANDEAU D'INFORMATIONS (TICKER BAR)
-   ============================================ */
-
 .ticker-bar {
     position: fixed;
     top: 70px;
@@ -247,7 +214,6 @@ body {
     border-top: none;
 }
 
-/* Conteneur du message défilant */
 .ticker-content {
     flex: 1;
     overflow: hidden;
@@ -266,12 +232,11 @@ body {
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5),
         2px 2px 4px rgba(0, 0, 0, 0.4);
     padding-right: 50vw;
-    /* Espacement pour assurer la continuité */
+    
     animation: scroll-ticker 25s linear infinite;
     animation-play-state: running;
 }
 
-/* Animation de défilement */
 @keyframes scroll-ticker {
     from {
         transform: translateX(100%);
@@ -282,15 +247,10 @@ body {
     }
 }
 
-/* Mode pause pour le ticker (message fixe) */
 .ticker-content.paused .ticker-message {
     animation-play-state: paused;
     transform: translateX(0);
 }
-
-/* ============================================
-   OVERLAY: INFORMATIONS COMPLÉMENTAIRES
-   ============================================ */
 
 .info-overlay {
     position: absolute;
@@ -301,7 +261,6 @@ body {
     pointer-events: none;
 }
 
-/* Indicateur de pause musicale */
 .music-indicator {
     position: absolute;
     top: 20px;
@@ -328,7 +287,6 @@ body {
     transform: translateX(0);
 }
 
-/* Animation de pulsation pour l'indicateur musical */
 .music-indicator.visible {
     animation: pulse-music 2s ease-in-out infinite;
 }
@@ -345,42 +303,33 @@ body {
     }
 }
 
-/* ============================================
-   RESPONSIVE (pour tests en local)
-   ============================================ */
-
 @media screen and (max-width: 1920px) {
     .obs-container {
         width: 100vw;
         height: 56.25vw;
-        /* Ratio 16:9 */
+        
         max-height: 100vh;
         max-width: 177.78vh;
-        /* Ratio 16:9 inverse */
+        
     }
 
-    /* Ajuster les tailles de police proportionnellement */
+    
     .ticker-message {
         font-size: 1.67vw;
-        /* 32px pour 1920px */
+        
     }
 
     #currentTime {
         font-size: 1.46vw;
-        /* 28px pour 1920px */
+        
     }
 
     .music-indicator {
         font-size: 1.25vw;
-        /* 24px pour 1920px */
+        
     }
 }
 
-/* ============================================
-   OPTIMISATIONS PERFORMANCE
-   ============================================ */
-
-/* Accélération GPU pour les animations */
 .ticker-message,
 .main-video,
 .music-indicator,
@@ -391,17 +340,12 @@ body {
     backface-visibility: hidden;
 }
 
-/* Désactiver la sélection de texte (pour overlay) */
 .obs-container {
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
 }
-
-/* ============================================
-   CLASSES UTILITAIRES
-   ============================================ */
 
 .hidden {
     display: none !important;
@@ -417,7 +361,6 @@ body {
     visibility: visible !important;
 }
 
-/* Mode debug (affiche les bordures) */
 body.debug .obs-container {
     outline: 2px solid red;
 }

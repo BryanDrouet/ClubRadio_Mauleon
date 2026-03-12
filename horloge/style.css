@@ -23,11 +23,9 @@ body {
     color: #f0e8ff;
     border-radius: 10px;
     padding: 12px 18px;
-    background-color: rgba(26, 0, 40, 0.82);
+    background-color: rgba(26, 0, 40, 0.9);
     border: 1px solid rgba(150, 0, 225, 0.3);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(150, 0, 225, 0.15);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
 }
 
 #time {

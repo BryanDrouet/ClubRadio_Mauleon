@@ -179,12 +179,12 @@
 
 <body>
     <div class="container">
-        <h1>🎙️ Test de Configuration</h1>
+        <h1> Test de Configuration</h1>
         <p class="subtitle">ClubRadio 24/7 - Vérification du système</p>
 
         <div class="test-section">
             <div class="test-title">
-                <span class="icon">📁</span>
+                <span class="icon"></span>
                 1. Fichiers de Configuration
             </div>
             <div id="configTest"></div>
@@ -192,7 +192,7 @@
 
         <div class="test-section">
             <div class="test-title">
-                <span class="icon">🎬</span>
+                <span class="icon"></span>
                 2. Fichiers Vidéo (Playlist)
             </div>
             <div id="playlistTest"></div>
@@ -200,7 +200,7 @@
 
         <div class="test-section">
             <div class="test-title">
-                <span class="icon">🎵</span>
+                <span class="icon"></span>
                 3. Fichiers Audio (Musiques)
             </div>
             <div id="musicTest"></div>
@@ -208,21 +208,19 @@
 
         <div class="test-section">
             <div class="test-title">
-                <span class="icon">📅</span>
+                <span class="icon"></span>
                 4. Événements Planifiés
             </div>
             <div id="scheduleTest"></div>
         </div>
 
-        <button class="btn"
-                onclick="runAllTests()">
-            🔄 Relancer les Tests
+        <button class="btn" id="btnRerun">
+            Relancer les Tests
         </button>
 
-        <button class="btn"
-                onclick="window.location.href='index.html'"
+        <button class="btn" id="btnLaunch"
                 style="background: #28a745;">
-            ▶️ Lancer l'Application
+            ▶ Lancer l'Application
         </button>
 
         <div id="summary"
@@ -278,25 +276,25 @@
 
                 // Vérifier les paramètres essentiels
                 if (CONFIG.musicIntervalMinutes > 0) {
-                    results.push('✅ Intervalle musique configuré: ' + CONFIG.musicIntervalMinutes + ' min');
+                    results.push(' Intervalle musique configuré: ' + CONFIG.musicIntervalMinutes + ' min');
                     stats.success++;
                 } else {
-                    results.push('⚠️ Intervalle musique invalide');
+                    results.push(' Intervalle musique invalide');
                     stats.warning++;
                 }
 
                 if (CONFIG.pathPrefix) {
-                    results.push('✅ Chemin des assets: ' + CONFIG.pathPrefix);
+                    results.push(' Chemin des assets: ' + CONFIG.pathPrefix);
                     stats.success++;
                 } else {
-                    results.push('❌ Chemin des assets non défini');
+                    results.push(' Chemin des assets non défini');
                     stats.error++;
                 }
 
                 container.innerHTML = `<div class="test-result success">${results.join('<br>')}</div>`;
 
             } catch (error) {
-                container.innerHTML = `<div class="test-result error">❌ ${error.message}</div>`;
+                container.innerHTML = `<div class="test-result error"> ${error.message}</div>`;
                 stats.error++;
             }
         }
@@ -315,7 +313,7 @@
                     throw new Error('Aucune vidéo dans la playlist');
                 }
 
-                let results = [`✅ Playlist chargée: ${data.videos.length} vidéo(s)`];
+                let results = [` Playlist chargée: ${data.videos.length} vidéo(s)`];
                 stats.success++;
 
                 // Vérifier les fichiers vidéo
@@ -325,9 +323,9 @@
                     const exists = await checkFileExists(filePath);
 
                     if (exists) {
-                        fileList += `<div class="file-item">✅ ${video.title}</div>`;
+                        fileList += `<div class="file-item"> ${video.title}</div>`;
                     } else {
-                        fileList += `<div class="file-item">❌ ${video.title} (fichier manquant: ${video.src})</div>`;
+                        fileList += `<div class="file-item"> ${video.title} (fichier manquant: ${video.src})</div>`;
                         stats.warning++;
                     }
                 }
@@ -340,7 +338,7 @@
                 container.innerHTML = `<div class="test-result success">${results.join('<br>')}${fileList}</div>`;
 
             } catch (error) {
-                container.innerHTML = `<div class="test-result error">❌ ${error.message}</div>`;
+                container.innerHTML = `<div class="test-result error"> ${error.message}</div>`;
                 stats.error++;
             }
         }
@@ -356,12 +354,12 @@
                 const data = await response.json();
 
                 if (!data.tracks || data.tracks.length === 0) {
-                    container.innerHTML = `<div class="test-result warning">⚠️ Aucune musique configurée (pauses musicales désactivées)</div>`;
+                    container.innerHTML = `<div class="test-result warning"> Aucune musique configurée (pauses musicales désactivées)</div>`;
                     stats.warning++;
                     return;
                 }
 
-                let results = [`✅ Musiques chargées: ${data.tracks.length} piste(s)`];
+                let results = [` Musiques chargées: ${data.tracks.length} piste(s)`];
                 stats.success++;
 
                 // Vérifier quelques fichiers
@@ -371,9 +369,9 @@
                     const exists = await checkFileExists(filePath);
 
                     if (exists) {
-                        fileList += `<div class="file-item">✅ ${track.title}</div>`;
+                        fileList += `<div class="file-item"> ${track.title}</div>`;
                     } else {
-                        fileList += `<div class="file-item">❌ ${track.title} (fichier manquant: ${track.src})</div>`;
+                        fileList += `<div class="file-item"> ${track.title} (fichier manquant: ${track.src})</div>`;
                         stats.warning++;
                     }
                 }
@@ -386,7 +384,7 @@
                 container.innerHTML = `<div class="test-result success">${results.join('<br>')}${fileList}</div>`;
 
             } catch (error) {
-                container.innerHTML = `<div class="test-result error">❌ ${error.message}</div>`;
+                container.innerHTML = `<div class="test-result error"> ${error.message}</div>`;
                 stats.error++;
             }
         }
@@ -402,17 +400,17 @@
                 const data = await response.json();
 
                 if (!data.events || data.events.length === 0) {
-                    container.innerHTML = `<div class="test-result warning">⚠️ Aucun événement planifié</div>`;
+                    container.innerHTML = `<div class="test-result warning"> Aucun événement planifié</div>`;
                     stats.warning++;
                     return;
                 }
 
-                let results = [`✅ Événements chargés: ${data.events.length}`];
+                let results = [` Événements chargés: ${data.events.length}`];
                 stats.success++;
 
                 let eventList = '<div class="file-list">';
                 for (const event of data.events.slice(0, 5)) {
-                    eventList += `<div class="file-item">📅 ${event.time} - ${event.title}</div>`;
+                    eventList += `<div class="file-item"> ${event.time} - ${event.title}</div>`;
                 }
                 if (data.events.length > 5) {
                     eventList += `<div class="file-item">... et ${data.events.length - 5} autre(s)</div>`;
@@ -422,7 +420,7 @@
                 container.innerHTML = `<div class="test-result success">${results.join('<br>')}${eventList}</div>`;
 
             } catch (error) {
-                container.innerHTML = `<div class="test-result error">❌ ${error.message}</div>`;
+                container.innerHTML = `<div class="test-result error"> ${error.message}</div>`;
                 stats.error++;
             }
         }
@@ -448,8 +446,13 @@
             summary.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Lancer les tests au chargement
-        window.addEventListener('DOMContentLoaded', runAllTests);
+        document.addEventListener('DOMContentLoaded', () => {
+            runAllTests();
+            document.getElementById('btnRerun').addEventListener('click', runAllTests);
+            document.getElementById('btnLaunch').addEventListener('click', () => {
+                window.location.href = 'index.html';
+            });
+        });
     </script>
 </body>
 

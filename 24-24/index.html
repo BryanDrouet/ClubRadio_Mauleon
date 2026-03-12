@@ -9,27 +9,23 @@
           content="ClubRadio Mauléon - Overlay OBS 24/7">
     <title>ClubRadio 24/7 - Overlay OBS</title>
 
-    <!-- Styles CSS -->
     <link rel="stylesheet"
           href="style.css">
 
-    <!-- Configuration globale (à charger en premier) -->
     <script src="config.js"></script>
 </head>
 
 <body>
-    <!-- ============================================ -->
-    <!-- BARRE DE PROGRESSION (HORS 16:9)             -->
-    <!-- ============================================ -->
+
     <aside class="progress-bar"
            id="progressBar">
         <div class="video-info">
             <span class="video-title"
-                  id="videoTitle">Chargement...</span>
+                  id="videoTitle"></span>
             <span class="video-time"
-                  id="videoTime">--:-- / --:--</span>
+                  id="videoTime"></span>
             <span class="video-remaining"
-                  id="videoRemaining">Reste: --:--</span>
+                  id="videoRemaining"></span>
         </div>
         <div class="progress-track">
             <div class="progress-fill"
@@ -37,17 +33,11 @@
         </div>
     </aside>
 
-    <!-- ============================================ -->
-    <!-- CONTENEUR PRINCIPAL (1920x1080 pour OBS)    -->
-    <!-- ============================================ -->
     <main class="obs-container">
 
-        <!-- ============================================ -->
-        <!-- ZONE DE LECTURE VIDÉO PRINCIPALE            -->
-        <!-- ============================================ -->
         <section class="video-container"
                  id="videoContainer">
-            <!-- Lecteur vidéo principal (fichiers locaux) -->
+
             <video id="mainVideo"
                    class="main-video"
                    preload="auto"
@@ -58,7 +48,6 @@
                 Votre navigateur ne supporte pas la balise vidéo HTML5.
             </video>
 
-            <!-- Lecteur audio pour les pauses musicales -->
             <audio id="musicPlayer"
                    class="music-player"
                    preload="auto"
@@ -67,18 +56,15 @@
                 Votre navigateur ne supporte pas la balise audio HTML5.
             </audio>
 
-            <!-- Conteneur pour YouTube IFrame (optionnel) -->
             <div id="youtubeContainer"
                  class="youtube-container"></div>
 
-            <!-- Indicateur de chargement -->
             <div id="loadingIndicator"
                  class="loading-indicator">
                 <div class="spinner"></div>
                 <p class="loading-text">Chargement en cours...</p>
             </div>
 
-            <!-- Message d'erreur (si vidéo ne charge pas) -->
             <div id="errorIndicator"
                  class="error-indicator">
                 <div class="error-icon"></div>
@@ -86,27 +72,19 @@
             </div>
         </section>
 
-        <!-- ============================================ -->
-        <!-- OVERLAY: BANDEAU D'INFORMATIONS (TICKER)    -->
-        <!-- ============================================ -->
         <aside class="ticker-bar"
                id="tickerBar">
-            <!-- Conteneur du message défilant -->
+
             <div class="ticker-content"
                  id="tickerContent">
                 <span class="ticker-message"
-                      id="tickerMessage">
-                    Bienvenue sur ClubRadio Mauléon - Votre radio associative 24h/24 et 7j/7
-                </span>
+                      id="tickerMessage"></span>
             </div>
         </aside>
 
-        <!-- ============================================ -->
-        <!-- OVERLAY: INFORMATIONS COMPLÉMENTAIRES       -->
-        <!-- ============================================ -->
         <div class="info-overlay"
              id="infoOverlay">
-            <!-- Indicateur de pause musicale (quand actif) -->
+
             <div class="music-indicator"
                  id="musicIndicator">
                 Pause Musicale
@@ -114,10 +92,6 @@
         </div>
 
     </main>
-
-    <!-- ============================================ -->
-    <!-- SCRIPTS JAVASCRIPT                          -->
-    <!-- ============================================ -->
 
     <script src="app.js"></script>
 
