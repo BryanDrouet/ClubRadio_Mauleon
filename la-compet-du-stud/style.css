@@ -398,6 +398,14 @@ button svg {
     color: var(--text-primary);
 }
 
+.modal-rules-body p,
+.modal-rules-body li {
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: normal;
+    line-height: 1.7;
+}
+
 .modal-actions {
     display: flex;
     gap: 12px;
@@ -431,6 +439,14 @@ button svg {
     background: rgba(192, 132, 252, 0.15);
     color: var(--accent-light);
     border: 1px solid rgba(192, 132, 252, 0.3);
+}
+
+#auth-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
 }
 
 #info-btn:hover {
@@ -521,8 +537,6 @@ button svg {
 }
 
 .modal-rules-body p {
-    color: var(--text-muted);
-    line-height: 1.7;
     margin-bottom: 12px;
 }
 
@@ -530,8 +544,6 @@ button svg {
 .modal-rules-body ol {
     padding-left: 22px;
     margin-bottom: 12px;
-    color: var(--text-muted);
-    line-height: 1.7;
 }
 
 .modal-rules-body li {

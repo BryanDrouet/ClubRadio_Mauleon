@@ -136,6 +136,8 @@ function renderData(participants) {
 
             const scoreInput = document.createElement('input');
             scoreInput.type = 'number';
+            scoreInput.id = `score-input-${p.id}`;
+            scoreInput.name = `score-input-${p.id}`;
             scoreInput.className = 'score-input';
             scoreInput.value = p.score;
             scoreInput.placeholder = 'Score';
