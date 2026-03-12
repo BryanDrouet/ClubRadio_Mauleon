@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horloge - Club Radio Mauléon</title>
-    <link rel="stylesheet" href="style.css">
+    <script>document.write('<link rel="stylesheet" href="style.css?v='+Date.now()+'">');</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/locale/fr.js"></script>
 </head>
@@ -13,6 +13,10 @@
         <div id="time"></div>
         <div id="date"></div>
     </div>
-    <script src="scripts.js"></script>
+    <script>
+        const _s = document.createElement('script');
+        _s.src = 'scripts.js?v=' + Date.now();
+        document.body.appendChild(_s);
+    </script>
 </body>
 </html>

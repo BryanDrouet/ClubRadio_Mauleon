@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Compèt du Stud' - Saison 2</title>
-    <link rel="stylesheet" href="style.css">
+    <script>document.write('<link rel="stylesheet" href="style.css?v='+Date.now()+'">');</script>
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
@@ -26,6 +26,11 @@
         <div id="scoreboard"></div>
     </main>
 
-    <script type="module" src="app.js"></script>
+    <script>
+        const _s = document.createElement('script');
+        _s.type = 'module';
+        _s.src = 'app.js?v=' + Date.now();
+        document.body.appendChild(_s);
+    </script>
 </body>
 </html>

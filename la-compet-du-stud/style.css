@@ -215,6 +215,22 @@ button svg {
     box-shadow: 0 12px 40px rgba(150, 0, 225, 0.25);
 }
 
+.card.rank-1:hover {
+    box-shadow: 0 12px 40px rgba(255, 215, 0, 0.35), 0 0 0 1px rgba(255, 215, 0, 0.3);
+}
+
+.card.rank-2:hover {
+    box-shadow: 0 12px 40px rgba(192, 192, 192, 0.3), 0 0 0 1px rgba(192, 192, 192, 0.25);
+}
+
+.card.rank-3:hover {
+    box-shadow: 0 12px 40px rgba(205, 127, 50, 0.3), 0 0 0 1px rgba(205, 127, 50, 0.25);
+}
+
+.card.rank-4:hover {
+    box-shadow: 0 12px 40px rgba(210, 105, 30, 0.25), 0 0 0 1px rgba(210, 105, 30, 0.2);
+}
+
 .card-header {
     font-size: 22px;
     font-weight: bold;

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape">
     <title>Compteur de Temps Écoulé</title>
     <link rel="icon" href="assets/off.ico" type="image/x-icon">
-    <link rel="stylesheet" href="style.css">
+    <script>document.write('<link rel="stylesheet" href="style.css?v='+Date.now()+'">');</script>
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
@@ -29,6 +29,10 @@
         <div id="bookmarksContainer" class="signet-list"></div>
     </div>
 
-    <script src="scripts.js"></script>
+    <script>
+        const _s = document.createElement('script');
+        _s.src = 'scripts.js?v=' + Date.now();
+        document.body.appendChild(_s);
+    </script>
 </body>
 </html>

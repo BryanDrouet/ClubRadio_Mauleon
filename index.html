@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Club Radio Mauléon</title>
     <link rel="icon" href="assets/off.ico" type="image/x-icon">
-    <link rel="stylesheet" href="style.css">
+    <script>document.write('<link rel="stylesheet" href="style.css?v='+Date.now()+'">');</script>
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
@@ -51,6 +51,10 @@
         <p id="copyright"></p>
     </footer>
 
-    <script src="app.js"></script>
+    <script>
+        const _s = document.createElement('script');
+        _s.src = 'app.js?v=' + Date.now();
+        document.body.appendChild(_s);
+    </script>
 </body>
 </html>
