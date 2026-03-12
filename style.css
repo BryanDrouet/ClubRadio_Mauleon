@@ -1,0 +1,145 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.header {
+    text-align: center;
+    color: white;
+    margin-bottom: 50px;
+}
+
+.header h1 {
+    font-size: 3.5rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.header h1 svg {
+    width: 3.5rem;
+    height: 3.5rem;
+}
+
+.header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.card-icon {
+    margin-bottom: 20px;
+}
+
+.card-icon svg {
+    width: 4rem;
+    height: 4rem;
+    stroke-width: 1.5;
+}
+
+.card h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.card p {
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.card-timer {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.card-player {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.card-60s {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.card-clock {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.card-compet {
+    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+}
+
+.card-timer h2, .card-timer p,
+.card-player h2, .card-player p,
+.card-60s h2, .card-60s p,
+.card-clock h2, .card-clock p,
+.card-compet h2, .card-compet p,
+.card-timer svg, .card-player svg, 
+.card-60s svg, .card-clock svg, 
+.card-compet svg {
+    color: white;
+}
+
+footer {
+    margin-top: 50px;
+    color: white;
+    text-align: center;
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 2.5rem;
+    }
+    
+    .header h1 svg {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+}
