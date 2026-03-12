@@ -90,7 +90,7 @@ function renderData(participants) {
         scoreDiv.textContent = p.score;
 
         const rank = rankOf[p.score];
-        if (rank >= 1 && rank <= 4) scoreDiv.classList.add(`rank-${rank}`);
+        if (rank >= 1 && rank <= 4) card.classList.add(`rank-${rank}`);
         
         card.appendChild(header);
         card.appendChild(scoreDiv);
