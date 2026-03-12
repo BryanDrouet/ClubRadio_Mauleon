@@ -57,7 +57,7 @@ onSnapshot(collection(db, "participants"), (snapshot) => {
     snapshot.forEach((doc) => {
         participants.push({ id: doc.id, ...doc.data() });
     });
-    participants.sort((a, b) => b.score - a.score);
+    participants.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name, 'fr'));
     window.currentParticipants = participants;
     renderData(participants);
 });
@@ -72,6 +72,11 @@ addBtn.addEventListener('click', async () => {
 
 function renderData(participants) {
     scoreboard.innerHTML = '';
+
+    const uniqueScores = [...new Set(participants.map(p => p.score))].sort((a, b) => b - a);
+    const rankOf = {};
+    uniqueScores.forEach((score, i) => { rankOf[score] = i + 1; });
+
     participants.forEach(p => {
         const card = document.createElement('div');
         card.className = 'card';
@@ -83,6 +88,9 @@ function renderData(participants) {
         const scoreDiv = document.createElement('div');
         scoreDiv.className = 'score';
         scoreDiv.textContent = p.score;
+
+        const rank = rankOf[p.score];
+        if (rank >= 1 && rank <= 4) scoreDiv.classList.add(`rank-${rank}`);
         
         card.appendChild(header);
         card.appendChild(scoreDiv);

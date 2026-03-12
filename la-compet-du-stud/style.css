@@ -204,7 +204,25 @@ button svg {
     font-size: 56px;
     font-weight: 900;
     color: var(--accent-light);
-    text-shadow: 0 0 20px rgba(192, 132, 252, 0.5);
+}
+
+.score.rank-1 {
+    color: #FFD700;
+    text-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+}
+
+.score.rank-2 {
+    color: #C0C0C0;
+    text-shadow: 0 0 20px rgba(192, 192, 192, 0.5);
+}
+
+.score.rank-3 {
+    color: #CD7F32;
+    text-shadow: 0 0 20px rgba(205, 127, 50, 0.5);
+}
+
+.score.rank-4 {
+    color: #D2691E;
 }
 
 .controls {
