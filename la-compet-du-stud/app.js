@@ -104,15 +104,10 @@ function renderData(participants) {
             [1, 3, 5].forEach(val => {
                 const btn = document.createElement('button');
                 btn.className = 'btn-plus';
-                
                 const icon = document.createElement('i');
                 icon.setAttribute('data-lucide', 'plus');
-                
-                const textNode = document.createTextNode(' ' + val);
-                
                 btn.appendChild(icon);
-                btn.appendChild(textNode);
-                
+                btn.appendChild(document.createTextNode(' ' + val));
                 btn.addEventListener('click', async () => {
                     await updateDoc(doc(db, "participants", p.id), { score: increment(val) });
                 });
@@ -124,37 +119,112 @@ function renderData(participants) {
             [-1, -3, -5].forEach(val => {
                 const btn = document.createElement('button');
                 btn.className = 'btn-minus';
-                
                 const icon = document.createElement('i');
                 icon.setAttribute('data-lucide', 'minus');
-                
-                const textNode = document.createTextNode(' ' + Math.abs(val));
-                
                 btn.appendChild(icon);
-                btn.appendChild(textNode);
-                
+                btn.appendChild(document.createTextNode(' ' + Math.abs(val)));
                 btn.addEventListener('click', async () => {
                     await updateDoc(doc(db, "participants", p.id), { score: increment(val) });
                 });
                 groupMinus.appendChild(btn);
             });
 
+            const groupDirect = document.createElement('div');
+            groupDirect.className = 'btn-group score-direct';
+
+            const scoreInput = document.createElement('input');
+            scoreInput.type = 'number';
+            scoreInput.className = 'score-input';
+            scoreInput.value = p.score;
+            scoreInput.placeholder = 'Score';
+
+            const btnSet = document.createElement('button');
+            btnSet.className = 'btn-set';
+            const iconSet = document.createElement('i');
+            iconSet.setAttribute('data-lucide', 'check');
+            btnSet.appendChild(iconSet);
+            btnSet.addEventListener('click', async () => {
+                const val = parseInt(scoreInput.value, 10);
+                if (!isNaN(val)) {
+                    await updateDoc(doc(db, "participants", p.id), { score: val });
+                }
+            });
+
+            const btnReset = document.createElement('button');
+            btnReset.className = 'btn-reset';
+            const iconReset = document.createElement('i');
+            iconReset.setAttribute('data-lucide', 'rotate-ccw');
+            btnReset.appendChild(iconReset);
+            btnReset.addEventListener('click', async () => {
+                await updateDoc(doc(db, "participants", p.id), { score: 0 });
+            });
+
+            groupDirect.appendChild(scoreInput);
+            groupDirect.appendChild(btnSet);
+            groupDirect.appendChild(btnReset);
+
             const btnDelete = document.createElement('button');
             btnDelete.className = 'btn-delete';
             const iconTrash = document.createElement('i');
             iconTrash.setAttribute('data-lucide', 'trash-2');
             btnDelete.appendChild(iconTrash);
-            btnDelete.addEventListener('click', async () => {
-                await deleteDoc(doc(db, "participants", p.id));
+            btnDelete.addEventListener('click', () => {
+                openModal(p.name, async () => {
+                    await deleteDoc(doc(db, "participants", p.id));
+                });
             });
 
             controls.appendChild(groupPlus);
             controls.appendChild(groupMinus);
+            controls.appendChild(groupDirect);
             controls.appendChild(btnDelete);
             card.appendChild(controls);
         }
         scoreboard.appendChild(card);
     });
 
+    lucide.createIcons();
+}
+
+function openModal(name, onConfirm) {
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+
+    const msg = document.createElement('p');
+    msg.textContent = `Supprimer ${name} ?`;
+
+    const btnGroup = document.createElement('div');
+    btnGroup.className = 'modal-actions';
+
+    const btnConfirm = document.createElement('button');
+    btnConfirm.className = 'btn-modal-confirm';
+    const iconConfirm = document.createElement('i');
+    iconConfirm.setAttribute('data-lucide', 'trash-2');
+    btnConfirm.appendChild(iconConfirm);
+    btnConfirm.appendChild(document.createTextNode(' Supprimer'));
+    btnConfirm.addEventListener('click', async () => {
+        overlay.remove();
+        await onConfirm();
+    });
+
+    const btnCancel = document.createElement('button');
+    btnCancel.className = 'btn-modal-cancel';
+    const iconCancel = document.createElement('i');
+    iconCancel.setAttribute('data-lucide', 'x');
+    btnCancel.appendChild(iconCancel);
+    btnCancel.appendChild(document.createTextNode(' Annuler'));
+    btnCancel.addEventListener('click', () => overlay.remove());
+
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+
+    btnGroup.appendChild(btnConfirm);
+    btnGroup.appendChild(btnCancel);
+    modal.appendChild(msg);
+    modal.appendChild(btnGroup);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
     lucide.createIcons();
 }
