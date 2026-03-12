@@ -3,15 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="La Compèt du Stud' Saison 2 - Suivez le classement en temps réel des participants de Club Radio Mauléon.">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#1a0028">
+    <meta property="og:title" content="La Compèt du Stud' - Saison 2">
+    <meta property="og:description" content="La Compèt du Stud' Saison 2 - Suivez le classement en temps réel des participants de Club Radio Mauléon.">
+    <meta property="og:type" content="website">
     <title>La Compèt du Stud' - Saison 2</title>
     <script>document.write('<link rel="stylesheet" href="style.css?v='+Date.now()+'">');</script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
     <header>
         <h1><i data-lucide="trophy"></i> La Compèt du Stud' - Saison 2</h1>
         <div id="auth-section">
+            <button id="info-btn"><i data-lucide="info"></i> Règles</button>
             <button id="login-btn"><i data-lucide="log-in"></i> Connexion Google</button>
             <button id="logout-btn" class="hidden"><i data-lucide="log-out"></i> Déconnexion</button>
         </div>

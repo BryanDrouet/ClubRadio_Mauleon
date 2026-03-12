@@ -29,6 +29,8 @@ const scoreboard = document.getElementById('scoreboard');
 
 lucide.createIcons();
 
+document.getElementById('info-btn').addEventListener('click', openRulesModal);
+
 onAuthStateChanged(auth, (user) => {
     if (user) {
         loginBtn.classList.add('hidden');
@@ -224,6 +226,52 @@ function openModal(name, onConfirm) {
     btnGroup.appendChild(btnCancel);
     modal.appendChild(msg);
     modal.appendChild(btnGroup);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    lucide.createIcons();
+}
+
+async function openRulesModal() {
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+
+    const modal = document.createElement('div');
+    modal.className = 'modal modal-rules';
+
+    const header = document.createElement('div');
+    header.className = 'modal-rules-header';
+
+    const title = document.createElement('h2');
+    const iconTitle = document.createElement('i');
+    iconTitle.setAttribute('data-lucide', 'info');
+    title.appendChild(iconTitle);
+    title.appendChild(document.createTextNode(' R\u00e8gles du jeu'));
+
+    const btnClose = document.createElement('button');
+    btnClose.className = 'btn-modal-close';
+    const iconClose = document.createElement('i');
+    iconClose.setAttribute('data-lucide', 'x');
+    btnClose.appendChild(iconClose);
+    btnClose.addEventListener('click', () => overlay.remove());
+
+    header.appendChild(title);
+    header.appendChild(btnClose);
+
+    const body = document.createElement('div');
+    body.className = 'modal-rules-body';
+
+    try {
+        const response = await fetch('rules.md?v=' + Date.now());
+        const text = await response.text();
+        body.innerHTML = marked.parse(text);
+    } catch {
+        body.innerHTML = '<p>Impossible de charger les r\u00e8gles.</p>';
+    }
+
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+
+    modal.appendChild(header);
+    modal.appendChild(body);
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
     lucide.createIcons();
