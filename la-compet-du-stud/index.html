@@ -26,11 +26,6 @@
         <div id="scoreboard"></div>
     </main>
 
-    <script>
-        const _s = document.createElement('script');
-        _s.type = 'module';
-        _s.src = 'app.js?v=' + Date.now();
-        document.body.appendChild(_s);
-    </script>
+    <script>document.write('<script type="module" src="app.js?v='+Date.now()+'"><\/script>');</script>
 </body>
 </html>

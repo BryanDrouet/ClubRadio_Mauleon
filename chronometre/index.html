@@ -29,10 +29,6 @@
         <div id="bookmarksContainer" class="signet-list"></div>
     </div>
 
-    <script>
-        const _s = document.createElement('script');
-        _s.src = 'scripts.js?v=' + Date.now();
-        document.body.appendChild(_s);
-    </script>
+    <script>document.write('<script src="scripts.js?v='+Date.now()+'"><\/script>');</script>
 </body>
 </html>
