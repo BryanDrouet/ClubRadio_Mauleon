@@ -3,12 +3,13 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChang
 import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "REMPLACER_PAR_API_KEY",
-    authDomain: "REMPLACER_PAR_AUTH_DOMAIN",
-    projectId: "REMPLACER_PAR_PROJECT_ID",
-    storageBucket: "REMPLACER_PAR_STORAGE_BUCKET",
-    messagingSenderId: "REMPLACER_PAR_MESSAGING_SENDER_ID",
-    appId: "REMPLACER_PAR_APP_ID"
+    apiKey: "AIzaSyCLLF7RMMLm51_PZmwrDQxBnWrEBF1InRA",
+    authDomain: "secondes-9c7df.firebaseapp.com",
+    databaseURL: "https://secondes-9c7df-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "secondes-9c7df",
+    storageBucket: "secondes-9c7df.firebasestorage.app",
+    messagingSenderId: "51241088767",
+    appId: "1:51241088767:web:7ea6725bdb206b50fdbeca"
 };
 
 const app = initializeApp(firebaseConfig);
