@@ -1,7 +1,9 @@
 {
     "active": true,
+    "type": "social-media",
     "closeParisTz": "27-03-2026_21:00:00",
     "question": "Choisissez entre 1 et 2.",
+    "lastUpdateTime": "26-03-2026_15:52:00",
     "votes": [
         {
             "choice": 2,
@@ -115,7 +117,7 @@
         },
         {
             "choice": 1,
-            "pseudo": "Crowlux",
+            "pseudo": "Crowlux Miyana",
             "source": "Discord"
         },
         {
@@ -136,6 +138,21 @@
         {
             "choice": 2,
             "pseudo": "Océane Drouet",
+            "source": "Instagram"
+        },
+        {
+            "choice": 1,
+            "pseudo": "Elliot",
+            "source": "Instagram"
+        },
+        {
+            "choice": 1,
+            "pseudo": "Anita Mahé",
+            "source": "Instagram"
+        },
+        {
+            "choice": 2,
+            "pseudo": "Lilou RLB",
             "source": "Instagram"
         }
     ]

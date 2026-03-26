@@ -343,6 +343,19 @@ function openPollModal() {
             question.textContent = pollConfig.question || 'Quel est votre choix ?';
             body.appendChild(question);
 
+            // Afficher la dernière actualisation si disponible
+            if (pollConfig.lastUpdateTime) {
+                const updateTimeDiv = document.createElement('div');
+                updateTimeDiv.style.fontSize = '0.8rem';
+                updateTimeDiv.style.color = 'var(--text-muted)';
+                updateTimeDiv.style.marginBottom = '12px';
+                
+                const updateTime = convertParisToLocal(pollConfig.lastUpdateTime);
+                const updateTimeStr = formatDateLocal(updateTime).replace(/ (\d{2}):(\d{2}):\d{2}$/, ' à $1:$2');
+                updateTimeDiv.textContent = `Dernière actualisation : ${updateTimeStr}`;
+                body.appendChild(updateTimeDiv);
+            }
+
             showPollResults(body, pollConfig, currentUser && isAdmin, isOpen, hasVoted);
             modal.appendChild(body);
 
@@ -350,23 +363,20 @@ function openPollModal() {
             const footer = document.createElement('div');
             footer.className = 'modal-footer';
 
-            if (isOpen && !pollConfig.allowVotingOnSite) {
-                if (currentUser) {
-                    const msg = document.createElement('p');
-                    msg.style.fontSize = '0.9rem';
-                    msg.style.margin = '0';
-                    msg.style.color = 'var(--text-muted)';
-                    msg.textContent = 'Votes via Discord, Instagram, WhatsApp';
-                    footer.appendChild(msg);
-                } else {
-                    const msg = document.createElement('p');
-                    msg.style.fontSize = '0.9rem';
-                    msg.style.margin = '0';
-                    msg.style.color = 'var(--text-muted)';
-                    msg.textContent = 'Connectez-vous pour participer';
-                    footer.appendChild(msg);
-                }
-            } else if (isOpen && pollConfig.allowVotingOnSite && currentUser && !hasVoted) {
+            const pollType = pollConfig.type || 'social-media'; // Par défaut: réseaux sociaux
+            const isSocialMediaPoll = pollType === 'social-media';
+            const isWebsitePoll = pollType === 'website';
+
+            if (isOpen && isSocialMediaPoll) {
+                // Sondage réseaux sociaux - Pas de vote en ligne
+                const msg = document.createElement('p');
+                msg.style.fontSize = '0.9rem';
+                msg.style.margin = '0';
+                msg.style.color = 'var(--text-muted)';
+                msg.textContent = 'Votez via Discord, Instagram ou WhatsApp';
+                footer.appendChild(msg);
+            } else if (isOpen && isWebsitePoll && currentUser && !hasVoted) {
+                // Sondage site - Accès pour voter si connecté
                 const votingSection = document.createElement('div');
                 votingSection.className = 'poll-voting';
 
@@ -390,6 +400,14 @@ function openPollModal() {
                 });
                 votingSection.appendChild(btn2);
                 footer.appendChild(votingSection);
+            } else if (isOpen && isWebsitePoll && !currentUser) {
+                // Sondage site - Pas connecté
+                const msg = document.createElement('p');
+                msg.style.fontSize = '0.9rem';
+                msg.style.margin = '0';
+                msg.style.color = 'var(--text-muted)';
+                msg.textContent = 'Connectez-vous pour participer';
+                footer.appendChild(msg);
             }
 
             modal.appendChild(footer);
@@ -402,58 +420,157 @@ function openPollModal() {
 }
 
 function showPollResults(bodyElement, pollConfig, isAdminView = false, isOpen = true, hasVoted = false) {
-    // Calculer les résultats
-    let option1Count = 0;
-    let option2Count = 0;
-    
-    if (pollConfig.votes && Array.isArray(pollConfig.votes)) {
+    // Afficher les résultats par source avec checkboxes (une seule section dynamique)
+    if (pollConfig.votes && Array.isArray(pollConfig.votes) && pollConfig.votes.length > 0) {
+        // Grouper les votes par source
+        const resultsBySource = {};
         pollConfig.votes.forEach(vote => {
-            if (vote.choice === 1) option1Count++;
-            else if (vote.choice === 2) option2Count++;
+            const source = vote.source || 'Site';
+            if (!resultsBySource[source]) {
+                resultsBySource[source] = { option1: 0, option2: 0 };
+            }
+            if (vote.choice === 1) {
+                resultsBySource[source].option1++;
+            } else if (vote.choice === 2) {
+                resultsBySource[source].option2++;
+            }
         });
+
+        const sourceSection = document.createElement('div');
+        sourceSection.style.marginTop = '16px';
+        sourceSection.style.paddingTop = '12px';
+        sourceSection.style.borderTop = '1px solid var(--border)';
+        
+        // Titre avec label "Filtrer par source"
+        const sourceTitle = document.createElement('p');
+        sourceTitle.className = 'poll-results-title';
+        sourceTitle.style.marginBottom = '12px';
+        sourceTitle.textContent = 'Filtrer par source';
+        sourceSection.appendChild(sourceTitle);
+        
+        // Conteneur des checkboxes
+        const checkboxContainer = document.createElement('div');
+        checkboxContainer.style.display = 'flex';
+        checkboxContainer.style.flexWrap = 'wrap';
+        checkboxContainer.style.gap = '12px';
+        checkboxContainer.style.marginBottom = '16px';
+        
+        const sources = Object.keys(resultsBySource).sort();
+        const checkedSources = new Set(sources); // Tous cochés par défaut
+        
+        sources.forEach(source => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'checkbox-wrapper';
+            wrapper.style.cursor = 'pointer';
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = true;
+            
+            const checkboxApple = document.createElement('div');
+            checkboxApple.className = 'checkbox-apple';
+            
+            const label = document.createElement('span');
+            label.className = 'checkbox-label';
+            label.textContent = source;
+            
+            // Événement click sur le wrapper pour toggle le checkbox
+            wrapper.addEventListener('click', (e) => {
+                checkbox.checked = !checkbox.checked;
+                if (checkbox.checked) {
+                    checkedSources.add(source);
+                } else {
+                    checkedSources.delete(source);
+                }
+                updateSourceResults();
+            });
+            
+            wrapper.appendChild(checkbox);
+            wrapper.appendChild(checkboxApple);
+            wrapper.appendChild(label);
+            checkboxContainer.appendChild(wrapper);
+        });
+        
+        sourceSection.appendChild(checkboxContainer);
+        
+        // Conteneur des résultats filtrés
+        const filteredResultsDiv = document.createElement('div');
+        filteredResultsDiv.className = 'poll-results';
+        sourceSection.appendChild(filteredResultsDiv);
+        
+        function updateSourceResults() {
+            let filteredOption1 = 0;
+            let filteredOption2 = 0;
+            
+            checkedSources.forEach(source => {
+                filteredOption1 += resultsBySource[source].option1;
+                filteredOption2 += resultsBySource[source].option2;
+            });
+            
+            const filteredTotal = filteredOption1 + filteredOption2 || 1;
+            const filteredPercent1 = Math.round((filteredOption1 / filteredTotal) * 100);
+            const filteredPercent2 = Math.round((filteredOption2 / filteredTotal) * 100);
+            
+            // Chercher ou créer les éléments de résultat
+            let result1Filtered = filteredResultsDiv.querySelector('.poll-result-item:nth-child(1)');
+            let result2Filtered = filteredResultsDiv.querySelector('.poll-result-item:nth-child(2)');
+            
+            if (!result1Filtered) {
+                // Créer les éléments s'ils n'existent pas
+                result1Filtered = document.createElement('div');
+                result1Filtered.className = 'poll-result-item';
+                result1Filtered.innerHTML = `
+                    <div class="poll-result-header">
+                        <span class="poll-result-label">Option 1</span>
+                        <span class="poll-result-count"></span>
+                    </div>
+                    <div class="poll-result-bar">
+                        <div class="poll-result-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="poll-result-percent"></div>
+                `;
+                filteredResultsDiv.appendChild(result1Filtered);
+            }
+            
+            if (!result2Filtered) {
+                result2Filtered = document.createElement('div');
+                result2Filtered.className = 'poll-result-item';
+                result2Filtered.innerHTML = `
+                    <div class="poll-result-header">
+                        <span class="poll-result-label">Option 2</span>
+                        <span class="poll-result-count"></span>
+                    </div>
+                    <div class="poll-result-bar">
+                        <div class="poll-result-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="poll-result-percent"></div>
+                `;
+                filteredResultsDiv.appendChild(result2Filtered);
+            }
+            
+            // Mettre à jour les valeurs avec animation
+            const count1 = result1Filtered.querySelector('.poll-result-count');
+            const count2 = result2Filtered.querySelector('.poll-result-count');
+            const percent1 = result1Filtered.querySelector('.poll-result-percent');
+            const percent2 = result2Filtered.querySelector('.poll-result-percent');
+            const fill1 = result1Filtered.querySelector('.poll-result-fill');
+            const fill2 = result2Filtered.querySelector('.poll-result-fill');
+            
+            count1.textContent = `${filteredOption1} vote${filteredOption1 > 1 ? 's' : ''}`;
+            count2.textContent = `${filteredOption2} vote${filteredOption2 > 1 ? 's' : ''}`;
+            percent1.textContent = `${filteredPercent1}%`;
+            percent2.textContent = `${filteredPercent2}%`;
+            
+            // Trigger animation de la barre
+            requestAnimationFrame(() => {
+                fill1.style.width = `${filteredPercent1}%`;
+                fill2.style.width = `${filteredPercent2}%`;
+            });
+        }
+        
+        updateSourceResults();
+        bodyElement.appendChild(sourceSection);
     }
-    
-    const total = option1Count + option2Count || 1;
-    const percent1 = Math.round((option1Count / total) * 100);
-    const percent2 = Math.round((option2Count / total) * 100);
-
-    const resultsSection = document.createElement('div');
-    resultsSection.className = 'poll-results';
-
-    const resultsTitle = document.createElement('p');
-    resultsTitle.className = 'poll-results-title';
-    resultsTitle.textContent = 'Résultats';
-    resultsSection.appendChild(resultsTitle);
-
-    const result1 = document.createElement('div');
-    result1.className = 'poll-result-item';
-    result1.innerHTML = `
-        <div class="poll-result-header">
-            <span class="poll-result-label">Option 1</span>
-            <span class="poll-result-count">${option1Count} vote${option1Count > 1 ? 's' : ''}</span>
-        </div>
-        <div class="poll-result-bar">
-            <div class="poll-result-fill" style="width: ${percent1}%"></div>
-        </div>
-        <div class="poll-result-percent">${percent1}%</div>
-    `;
-
-    const result2 = document.createElement('div');
-    result2.className = 'poll-result-item';
-    result2.innerHTML = `
-        <div class="poll-result-header">
-            <span class="poll-result-label">Option 2</span>
-            <span class="poll-result-count">${option2Count} vote${option2Count > 1 ? 's' : ''}</span>
-        </div>
-        <div class="poll-result-bar">
-            <div class="poll-result-fill" style="width: ${percent2}%"></div>
-        </div>
-        <div class="poll-result-percent">${percent2}%</div>
-    `;
-
-    resultsSection.appendChild(result1);
-    resultsSection.appendChild(result2);
-    bodyElement.appendChild(resultsSection);
     
     // Afficher les votes détaillés seulement pour les admins (si la liste n'est pas vide)
     if (isAdminView && pollConfig.votes && Array.isArray(pollConfig.votes) && pollConfig.votes.length > 0) {
