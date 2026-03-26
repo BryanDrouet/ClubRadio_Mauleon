@@ -1,0 +1,87 @@
+{
+    "active": true,
+    "closeParisTz": "25-03-2026_21:00:00",
+    "question": "Choisissez entre 1 et 2.",
+    "votes": [
+        {
+            "choice": 2,
+            "pseudo": "Antonin Metteau Magda",
+            "source": "Oral"
+        },
+        {
+            "choice": 1,
+            "pseudo": "Jules",
+            "source": "Oral"
+        },
+        {
+            "choice": 1,
+            "pseudo": "Aurélien Canto",
+            "source": "Oral"
+        },
+        {
+            "choice": 1,
+            "pseudo": "Bryan Drouet",
+            "source": "Oral"
+        },
+        {
+            "choice": 2,
+            "pseudo": "Noa Morandeau",
+            "source": "Oral"
+        },
+        {
+            "choice": 1,
+            "pseudo": "Sandra",
+            "source": "WhatsApp"
+        },
+        {
+            "choice": 1,
+            "pseudo": "Adam",
+            "source": "WhatsApp"
+        },
+        {
+            "choice": 2,
+            "pseudo": "Antonin Delaunai",
+            "source": "Oral"
+        },
+        {
+            "choice": 1,
+            "pseudo": "Enaeka",
+            "source": "Discord"
+        },
+        {
+            "choice": 2,
+            "pseudo": "Dava",
+            "source": "Discord"
+        },
+        {
+            "choice": 2,
+            "pseudo": "Banquier du Boukistan",
+            "source": "Discord"
+        },
+        {
+            "choice": 1,
+            "pseudo": "Tudal Charrier",
+            "source": "Oral"
+        },
+        {
+            "choice": 2,
+            "pseudo": "Nathan Grolleau",
+            "source": "Oral"
+        },
+        {
+            "choice": 1,
+            "pseudo": "Léandre Rouyer",
+            "source": "Oral"
+        },
+        {
+            "choice": 1,
+            "pseudo": "Djmimi",
+            "source": "Discord"
+        },
+        {
+            "choice": 2,
+            "pseudo": "Elliott",
+            "source": "Discord"
+        }
+    ]
+}

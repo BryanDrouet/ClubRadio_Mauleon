@@ -19,6 +19,62 @@ const provider = new GoogleAuthProvider();
 
 const admins = ["bryan.drouet24@gmail.com", "clubradio.mauleon@gmail.com"];
 let isAdmin = false;
+let globalPollData = { option1: 0, option2: 0 };
+let currentUser = null;
+
+// Fonction pour convertir une date de Paris au fuseau horaire local
+function convertParisToLocal(parisDateStr) {
+    // Format: "jj-mm-yyyy_hh:mm:ss"
+    try {
+        const [date, time] = parisDateStr.split('_');
+        const [day, month, year] = date.split('-');
+        const [hours, minutes, seconds] = time.split(':');
+        
+        // Créer une date UTC basée sur les valeurs
+        const dateUTC = new Date(`${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`);
+        
+        // Créer deux dates pour calculer les décalages
+        const parisiannow = new Date();
+        const utcNow = new Date(parisiannow.toLocaleString('en-US', { timeZone: 'UTC' }));
+        const parisNow = new Date(parisiannow.toLocaleString('en-US', { timeZone: 'Europe/Paris' }));
+        
+        const parisOffset = parisNow.getTime() - utcNow.getTime();
+        
+        // La date donnée est en heure de Paris, la convertir en UTC puis en heure locale
+        const dateInParis = new Date(dateUTC.getTime() - parisOffset);
+        
+        return dateInParis;
+    } catch (e) {
+        console.error('Erreur conversion date:', e);
+        return null;
+    }
+}
+
+// Fonction pour générer un ID de vote unique
+function generateVoteId() {
+    return 'vote_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+}
+
+// Protection anti-bot simple
+const ANTI_BOT_DELAY_MS = 10000; // 10 secondes minimum entre votes
+const lastVoteTime = {};
+
+function canVoteAntiBot(email) {
+    const now = Date.now();
+    const lastTime = lastVoteTime[email] || 0;
+    return (now - lastTime) >= ANTI_BOT_DELAY_MS;
+}
+
+function recordVoteTime(email) {
+    lastVoteTime[email] = Date.now();
+}
+
+// Fonction pour formater une date de manière lisible
+function formatDateLocal(date) {
+    if (!date) return '';
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    return date.toLocaleDateString('fr-FR', options);
+}
 
 const loginBtn = document.getElementById('login-btn');
 const logoutBtn = document.getElementById('logout-btn');
@@ -29,10 +85,12 @@ const scoreboard = document.getElementById('scoreboard');
 
 lucide.createIcons();
 
+document.getElementById('poll-btn').addEventListener('click', openPollModal);
 document.getElementById('info-btn').addEventListener('click', openRulesModal);
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
+        currentUser = user;
         loginBtn.classList.add('hidden');
         logoutBtn.classList.remove('hidden');
         if (admins.includes(user.email)) {
@@ -43,6 +101,7 @@ onAuthStateChanged(auth, (user) => {
             adminPanel.classList.add('hidden');
         }
     } else {
+        currentUser = null;
         loginBtn.classList.remove('hidden');
         logoutBtn.classList.add('hidden');
         isAdmin = false;
@@ -233,21 +292,218 @@ function openModal(name, onConfirm) {
     lucide.createIcons();
 }
 
+function openPollModal() {
+    fetch('poll.json?v=' + Date.now())
+        .then(r => r.json())
+        .then(pollConfig => {
+            const now = new Date();
+            const closeTime = convertParisToLocal(pollConfig.closeParisTz);
+            const isOpen = now < closeTime;
+            const hasVoted = false; // On ne peut pas tracker sans email dans les votes
+
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+
+            // HEADER
+            const header = document.createElement('div');
+            header.className = 'modal-header';
+            const title = document.createElement('h2');
+            const iconTitle = document.createElement('i');
+            iconTitle.setAttribute('data-lucide', 'bar-chart-2');
+            title.appendChild(iconTitle);
+            
+            let titleText;
+            if (isOpen) {
+                titleText = 'Sondage - En cours';
+            } else {
+                let dateStr = formatDateLocal(closeTime);
+                // Remplacer " HH:MM:SS" par " à HH:MM" (le " à " avant l'heure, sans les secondes)
+                dateStr = dateStr.replace(/ (\d{2}):(\d{2}):\d{2}$/, ' à $1:$2');
+                titleText = `Sondage - Fermé le ${dateStr}`;
+            }
+            title.appendChild(document.createTextNode(titleText));
+            header.appendChild(title);
+            const btnClose = document.createElement('button');
+            btnClose.className = 'btn-modal-close';
+            const iconClose = document.createElement('i');
+            iconClose.setAttribute('data-lucide', 'x');
+            btnClose.appendChild(iconClose);
+            btnClose.addEventListener('click', () => overlay.remove());
+            header.appendChild(btnClose);
+            modal.appendChild(header);
+
+            // BODY
+            const body = document.createElement('div');
+            body.className = 'modal-body';
+
+            const question = document.createElement('p');
+            question.style.marginBottom = '12px';
+            question.textContent = pollConfig.question || 'Quel est votre choix ?';
+            body.appendChild(question);
+
+            showPollResults(body, pollConfig, currentUser && isAdmin, isOpen, hasVoted);
+            modal.appendChild(body);
+
+            // FOOTER
+            const footer = document.createElement('div');
+            footer.className = 'modal-footer';
+
+            if (isOpen && !pollConfig.allowVotingOnSite) {
+                if (currentUser) {
+                    const msg = document.createElement('p');
+                    msg.style.fontSize = '0.9rem';
+                    msg.style.margin = '0';
+                    msg.style.color = 'var(--text-muted)';
+                    msg.textContent = 'Votes via Discord, Instagram, WhatsApp';
+                    footer.appendChild(msg);
+                } else {
+                    const msg = document.createElement('p');
+                    msg.style.fontSize = '0.9rem';
+                    msg.style.margin = '0';
+                    msg.style.color = 'var(--text-muted)';
+                    msg.textContent = 'Connectez-vous pour participer';
+                    footer.appendChild(msg);
+                }
+            } else if (isOpen && pollConfig.allowVotingOnSite && currentUser && !hasVoted) {
+                const votingSection = document.createElement('div');
+                votingSection.className = 'poll-voting';
+
+                const btn1 = document.createElement('button');
+                btn1.className = 'poll-vote-btn poll-vote-1';
+                btn1.innerHTML = '<span class="poll-vote-number">1</span>';
+                btn1.addEventListener('click', () => {
+                    recordVoteTime(currentUser.email);
+                    overlay.remove();
+                    alert('Vote enregistré !');
+                });
+                votingSection.appendChild(btn1);
+
+                const btn2 = document.createElement('button');
+                btn2.className = 'poll-vote-btn poll-vote-2';
+                btn2.innerHTML = '<span class="poll-vote-number">2</span>';
+                btn2.addEventListener('click', () => {
+                    recordVoteTime(currentUser.email);
+                    overlay.remove();
+                    alert('Vote enregistré !');
+                });
+                votingSection.appendChild(btn2);
+                footer.appendChild(votingSection);
+            }
+
+            modal.appendChild(footer);
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+            lucide.createIcons();
+        })
+        .catch(err => console.error('Erreur chargement poll.json:', err));
+}
+
+function showPollResults(bodyElement, pollConfig, isAdminView = false, isOpen = true, hasVoted = false) {
+    // Calculer les résultats
+    let option1Count = 0;
+    let option2Count = 0;
+    
+    if (pollConfig.votes && Array.isArray(pollConfig.votes)) {
+        pollConfig.votes.forEach(vote => {
+            if (vote.choice === 1) option1Count++;
+            else if (vote.choice === 2) option2Count++;
+        });
+    }
+    
+    const total = option1Count + option2Count || 1;
+    const percent1 = Math.round((option1Count / total) * 100);
+    const percent2 = Math.round((option2Count / total) * 100);
+
+    const resultsSection = document.createElement('div');
+    resultsSection.className = 'poll-results';
+
+    const resultsTitle = document.createElement('p');
+    resultsTitle.className = 'poll-results-title';
+    resultsTitle.textContent = 'Résultats';
+    resultsSection.appendChild(resultsTitle);
+
+    const result1 = document.createElement('div');
+    result1.className = 'poll-result-item';
+    result1.innerHTML = `
+        <div class="poll-result-header">
+            <span class="poll-result-label">Option 1</span>
+            <span class="poll-result-count">${option1Count} vote${option1Count > 1 ? 's' : ''}</span>
+        </div>
+        <div class="poll-result-bar">
+            <div class="poll-result-fill" style="width: ${percent1}%"></div>
+        </div>
+        <div class="poll-result-percent">${percent1}%</div>
+    `;
+
+    const result2 = document.createElement('div');
+    result2.className = 'poll-result-item';
+    result2.innerHTML = `
+        <div class="poll-result-header">
+            <span class="poll-result-label">Option 2</span>
+            <span class="poll-result-count">${option2Count} vote${option2Count > 1 ? 's' : ''}</span>
+        </div>
+        <div class="poll-result-bar">
+            <div class="poll-result-fill" style="width: ${percent2}%"></div>
+        </div>
+        <div class="poll-result-percent">${percent2}%</div>
+    `;
+
+    resultsSection.appendChild(result1);
+    resultsSection.appendChild(result2);
+    bodyElement.appendChild(resultsSection);
+    
+    // Afficher les votes détaillés seulement pour les admins (si la liste n'est pas vide)
+    if (isAdminView && pollConfig.votes && Array.isArray(pollConfig.votes) && pollConfig.votes.length > 0) {
+        const adminSection = document.createElement('div');
+        adminSection.style.marginTop = '16px';
+        adminSection.style.paddingTop = '12px';
+        adminSection.style.borderTop = '1px solid var(--border)';
+        
+        const adminTitle = document.createElement('p');
+        adminTitle.style.fontSize = '0.9rem';
+        adminTitle.style.fontWeight = 'bold';
+        adminTitle.style.marginBottom = '8px';
+        adminTitle.textContent = '📋 Votes (Admin)';
+        adminSection.appendChild(adminTitle);
+        
+        const votesContainer = document.createElement('div');
+        votesContainer.style.fontSize = '0.85rem';
+        votesContainer.style.maxHeight = '200px';
+        votesContainer.style.overflowY = 'auto';
+        
+        pollConfig.votes.forEach((vote) => {
+            const voteItem = document.createElement('div');
+            voteItem.style.padding = '4px';
+            voteItem.style.color = 'var(--text-muted)';
+            voteItem.textContent = `${vote.pseudo || 'Anonyme'} (${vote.source || 'Site'}) → Choix ${vote.choice}`;
+            votesContainer.appendChild(voteItem);
+        });
+        
+        adminSection.appendChild(votesContainer);
+        bodyElement.appendChild(adminSection);
+    }
+}
+
 async function openRulesModal() {
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
 
     const modal = document.createElement('div');
-    modal.className = 'modal modal-rules';
+    modal.className = 'modal';
 
+    // HEADER
     const header = document.createElement('div');
-    header.className = 'modal-rules-header';
+    header.className = 'modal-header';
 
     const title = document.createElement('h2');
     const iconTitle = document.createElement('i');
     iconTitle.setAttribute('data-lucide', 'info');
     title.appendChild(iconTitle);
-    title.appendChild(document.createTextNode(' R\u00e8gles du jeu'));
+    title.appendChild(document.createTextNode('Règles du jeu'));
+    header.appendChild(title);
 
     const btnClose = document.createElement('button');
     btnClose.className = 'btn-modal-close';
@@ -255,25 +511,23 @@ async function openRulesModal() {
     iconClose.setAttribute('data-lucide', 'x');
     btnClose.appendChild(iconClose);
     btnClose.addEventListener('click', () => overlay.remove());
-
-    header.appendChild(title);
     header.appendChild(btnClose);
+    modal.appendChild(header);
 
+    // BODY
     const body = document.createElement('div');
-    body.className = 'modal-rules-body';
+    body.className = 'modal-body';
 
     try {
         const response = await fetch('rules.md?v=' + Date.now());
         const text = await response.text();
         body.innerHTML = marked.parse(text);
     } catch {
-        body.innerHTML = '<p>Impossible de charger les r\u00e8gles.</p>';
+        body.innerHTML = '<p>Impossible de charger les règles.</p>';
     }
 
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
-
-    modal.appendChild(header);
     modal.appendChild(body);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
     lucide.createIcons();
