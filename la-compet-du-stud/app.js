@@ -454,6 +454,7 @@ function showPollResults(bodyElement, pollConfig, isAdminView = false, isOpen = 
         checkboxContainer.style.flexWrap = 'wrap';
         checkboxContainer.style.gap = '12px';
         checkboxContainer.style.marginBottom = '16px';
+        checkboxContainer.style.justifyContent = 'space-between';
         
         const sources = Object.keys(resultsBySource).sort();
         const checkedSources = new Set(sources); // Tous cochés par défaut
