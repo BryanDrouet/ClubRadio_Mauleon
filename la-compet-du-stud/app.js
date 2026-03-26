@@ -462,11 +462,21 @@ function showPollResults(bodyElement, pollConfig, isAdminView = false, isOpen = 
         adminSection.style.paddingTop = '12px';
         adminSection.style.borderTop = '1px solid var(--border)';
         
-        const adminTitle = document.createElement('p');
+        const adminTitle = document.createElement('div');
         adminTitle.style.fontSize = '0.9rem';
         adminTitle.style.fontWeight = 'bold';
         adminTitle.style.marginBottom = '8px';
-        adminTitle.textContent = '📋 Votes (Admin)';
+        adminTitle.style.display = 'flex';
+        adminTitle.style.alignItems = 'center';
+        adminTitle.style.gap = '6px';
+        
+        const adminIcon = document.createElement('i');
+        adminIcon.setAttribute('data-lucide', 'list');
+        adminTitle.appendChild(adminIcon);
+        
+        const adminLabel = document.createElement('span');
+        adminLabel.textContent = 'Votes (Admin)';
+        adminTitle.appendChild(adminLabel);
         adminSection.appendChild(adminTitle);
         
         const votesContainer = document.createElement('div');
