@@ -783,6 +783,10 @@ async function openRulesModal() {
         const response = await fetch('rules.md?v=' + Date.now());
         const text = await response.text();
         body.innerHTML = marked.parse(text);
+        // Si le premier enfant est un h1, on ajoute la classe only-h1
+        if (body.firstElementChild && body.firstElementChild.tagName === 'H1') {
+            body.classList.add('only-h1');
+        }
     } catch {
         body.innerHTML = '<p>Impossible de charger les règles.</p>';
     }

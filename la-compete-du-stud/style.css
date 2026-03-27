@@ -443,13 +443,22 @@ button svg {
     height: 1.3rem;
 }
 
+
 .modal-body {
     padding: 24px;
     overflow-y: auto;
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0;
+    gap: 24px;
+}
+
+/* Si le body contient un h1 en premier enfant, gap = 0 */
+.modal-body > h1:first-child {
+    margin-bottom: 24px;
+}
+.modal-body.only-h1 {
+    gap: 0 !important;
 }
 
 .modal-body p {
