@@ -154,6 +154,12 @@
             "choice": 2,
             "pseudo": "Lilou RLB",
             "source": "Instagram"
+        },
+        {
+            "choice": 1,
+            "pseudo": "Romane Frouin",
+            "source": "WhatsApp"
         }
+        
     ]
 }
