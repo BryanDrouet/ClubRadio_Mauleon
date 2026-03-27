@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
-    <base href="./">
+    <base href="/60secondes/">
     <title>60 Secondes Challenge - ClubRadio Mauléon</title>
     <link rel="icon"
           href="assets/icon.png"
@@ -1851,7 +1851,7 @@
 
             const inputId = inputMap[paramName];
             if (inputId) {
-                const input = document.getElementById(inputId);
+                const input = document.getElementById(inputId
                 if (input) {
                     // Gérer les cas spéciaux de conversion
                     if (paramName === 'gradientOpacity') {
@@ -1961,7 +1961,7 @@
         }
 
         function initConfigPanel() {
-            debugLog('Initializing config panel', 'info');
+            debugLog('Initializing config panel');
 
             const debugCheckbox = document.getElementById('debugModeCheckbox');
             const durationInput = document.getElementById('durationInput');

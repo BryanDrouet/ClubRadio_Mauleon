@@ -1,3 +1,13 @@
+/**
+ * SIMULATION DE FUSEAU HORAIRE (DEV MODE)
+ * Pour simuler un fuseau horaire différent, ajoute le paramètre "?tz=" à l'URL
+ * Exemples:
+ *   - http://localhost:5500/la-compete-du-stud/?tz=UTC-4  (UTC-4, ex: New York)
+ *   - http://localhost:5500/la-compete-du-stud/?tz=UTC+2  (UTC+2, ex: Paris)
+ *   - http://localhost:5500/la-compete-du-stud/?tz=UTC-8  (UTC-8, ex: Los Angeles)
+ * Un badge rouge apparaîtra en haut à droite pour confirmer la simulation.
+ */
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -22,6 +32,19 @@ let isAdmin = false;
 let globalPollData = { option1: 0, option2: 0 };
 let currentUser = null;
 
+// Simulation de fuseau horaire pour le dev
+let simulatedTimezoneOffset = null;
+const urlParams = new URLSearchParams(window.location.search);
+const tzParam = urlParams.get('tz');
+if (tzParam) {
+    // Extraire le nombre du paramètre (ex: "UTC-4" -> -4, "UTC+2" -> 2)
+    const match = tzParam.match(/UTC([+-])(\d+)/);
+    if (match) {
+        simulatedTimezoneOffset = parseInt(match[1] + match[2]) * 60 * 60 * 1000; // Convertir en ms
+        console.log(`Dev mode: Simulating ${tzParam} (offset: ${simulatedTimezoneOffset / (60 * 60 * 1000)} hours)`);
+    }
+}
+
 // Fonction pour convertir une date de Paris au fuseau horaire local
 function convertParisToLocal(parisDateStr) {
     // Format: "jj-mm-yyyy_hh:mm:ss"
@@ -41,7 +64,12 @@ function convertParisToLocal(parisDateStr) {
         const parisOffset = parisNow.getTime() - utcNow.getTime();
         
         // La date donnée est en heure de Paris, la convertir en UTC puis en heure locale
-        const dateInParis = new Date(dateUTC.getTime() - parisOffset);
+        let dateInParis = new Date(dateUTC.getTime() - parisOffset);
+        
+        // Si un fuseau horaire est simulé en dev, le remplacer
+        if (simulatedTimezoneOffset !== null) {
+            dateInParis = new Date(dateUTC.getTime() + simulatedTimezoneOffset);
+        }
         
         return dateInParis;
     } catch (e) {
@@ -69,6 +97,18 @@ function recordVoteTime(email) {
     lastVoteTime[email] = Date.now();
 }
 
+// Fonction pour tracker si l'utilisateur a voté
+function recordUserVote(email) {
+    const votes = JSON.parse(localStorage.getItem('userPollVotes') || '{}');
+    votes[email] = Date.now();
+    localStorage.setItem('userPollVotes', JSON.stringify(votes));
+}
+
+function hasUserVoted(email) {
+    const votes = JSON.parse(localStorage.getItem('userPollVotes') || '{}');
+    return votes.hasOwnProperty(email);
+}
+
 // Fonction pour formater une date de manière lisible
 function formatDateLocal(date) {
     if (!date) return '';
@@ -84,6 +124,25 @@ const newNameInput = document.getElementById('new-name');
 const scoreboard = document.getElementById('scoreboard');
 
 lucide.createIcons();
+
+// Afficher le badge de fuseau horaire simulé en dev
+if (simulatedTimezoneOffset !== null) {
+    const header = document.querySelector('header');
+    const badge = document.createElement('div');
+    badge.style.position = 'fixed';
+    badge.style.top = '10px';
+    badge.style.right = '10px';
+    badge.style.padding = '8px 12px';
+    badge.style.backgroundColor = '#ff6b6b';
+    badge.style.color = 'white';
+    badge.style.borderRadius = '4px';
+    badge.style.fontSize = '0.85rem';
+    badge.style.fontWeight = 'bold';
+    badge.style.zIndex = '9999';
+    badge.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
+    badge.textContent = `🔧 DEV: ${tzParam}`;
+    document.body.appendChild(badge);
+}
 
 document.getElementById('poll-btn').addEventListener('click', openPollModal);
 document.getElementById('info-btn').addEventListener('click', openRulesModal);
@@ -299,7 +358,9 @@ function openPollModal() {
             const now = new Date();
             const closeTime = convertParisToLocal(pollConfig.closeParisTz);
             const isOpen = now < closeTime;
-            const hasVoted = false; // On ne peut pas tracker sans email dans les votes
+            // Vérifier si l'utilisateur a déjà voté
+            const userEmail = currentUser?.email || null;
+            const hasVoted = userEmail ? hasUserVoted(userEmail) : false;
 
             const overlay = document.createElement('div');
             overlay.className = 'modal-overlay';
@@ -309,6 +370,14 @@ function openPollModal() {
             // HEADER
             const header = document.createElement('div');
             header.className = 'modal-header';
+            
+            // Wrapper pour le titre et le sous-titre (responsive)
+            const titleWrapper = document.createElement('div');
+            titleWrapper.className = 'modal-header-title-wrapper';
+            titleWrapper.style.display = 'flex';
+            titleWrapper.style.flexDirection = 'column';
+            titleWrapper.style.gap = '10px';
+            
             const title = document.createElement('h2');
             const iconTitle = document.createElement('i');
             iconTitle.setAttribute('data-lucide', 'bar-chart-2');
@@ -324,7 +393,22 @@ function openPollModal() {
                 titleText = `Sondage - Fermé le ${dateStr}`;
             }
             title.appendChild(document.createTextNode(titleText));
-            header.appendChild(title);
+            titleWrapper.appendChild(title);
+            
+            // Ajouter l'heure de fin pour les sondages en cours
+            if (isOpen) {
+                const closeInfo = document.createElement('p');
+                closeInfo.style.fontSize = '0.85rem';
+                closeInfo.style.color = 'var(--text-muted)';
+                closeInfo.style.margin = '0';
+                let dateStr = formatDateLocal(closeTime);
+                dateStr = dateStr.replace(/ (\d{2}):(\d{2}):\d{2}$/, ' à $1:$2');
+                closeInfo.textContent = `Se termine le ${dateStr}`;
+                titleWrapper.appendChild(closeInfo);
+            }
+            
+            header.appendChild(titleWrapper);
+            
             const btnClose = document.createElement('button');
             btnClose.className = 'btn-modal-close';
             const iconClose = document.createElement('i');
@@ -338,23 +422,30 @@ function openPollModal() {
             const body = document.createElement('div');
             body.className = 'modal-body';
 
+            // Wrapper pour la question et l'actualisation
+            const headerWrapper = document.createElement('div');
+            headerWrapper.style.display = 'flex';
+            headerWrapper.style.flexDirection = 'column';
+            headerWrapper.style.gap = '8px';
+
             const question = document.createElement('p');
-            question.style.marginBottom = '12px';
+            question.style.margin = '0';
             question.textContent = pollConfig.question || 'Quel est votre choix ?';
-            body.appendChild(question);
+            headerWrapper.appendChild(question);
 
             // Afficher la dernière actualisation si disponible
             if (pollConfig.lastUpdateTime) {
                 const updateTimeDiv = document.createElement('div');
                 updateTimeDiv.style.fontSize = '0.8rem';
                 updateTimeDiv.style.color = 'var(--text-muted)';
-                updateTimeDiv.style.marginBottom = '12px';
                 
                 const updateTime = convertParisToLocal(pollConfig.lastUpdateTime);
                 const updateTimeStr = formatDateLocal(updateTime).replace(/ (\d{2}):(\d{2}):\d{2}$/, ' à $1:$2');
                 updateTimeDiv.textContent = `Dernière actualisation : ${updateTimeStr}`;
-                body.appendChild(updateTimeDiv);
+                headerWrapper.appendChild(updateTimeDiv);
             }
+
+            body.appendChild(headerWrapper);
 
             showPollResults(body, pollConfig, currentUser && isAdmin, isOpen, hasVoted);
             modal.appendChild(body);
@@ -385,6 +476,7 @@ function openPollModal() {
                 btn1.innerHTML = '<span class="poll-vote-number">1</span>';
                 btn1.addEventListener('click', () => {
                     recordVoteTime(currentUser.email);
+                    recordUserVote(currentUser.email);
                     overlay.remove();
                     alert('Vote enregistré !');
                 });
@@ -395,6 +487,7 @@ function openPollModal() {
                 btn2.innerHTML = '<span class="poll-vote-number">2</span>';
                 btn2.addEventListener('click', () => {
                     recordVoteTime(currentUser.email);
+                    recordUserVote(currentUser.email);
                     overlay.remove();
                     alert('Vote enregistré !');
                 });
@@ -420,7 +513,45 @@ function openPollModal() {
 }
 
 function showPollResults(bodyElement, pollConfig, isAdminView = false, isOpen = true, hasVoted = false) {
-    // Afficher les résultats par source avec checkboxes (une seule section dynamique)
+    // Déterminer si on doit afficher les résultats
+    const pollType = pollConfig.type || 'social-media';
+    const isWebsitePoll = pollType === 'website';
+    
+    // Les résultats ne s'affichent que si :
+    // 1. Le sondage est fermé (tous peuvent voir), OU
+    // 2. C'est un sondage website ET l'utilisateur a voté, OU
+    // 3. C'est un admin
+    const shouldShowResults = !isOpen || isAdminView || (isWebsitePoll && hasVoted);
+    
+    // Message si les résultats ne sont pas disponibles
+    if (!shouldShowResults && pollConfig.votes && Array.isArray(pollConfig.votes) && pollConfig.votes.length > 0) {
+        // Wrapper avec gap 24px
+        const lockedWrapper = document.createElement('div');
+        lockedWrapper.style.display = 'flex';
+        lockedWrapper.style.flexDirection = 'column';
+        lockedWrapper.style.gap = '24px';
+
+        const lockedDiv = document.createElement('div');
+        lockedDiv.className = 'poll-results-locked';
+        lockedDiv.style.display = 'flex';
+        lockedDiv.style.alignItems = 'center';
+        lockedDiv.style.justifyContent = 'center';
+        lockedDiv.style.gap = '8px';
+        lockedDiv.style.color = 'var(--text-muted)';
+        lockedDiv.style.fontSize = '0.9rem';
+
+        const lockIcon = document.createElement('i');
+        lockIcon.setAttribute('data-lucide', 'lock');
+
+        lockedDiv.appendChild(lockIcon);
+        lockedDiv.appendChild(document.createTextNode('Les résultats seront affichés à la fin du sondage'));
+        lockedWrapper.appendChild(lockedDiv);
+        bodyElement.appendChild(lockedWrapper);
+        lucide.createIcons();
+        return;
+    }
+    
+    // Afficher la section des résultats filtrés par source
     if (pollConfig.votes && Array.isArray(pollConfig.votes) && pollConfig.votes.length > 0) {
         // Grouper les votes par source
         const resultsBySource = {};
@@ -437,14 +568,16 @@ function showPollResults(bodyElement, pollConfig, isAdminView = false, isOpen = 
         });
 
         const sourceSection = document.createElement('div');
-        sourceSection.style.marginTop = '16px';
-        sourceSection.style.paddingTop = '12px';
         sourceSection.style.borderTop = '1px solid var(--border)';
+        sourceSection.style.paddingTop = '12px';
+        sourceSection.style.display = 'flex';
+        sourceSection.style.flexDirection = 'column';
+        sourceSection.style.gap = '12px';
         
         // Titre avec label "Filtrer par source"
         const sourceTitle = document.createElement('p');
         sourceTitle.className = 'poll-results-title';
-        sourceTitle.style.marginBottom = '12px';
+        sourceTitle.style.margin = '0';
         sourceTitle.textContent = 'Filtrer par source';
         sourceSection.appendChild(sourceTitle);
         
@@ -453,7 +586,6 @@ function showPollResults(bodyElement, pollConfig, isAdminView = false, isOpen = 
         checkboxContainer.style.display = 'flex';
         checkboxContainer.style.flexWrap = 'wrap';
         checkboxContainer.style.gap = '12px';
-        checkboxContainer.style.marginBottom = '16px';
         checkboxContainer.style.justifyContent = 'space-between';
         
         const sources = Object.keys(resultsBySource).sort();
@@ -576,14 +708,15 @@ function showPollResults(bodyElement, pollConfig, isAdminView = false, isOpen = 
     // Afficher les votes détaillés seulement pour les admins (si la liste n'est pas vide)
     if (isAdminView && pollConfig.votes && Array.isArray(pollConfig.votes) && pollConfig.votes.length > 0) {
         const adminSection = document.createElement('div');
-        adminSection.style.marginTop = '16px';
-        adminSection.style.paddingTop = '12px';
         adminSection.style.borderTop = '1px solid var(--border)';
+        adminSection.style.paddingTop = '12px';
+        adminSection.style.display = 'flex';
+        adminSection.style.flexDirection = 'column';
+        adminSection.style.gap = '8px';
         
         const adminTitle = document.createElement('div');
         adminTitle.style.fontSize = '0.9rem';
         adminTitle.style.fontWeight = 'bold';
-        adminTitle.style.marginBottom = '8px';
         adminTitle.style.display = 'flex';
         adminTitle.style.alignItems = 'center';
         adminTitle.style.gap = '6px';
