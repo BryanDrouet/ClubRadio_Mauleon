@@ -1,3 +1,68 @@
+/* Harmonisation des blocs de la modale de sondage */
+.poll-question-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.poll-last-update {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+.poll-results-locked-block {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.poll-results-locked {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+.poll-results-block {
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.poll-results-title {
+    margin: 0;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--text-strong, var(--text-primary));
+}
+.poll-results-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+}
+.poll-votes-admin-block {
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.poll-votes-admin-title {
+    font-size: 0.9rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.poll-votes-admin-list {
+    font-size: 0.85rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+.poll-votes-admin-list > div {
+    padding: 4px;
+    color: var(--text-muted);
+}
 * {
     box-sizing: border-box;
     margin: 0;

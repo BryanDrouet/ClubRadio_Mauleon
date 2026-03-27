@@ -422,30 +422,24 @@ function openPollModal() {
             const body = document.createElement('div');
             body.className = 'modal-body';
 
-            // Wrapper pour la question et l'actualisation
-            const headerWrapper = document.createElement('div');
-            headerWrapper.style.display = 'flex';
-            headerWrapper.style.flexDirection = 'column';
-            headerWrapper.style.gap = '8px';
+
+            // Bloc question + actualisation
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'poll-question-block';
 
             const question = document.createElement('p');
-            question.style.margin = '0';
             question.textContent = pollConfig.question || 'Quel est votre choix ?';
-            headerWrapper.appendChild(question);
+            questionBlock.appendChild(question);
 
-            // Afficher la dernière actualisation si disponible
             if (pollConfig.lastUpdateTime) {
                 const updateTimeDiv = document.createElement('div');
-                updateTimeDiv.style.fontSize = '0.8rem';
-                updateTimeDiv.style.color = 'var(--text-muted)';
-                
+                updateTimeDiv.className = 'poll-last-update';
                 const updateTime = convertParisToLocal(pollConfig.lastUpdateTime);
-                const updateTimeStr = formatDateLocal(updateTime).replace(/ (\d{2}):(\d{2}):\d{2}$/, ' à $1:$2');
+                const updateTimeStr = formatDateLocal(updateTime).replace(/ (\d{2}):(\d{2}):(\d{2})$/, ' à $1:$2');
                 updateTimeDiv.textContent = `Dernière actualisation : ${updateTimeStr}`;
-                headerWrapper.appendChild(updateTimeDiv);
+                questionBlock.appendChild(updateTimeDiv);
             }
-
-            body.appendChild(headerWrapper);
+            body.appendChild(questionBlock);
 
             showPollResults(body, pollConfig, currentUser && isAdmin, isOpen, hasVoted);
             modal.appendChild(body);
@@ -525,28 +519,18 @@ function showPollResults(bodyElement, pollConfig, isAdminView = false, isOpen = 
     
     // Message si les résultats ne sont pas disponibles
     if (!shouldShowResults && pollConfig.votes && Array.isArray(pollConfig.votes) && pollConfig.votes.length > 0) {
-        // Wrapper avec gap 24px
-        const lockedWrapper = document.createElement('div');
-        lockedWrapper.style.display = 'flex';
-        lockedWrapper.style.flexDirection = 'column';
-        lockedWrapper.style.gap = '24px';
+        // Bloc harmonisé pour message verrouillé
+        const lockedBlock = document.createElement('div');
+        lockedBlock.className = 'poll-results-locked-block';
 
         const lockedDiv = document.createElement('div');
         lockedDiv.className = 'poll-results-locked';
-        lockedDiv.style.display = 'flex';
-        lockedDiv.style.alignItems = 'center';
-        lockedDiv.style.justifyContent = 'center';
-        lockedDiv.style.gap = '8px';
-        lockedDiv.style.color = 'var(--text-muted)';
-        lockedDiv.style.fontSize = '0.9rem';
-
         const lockIcon = document.createElement('i');
         lockIcon.setAttribute('data-lucide', 'lock');
-
         lockedDiv.appendChild(lockIcon);
         lockedDiv.appendChild(document.createTextNode('Les résultats seront affichés à la fin du sondage'));
-        lockedWrapper.appendChild(lockedDiv);
-        bodyElement.appendChild(lockedWrapper);
+        lockedBlock.appendChild(lockedDiv);
+        bodyElement.appendChild(lockedBlock);
         lucide.createIcons();
         return;
     }
@@ -567,46 +551,37 @@ function showPollResults(bodyElement, pollConfig, isAdminView = false, isOpen = 
             }
         });
 
-        const sourceSection = document.createElement('div');
-        sourceSection.style.borderTop = '1px solid var(--border)';
-        sourceSection.style.paddingTop = '12px';
-        sourceSection.style.display = 'flex';
-        sourceSection.style.flexDirection = 'column';
-        sourceSection.style.gap = '12px';
-        
+        const resultsBlock = document.createElement('div');
+        resultsBlock.className = 'poll-results-block';
+
         // Titre avec label "Filtrer par source"
         const sourceTitle = document.createElement('p');
         sourceTitle.className = 'poll-results-title';
-        sourceTitle.style.margin = '0';
         sourceTitle.textContent = 'Filtrer par source';
-        sourceSection.appendChild(sourceTitle);
-        
+        resultsBlock.appendChild(sourceTitle);
+
         // Conteneur des checkboxes
         const checkboxContainer = document.createElement('div');
-        checkboxContainer.style.display = 'flex';
-        checkboxContainer.style.flexWrap = 'wrap';
-        checkboxContainer.style.gap = '12px';
-        checkboxContainer.style.justifyContent = 'space-between';
-        
+        checkboxContainer.className = 'poll-results-filters';
+
         const sources = Object.keys(resultsBySource).sort();
         const checkedSources = new Set(sources); // Tous cochés par défaut
-        
+
         sources.forEach(source => {
             const wrapper = document.createElement('div');
             wrapper.className = 'checkbox-wrapper';
-            wrapper.style.cursor = 'pointer';
-            
+
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.checked = true;
-            
+
             const checkboxApple = document.createElement('div');
             checkboxApple.className = 'checkbox-apple';
-            
+
             const label = document.createElement('span');
             label.className = 'checkbox-label';
             label.textContent = source;
-            
+
             // Événement click sur le wrapper pour toggle le checkbox
             wrapper.addEventListener('click', (e) => {
                 checkbox.checked = !checkbox.checked;
@@ -617,37 +592,37 @@ function showPollResults(bodyElement, pollConfig, isAdminView = false, isOpen = 
                 }
                 updateSourceResults();
             });
-            
+
             wrapper.appendChild(checkbox);
             wrapper.appendChild(checkboxApple);
             wrapper.appendChild(label);
             checkboxContainer.appendChild(wrapper);
         });
-        
-        sourceSection.appendChild(checkboxContainer);
-        
+
+        resultsBlock.appendChild(checkboxContainer);
+
         // Conteneur des résultats filtrés
         const filteredResultsDiv = document.createElement('div');
         filteredResultsDiv.className = 'poll-results';
-        sourceSection.appendChild(filteredResultsDiv);
-        
+        resultsBlock.appendChild(filteredResultsDiv);
+
         function updateSourceResults() {
             let filteredOption1 = 0;
             let filteredOption2 = 0;
-            
+
             checkedSources.forEach(source => {
                 filteredOption1 += resultsBySource[source].option1;
                 filteredOption2 += resultsBySource[source].option2;
             });
-            
+
             const filteredTotal = filteredOption1 + filteredOption2 || 1;
             const filteredPercent1 = Math.round((filteredOption1 / filteredTotal) * 100);
             const filteredPercent2 = Math.round((filteredOption2 / filteredTotal) * 100);
-            
+
             // Chercher ou créer les éléments de résultat
             let result1Filtered = filteredResultsDiv.querySelector('.poll-result-item:nth-child(1)');
             let result2Filtered = filteredResultsDiv.querySelector('.poll-result-item:nth-child(2)');
-            
+
             if (!result1Filtered) {
                 // Créer les éléments s'ils n'existent pas
                 result1Filtered = document.createElement('div');
@@ -664,7 +639,7 @@ function showPollResults(bodyElement, pollConfig, isAdminView = false, isOpen = 
                 `;
                 filteredResultsDiv.appendChild(result1Filtered);
             }
-            
+
             if (!result2Filtered) {
                 result2Filtered = document.createElement('div');
                 result2Filtered.className = 'poll-result-item';
@@ -680,7 +655,7 @@ function showPollResults(bodyElement, pollConfig, isAdminView = false, isOpen = 
                 `;
                 filteredResultsDiv.appendChild(result2Filtered);
             }
-            
+
             // Mettre à jour les valeurs avec animation
             const count1 = result1Filtered.querySelector('.poll-result-count');
             const count2 = result2Filtered.querySelector('.poll-result-count');
@@ -688,63 +663,47 @@ function showPollResults(bodyElement, pollConfig, isAdminView = false, isOpen = 
             const percent2 = result2Filtered.querySelector('.poll-result-percent');
             const fill1 = result1Filtered.querySelector('.poll-result-fill');
             const fill2 = result2Filtered.querySelector('.poll-result-fill');
-            
+
             count1.textContent = `${filteredOption1} vote${filteredOption1 > 1 ? 's' : ''}`;
             count2.textContent = `${filteredOption2} vote${filteredOption2 > 1 ? 's' : ''}`;
             percent1.textContent = `${filteredPercent1}%`;
             percent2.textContent = `${filteredPercent2}%`;
-            
+
             // Trigger animation de la barre
             requestAnimationFrame(() => {
                 fill1.style.width = `${filteredPercent1}%`;
                 fill2.style.width = `${filteredPercent2}%`;
             });
         }
-        
+
         updateSourceResults();
-        bodyElement.appendChild(sourceSection);
+        bodyElement.appendChild(resultsBlock);
     }
     
     // Afficher les votes détaillés seulement pour les admins (si la liste n'est pas vide)
     if (isAdminView && pollConfig.votes && Array.isArray(pollConfig.votes) && pollConfig.votes.length > 0) {
-        const adminSection = document.createElement('div');
-        adminSection.style.borderTop = '1px solid var(--border)';
-        adminSection.style.paddingTop = '12px';
-        adminSection.style.display = 'flex';
-        adminSection.style.flexDirection = 'column';
-        adminSection.style.gap = '8px';
-        
+        const adminBlock = document.createElement('div');
+        adminBlock.className = 'poll-votes-admin-block';
+
         const adminTitle = document.createElement('div');
-        adminTitle.style.fontSize = '0.9rem';
-        adminTitle.style.fontWeight = 'bold';
-        adminTitle.style.display = 'flex';
-        adminTitle.style.alignItems = 'center';
-        adminTitle.style.gap = '6px';
-        
+        adminTitle.className = 'poll-votes-admin-title';
         const adminIcon = document.createElement('i');
         adminIcon.setAttribute('data-lucide', 'list');
         adminTitle.appendChild(adminIcon);
-        
         const adminLabel = document.createElement('span');
         adminLabel.textContent = 'Votes (Admin)';
         adminTitle.appendChild(adminLabel);
-        adminSection.appendChild(adminTitle);
-        
+        adminBlock.appendChild(adminTitle);
+
         const votesContainer = document.createElement('div');
-        votesContainer.style.fontSize = '0.85rem';
-        votesContainer.style.maxHeight = '200px';
-        votesContainer.style.overflowY = 'auto';
-        
+        votesContainer.className = 'poll-votes-admin-list';
         pollConfig.votes.forEach((vote) => {
             const voteItem = document.createElement('div');
-            voteItem.style.padding = '4px';
-            voteItem.style.color = 'var(--text-muted)';
             voteItem.textContent = `${vote.pseudo || 'Anonyme'} (${vote.source || 'Site'}) → Choix ${vote.choice}`;
             votesContainer.appendChild(voteItem);
         });
-        
-        adminSection.appendChild(votesContainer);
-        bodyElement.appendChild(adminSection);
+        adminBlock.appendChild(votesContainer);
+        bodyElement.appendChild(adminBlock);
     }
 }
 
