@@ -39,3 +39,6 @@ node_modules/
 # Build outputs
 dist/
 build/
+
+# Dossiers spécifiques à ignorer
+site-en-construction-php/
