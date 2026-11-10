@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Overlay basket</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+</head>
+<body class="overlay-page">
+    <main id="basketballOverlay" class="basketball-overlay" hidden>
+        <section class="scoreboard" aria-label="Score du match de basket">
+            <div class="team-block home-team">
+                <span class="team-name" id="homeName">Mauléon</span>
+                <strong class="score" id="homeScore">0</strong>
+            </div>
+            <div class="team-block away-team">
+                <strong class="score" id="awayScore">0</strong>
+                <span class="team-name" id="awayName">Adversaire</span>
+            </div>
+            <div class="match-time">
+                <strong id="matchTimer">10:00</strong>
+                <span id="matchPeriod">Q1</span>
+            </div>
+            <div class="team-meta home-meta"><span>Fautes</span><strong id="homeFouls">0</strong><span>TM <b id="homeTimeouts">3</b></span></div>
+            <div class="team-meta away-meta"><span>Fautes</span><strong id="awayFouls">0</strong><span>TM <b id="awayTimeouts">3</b></span></div>
+        </section>
+        <div class="sponsor" id="sponsor">CLUBRADIO</div>
+    </main>
+    <div class="overlay-error" id="overlayError" hidden>Connexion à l’overlay impossible</div>
+    <script src="overlay.js"></script>
+</body>
+</html>
