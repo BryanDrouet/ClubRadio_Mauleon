@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Football - Régie overlay</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="../60secondes/firebase-config.js"></script>
+</head>
+<body class="control-page">
+    <main class="control-shell">
+        <header class="page-header">
+            <div>
+                <a class="back-link" href="../">← Outils ClubRadio</a>
+                <h1>Overlay football</h1>
+                <p>Régie synchronisée pour OBS</p>
+            </div>
+            <div class="connection-pill" id="connectionStatus">Connexion...</div>
+        </header>
+
+        <section id="loginPanel" class="panel login-panel">
+            <h2>Accès régie</h2>
+            <p>Connectez-vous avec un compte autorisé pour modifier l’affichage.</p>
+            <button class="primary-button" id="loginButton">Se connecter avec Google</button>
+            <p class="error-message" id="loginError" hidden></p>
+        </section>
+
+        <div id="dashboard" hidden>
+            <section class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h2>Match en direct</h2>
+                        <span class="muted" id="userEmail"></span>
+                    </div>
+                    <button class="secondary-button" id="logoutButton">Déconnexion</button>
+                </div>
+                <div class="match-grid">
+                    <label>Équipe domicile<input id="homeName" maxlength="24" value="Gendarmes"></label>
+                    <label>Score<input id="homeScore" type="number" min="0" max="99" value="0"></label>
+                    <label>Équipe extérieur<input id="awayName" maxlength="24" value="Pompiers"></label>
+                    <label>Score<input id="awayScore" type="number" min="0" max="99" value="0"></label>
+                </div>
+                <div class="button-row">
+                    <button class="primary-button" id="saveMatchButton">Enregistrer le score</button>
+                    <button class="secondary-button" id="swapButton">Inverser les équipes</button>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="panel-heading">
+                    <div><h2>Chronomètre</h2><span class="muted" id="timerState">Arrêté</span></div>
+                    <strong class="control-timer" id="controlTimer">00:00</strong>
+                </div>
+                <div class="button-row">
+                    <button class="primary-button" id="startButton">▶ Démarrer</button>
+                    <button class="secondary-button" id="pauseButton">⏸ Pause</button>
+                    <button class="secondary-button" id="resetButton">↺ Remettre à zéro</button>
+                </div>
+                <label class="inline-field">Minute de départ au démarrage
+                    <input id="startMinute" type="number" min="0" max="120" value="0">
+                </label>
+            </section>
+
+            <section class="panel">
+                <h2>Cartons et affichage</h2>
+                <div class="match-grid">
+                    <label>Cartons jaunes domicile<input id="homeYellow" type="number" min="0" max="9" value="0"></label>
+                    <label>Cartons rouges domicile<input id="homeRed" type="number" min="0" max="9" value="0"></label>
+                    <label>Cartons jaunes extérieur<input id="awayYellow" type="number" min="0" max="9" value="0"></label>
+                    <label>Cartons rouges extérieur<input id="awayRed" type="number" min="0" max="9" value="0"></label>
+                    <label class="wide-field">Sponsor<input id="sponsor" maxlength="32" value="TÉLÉTHON 3637"></label>
+                </div>
+                <div class="button-row">
+                    <button class="primary-button" id="saveDisplayButton">Mettre à jour l’overlay</button>
+                    <button class="secondary-button" id="visibilityButton">Masquer l’overlay</button>
+                </div>
+            </section>
+
+            <section class="panel obs-panel">
+                <h2>Configuration OBS</h2>
+                <p>Ajoutez cette adresse comme source « Navigateur », en 1920 × 1080 :</p>
+                <code id="overlayUrl"></code>
+                <button class="secondary-button" id="copyUrlButton">Copier l’URL</button>
+            </section>
+        </div>
+    </main>
+    <script src="controle.js"></script>
+</body>
+</html>

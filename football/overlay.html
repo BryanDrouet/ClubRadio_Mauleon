@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Overlay football</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="../60secondes/firebase-config.js"></script>
+</head>
+<body class="overlay-page">
+    <main id="footballOverlay" class="football-overlay" hidden>
+        <section class="scoreboard" aria-label="Score du match">
+            <div class="team-block home-team">
+                <span class="team-name" id="homeName">Gendarmes</span>
+                <strong class="score" id="homeScore">0</strong>
+            </div>
+            <div class="team-block away-team">
+                <strong class="score" id="awayScore">0</strong>
+                <span class="team-name" id="awayName">Pompiers</span>
+            </div>
+            <div class="match-time"><strong id="matchTimer">00:00</strong><span id="matchPeriod">1re mi-temps</span></div>
+            <div class="cards home-cards" id="homeCards"></div>
+            <div class="cards away-cards" id="awayCards"></div>
+        </section>
+        <div class="sponsor" id="sponsor">TÉLÉTHON <b>3637</b></div>
+    </main>
+    <div class="overlay-error" id="overlayError" hidden>Connexion à l’overlay impossible</div>
+    <script src="overlay.js"></script>
+</body>
+</html>
