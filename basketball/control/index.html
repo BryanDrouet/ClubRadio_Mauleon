@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Régie Mobile First - Basketball OBS Téléthon">
+    <base href="/basketball/control/">
+    <title>Régie Mobile - Téléthon 3637</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Biryani:wght@200;800;900&family=Open+Sans:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="brand">
+            <h1>Régie Téléthon 3637</h1>
+        </div>
+        <div id="auth-box">
+            <button id="btn-login" class="btn btn-auth" type="button">Connexion Google</button>
+            <button id="btn-logout" class="btn btn-auth hidden" type="button">Déconnexion</button>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <section class="card guide-card">
+            <h2>Mode d'emploi Régie</h2>
+            <ol class="step-list">
+                <li><strong>Connexion :</strong> Obligatoire en haut à droite.</li>
+                <li><strong>Chrono :</strong> Lancez avec Play, mettez en pause lors des arrêts de jeu.</li>
+                <li><strong>Points :</strong> Cliquez sur les gros boutons +1, +2, +3 à chaque panier.</li>
+                <li><strong>Fautes :</strong> Notez chaque faute d'équipe (5 max).</li>
+            </ol>
+        </section>
+
+        <section class="card timer-card timer-bg">
+            <div class="timer-display-wrapper">
+                <span id="control-timer-display">90:00</span>
+            </div>
+            
+            <div class="timer-controls">
+                <button id="btn-timer-toggle" class="btn btn-massive btn-play" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    Lancer
+                </button>
+            </div>
+
+            <div class="time-settings-grid">
+                <div class="input-group">
+                    <label>Minutes</label>
+                    <input type="number" id="input-custom-minutes" value="90">
+                </div>
+                <div class="input-group">
+                    <label>Secondes</label>
+                    <input type="number" id="input-custom-seconds" value="0">
+                </div>
+                <div class="input-group">
+                    <label>Temps Add. (min)</label>
+                    <input type="number" id="input-extra-time" value="0">
+                </div>
+                <button id="btn-timer-set" class="btn btn-main-action" type="button">Appliquer</button>
+            </div>
+        </section>
+
+        <div class="teams-grid">
+            <section class="card team-card gendarmes-bg">
+                <input type="text" id="input-team-a-name" class="team-name-input" value="GENDARMES">
+                
+                <div class="main-score-actions">
+                    <button class="btn btn-point" data-team="A" data-delta="1" type="button">+1</button>
+                    <button class="btn btn-point" data-team="A" data-delta="2" type="button">+2</button>
+                    <button class="btn btn-point" data-team="A" data-delta="3" type="button">+3</button>
+                </div>
+                <button class="btn btn-sub" data-team="A" data-delta="-1" type="button">Correction (-1 pt)</button>
+                
+                <div class="foul-actions">
+                    <div class="foul-count">Fautes: <span id="display-fouls-a">0</span>/5</div>
+                    <div class="foul-btn-group">
+                        <button id="btn-foul-a" class="btn btn-foul-add" type="button">+1 Faute</button>
+                        <button id="btn-reset-foul-a" class="btn btn-foul-reset" type="button">RAZ</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card team-card pompiers-bg">
+                <input type="text" id="input-team-b-name" class="team-name-input" value="POMPIERS">
+                
+                <div class="main-score-actions">
+                    <button class="btn btn-point" data-team="B" data-delta="1" type="button">+1</button>
+                    <button class="btn btn-point" data-team="B" data-delta="2" type="button">+2</button>
+                    <button class="btn btn-point" data-team="B" data-delta="3" type="button">+3</button>
+                </div>
+                <button class="btn btn-sub" data-team="B" data-delta="-1" type="button">Correction (-1 pt)</button>
+                
+                <div class="foul-actions">
+                    <div class="foul-count">Fautes: <span id="display-fouls-b">0</span>/5</div>
+                    <div class="foul-btn-group">
+                        <button id="btn-foul-b" class="btn btn-foul-add" type="button">+1 Faute</button>
+                        <button id="btn-reset-foul-b" class="btn btn-foul-reset" type="button">RAZ</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <section class="card settings-card">
+            <div class="toggle-group">
+                <input type="checkbox" id="input-show-telethon" checked>
+                <label for="input-show-telethon">Afficher le logo Téléthon 3637</label>
+            </div>
+            <button id="btn-reset-all" class="btn btn-danger-full" type="button">Réinitialiser le Match Complet</button>
+        </section>
+    </main>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>

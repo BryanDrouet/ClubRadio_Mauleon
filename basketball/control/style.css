@@ -1,0 +1,318 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+    --text-color: #f6f6bf;
+    --radius: 12px;
+    --main-btn-bg: #005252; /* Couleur principale unique pour les boutons d'action */
+    --main-btn-hover: #006666;
+}
+
+body {
+    background: linear-gradient(180deg, #005252 0%, #005252 28%, #001e1c 71%);
+    background-attachment: fixed;
+    color: var(--text-color);
+    font-family: 'Open Sans', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 40px;
+}
+
+.gendarmes-bg { background: radial-gradient(circle at 0% 0%, #00111e, #003452); }
+.pompiers-bg { background: radial-gradient(circle at 0% 0%, #690000, #bf0505); }
+.timer-bg { background: radial-gradient(circle at 0% 0%, #001e1c, #005252); }
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: rgba(0, 30, 28, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(246, 246, 191, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.brand h1 {
+    font-family: 'Biryani', sans-serif;
+    font-weight: 800;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.btn-auth {
+    background: var(--text-color);
+    color: #001e1c;
+    font-family: 'Biryani', sans-serif;
+    font-weight: 800;
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    border: none;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.card {
+    border-radius: var(--radius);
+    padding: 16px;
+    border: 1px solid rgba(246, 246, 191, 0.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.guide-card {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(246, 246, 191, 0.4);
+}
+.guide-card h2 {
+    font-family: 'Biryani', sans-serif;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+.step-list {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    padding-left: 20px;
+    opacity: 0.9;
+}
+
+.timer-display-wrapper {
+    text-align: center;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#control-timer-display {
+    font-family: 'Biryani', sans-serif;
+    font-weight: 900;
+    font-size: 4rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-massive {
+    width: 100%;
+    padding: 16px;
+    font-size: 1.4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    border-radius: var(--radius);
+    border: none;
+    font-family: 'Biryani', sans-serif;
+    font-weight: 800;
+}
+
+.btn-play { background: var(--main-btn-bg); color: var(--text-color); border: 1px solid rgba(246,246,191,0.3); }
+.btn-pause { background: #dc2626; color: white; }
+
+.time-settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+    background: rgba(0,0,0,0.2);
+    padding: 12px;
+    border-radius: var(--radius);
+}
+
+.input-group { display: flex; flex-direction: column; gap: 4px; }
+.input-group label { font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; }
+.input-group input {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(246,246,191,0.2);
+    color: var(--text-color);
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    text-align: center;
+    font-family: 'Biryani', sans-serif;
+}
+#btn-timer-set { grid-column: span 2; padding: 12px; }
+
+.teams-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.team-name-input {
+    width: 100%;
+    background: rgba(0,0,0,0.3);
+    border: none;
+    border-bottom: 2px solid rgba(246,246,191,0.3);
+    color: var(--text-color);
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    text-align: center;
+    padding: 8px;
+    margin-bottom: 16px;
+    border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.main-score-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.btn-point {
+    background: var(--text-color);
+    color: #001e1c;
+    font-family: 'Biryani', sans-serif;
+    font-weight: 900;
+    font-size: 1.4rem;
+    padding: 20px 0;
+    border: none;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-point:active { transform: scale(0.95); }
+
+.btn-sub {
+    width: 100%;
+    background: rgba(0,0,0,0.3);
+    color: var(--text-color);
+    border: 1px solid rgba(246,246,191,0.3);
+    padding: 12px;
+    border-radius: var(--radius);
+    font-family: 'Biryani', sans-serif;
+    font-weight: 800;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.foul-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: rgba(0,0,0,0.2);
+    padding: 12px;
+    border-radius: var(--radius);
+}
+
+.foul-count {
+    font-family: 'Biryani', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.foul-btn-group {
+    display: flex;
+    gap: 8px;
+}
+.btn-foul-add {
+    flex: 2;
+    background: var(--main-btn-bg);
+    color: var(--text-color);
+    font-weight: 800;
+    border: 1px solid rgba(246,246,191,0.3);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Biryani', sans-serif;
+}
+.btn-foul-reset {
+    flex: 1;
+    background: transparent;
+    border: 1px solid rgba(246,246,191,0.4);
+    color: var(--text-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Biryani', sans-serif;
+    font-weight: 800;
+}
+
+.settings-card {
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.toggle-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+}
+.toggle-group input { width: 24px; height: 24px; }
+
+.btn-danger-full {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 16px;
+    font-family: 'Biryani', sans-serif;
+    font-weight: 800;
+    border-radius: var(--radius);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-main-action {
+    background: var(--main-btn-bg);
+    color: var(--text-color);
+    border: 1px solid rgba(246,246,191,0.3);
+    border-radius: 8px;
+    font-family: 'Biryani', sans-serif;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hidden { display: none !important; }
+
+@media (min-width: 768px) {
+    .teams-grid {
+        flex-direction: row;
+    }
+    .team-card {
+        flex: 1;
+    }
+    .time-settings-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    #btn-timer-set { grid-column: span 1; }
+}

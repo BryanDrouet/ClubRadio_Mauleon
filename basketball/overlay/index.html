@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Overlay vidéo OBS Basketball - Gendarmes vs Pompiers">
+    <base href="/basketball/overlay/">
+    <title>Overlay Basketball OBS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Biryani:wght@200;800;900&family=Open+Sans:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="overlay-container">
+        <div id="top-left-widget">
+            <div id="main-score-row">
+                <div class="team-panel gendarmes-bg rounded-left">
+                    <span id="team-a-name" class="team-name">Gendarmes</span>
+                </div>
+                <div class="score-panel gendarmes-bg">
+                    <span id="team-a-score" class="score-text">00</span>
+                </div>
+                
+                <div class="score-panel pompiers-bg">
+                    <span id="team-b-score" class="score-text">00</span>
+                </div>
+                <div class="team-panel pompiers-bg rounded-right">
+                    <span id="team-b-name" class="team-name">Pompiers</span>
+                </div>
+            </div>
+
+            <div id="hanging-row">
+                <div class="fouls-container" id="fouls-a-container"></div>
+                
+                <div id="timer-pill" class="timer-bg">
+                    <span id="timer-display" class="timer-main">90:00</span>
+                    <span id="extra-time-display" class="timer-extra"></span>
+                </div>
+
+                <div class="fouls-container fouls-right" id="fouls-b-container"></div>
+            </div>
+        </div>
+
+        <div id="top-right-widget" class="timer-bg">
+            <span class="telethon-text">TÉLÉTHON</span>
+            <span class="telethon-badge">3637</span>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
